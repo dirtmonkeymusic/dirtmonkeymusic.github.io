@@ -335,6 +335,8 @@ h1 {
   margin: 0 auto;
 }
 
+.wrap-shop { width: min(1280px, calc(100% - 40px)); }
+
 .wrap-narrow { width: min(760px, calc(100% - 36px)); }
 
 .section-heading { text-align: center; margin: 0 auto 32px; }
@@ -377,10 +379,6 @@ h2 {
 }
 
 .flagship {
-  display: grid;
-  grid-template-columns: minmax(0, 480px) minmax(280px, 1fr);
-  gap: 22px 28px;
-  align-items: center;
   margin-bottom: 42px;
   padding: 16px;
 }
@@ -422,6 +420,13 @@ h2 {
 }
 
 .flagship .plugin-actions .btn { flex: 1 1 160px; }
+
+.plugin-card.flagship {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+  gap: 18px 28px;
+  align-items: center;
+}
 
 .plugin-card {
   --accent: var(--cyan);
@@ -496,13 +501,12 @@ h2 {
 }
 
 .flagship .plugin-art.is-photo {
-  display: grid;
-  place-items: center;
+  padding: 8px;
 }
 
 .flagship .plugin-art.is-photo img {
   width: 100%;
-  max-width: 480px;
+  max-width: none;
   height: auto;
 }
 
@@ -797,13 +801,12 @@ h2 {
   .steps { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 800px) {
-  .flagship {
+@media (max-width: 900px) {
+  .plugin-card.flagship {
     grid-template-columns: 1fr;
-    margin-bottom: 32px;
   }
 
-  .flagship .plugin-art.is-photo img { width: 100%; }
+  .flagship { margin-bottom: 32px; }
 
   .flagship .plugin-actions { flex-direction: column; }
 }

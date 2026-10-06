@@ -15,7 +15,9 @@
 //  price        What shoppers see. Example: "$49"
 //  description  A short paragraph. Keep it as one line in this file.
 //  formats      Short labels, separated by commas.
-//  system       Computers it runs on.
+//  system       Extra computer note under the tags.
+//               "Mac. Windows coming." is not shown. The tags
+//               already say that. A more specific note still shows.
 //  demoLink     Where "Download Demo" goes.
 //               Put the file in the downloads folder, then write
 //               downloads/YourFile.zip
@@ -57,8 +59,8 @@ const PRODUCTS = [
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/WONK-FACTORY-PLACEHOLDER",
     // Placeholder screenshot. Replace the file, or paste a new path.
     screenshot: "assets/plugins/wonk-factory.png",
-    shotWidth: 959,
-    shotHeight: 700,
+    shotWidth: 1680,
+    shotHeight: 1226,
     featured: true
   },
   {

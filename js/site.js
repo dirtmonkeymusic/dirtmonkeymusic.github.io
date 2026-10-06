@@ -320,9 +320,10 @@
     var buy = safeUrl(product.buyLink);
     var remoteDemo = /^https?:\/\//i.test(demo);
     var system = String(product.system || "").trim();
+    var tagsAlreadySayIt = /^mac\.?\s*windows coming\.?$/i.test(system);
     var tagline = String(product.tagline || "").trim();
     var hasShot = String(product.screenshot || "").trim().length > 0;
-    var sizes = featured ? "(max-width: 800px) 92vw, 520px" : "(max-width: 720px) 92vw, 480px";
+    var sizes = featured ? "(max-width: 900px) 92vw, 780px" : "(max-width: 720px) 92vw, 480px";
     var title = featured ? "h2" : "h3";
     return (
       '<article class="plugin-card' + (featured ? " flagship" : "") + " accent-" + accent + '" id="' + esc(product.id) + '">' +
@@ -336,7 +337,7 @@
           (tagline ? '<p class="flag-tagline">' + esc(tagline) + "</p>" : "") +
           '<p class="desc">' + esc(product.description) + "</p>" +
           '<ul class="chips">' + chips(product.formats) + "</ul>" +
-          (system ? '<p class="system">' + esc(system) + "</p>" : "") +
+          (!tagsAlreadySayIt && system ? '<p class="system">' + esc(system) + "</p>" : "") +
           '<div class="plugin-actions">' +
             '<a class="btn btn-demo" href="' + esc(demo) + '"' + (remoteDemo ? "" : " download") +
               ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +

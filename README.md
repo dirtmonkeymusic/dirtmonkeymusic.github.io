@@ -30,12 +30,14 @@ Change only the words inside the quote marks. Leave the quotes and the commas wh
 | Price on the card | `price` |
 | The paragraph | `description` |
 | VST3, AU, Mac, and similar labels | `formats` |
-| Mac / Windows line | `system` |
+| Extra computer note | `system` |
 | Download Demo button | `demoLink` |
 | Buy button | `buyLink` |
 | Plugin picture | `screenshot` |
 
 Prices are `$XX` on purpose. Replace that with the real price, like `"$49"`.
+
+`system` is the grey note under the tags. "Mac. Windows coming." is not shown, because the tags already say that. Write something more specific, such as a macOS version, and that note appears.
 
 If the plugin cards ever go blank, a quote or a comma was deleted. Undo and try again.
 
