@@ -130,20 +130,19 @@ A square picture fits the card best.
 
 Open `index.html`.
 
-- The tagline under the logo is `Plugins by Dirt Monkey`. The line under that is editable too.
+- The hero lockup is the small line `Sound of`, then the logo, then `Plugins & Sample Packs`. Those words are in `index.html`.
 - **How demos work** is marked with a comment that says `EDIT THIS SECTION`. The current sentences are a placeholder.
 - **FAQ** answers are drafts. Each one has a yellow label that says `Edit this answer`. Rewrite the answer, then delete that label when you are happy with it. The note above the questions says the same thing.
 - Footer links (Instagram, YouTube, Bandcamp, merch, 19K) are at the bottom of `index.html`. The 19K link currently goes to the 19K SoundCloud page. Change that address if you want it to go somewhere else.
 
 Do not rename the folders `assets`, `css`, `js`, or `downloads`. The page looks for those names.
 
-## Pictures and the moving monkey
+## Pictures
 
-- `assets/dirt-monkey-logo.png` — the Dirt Monkey logo in the header and the top of the page
-- `assets/skwish-cyan.png` and `assets/skwish-magenta.png` — Skwish
-- `assets/skwish-loop.mp4` — the short glowing loop behind Skwish
+- `assets/dirt-monkey-logo.png` — the Dirt Monkey wordmark in the header, the hero, and the footer
+- `assets/skwish-cyan.png` — Skwish, the single neon monkey in the hero
 
-The still picture shows if the video cannot play. You can leave these files alone.
+You can leave these files alone. A spare magenta monkey and a short video loop are in `assets` too (`skwish-magenta.png`, `skwish-loop.mp4`). The page does not use them right now.
 
 There is also a file named `.nojekyll`. It looks empty. Leave it in the folder. It tells GitHub Pages not to rearrange your files. On a Mac or Windows computer it may be hidden. That is fine.
 
