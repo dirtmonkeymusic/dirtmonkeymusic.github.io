@@ -34,9 +34,10 @@
 //  shotWidth    Width of that picture in pixels.
 //  shotHeight   Height of that picture in pixels.
 //               Update both if you swap in a new file.
-//  featured     true makes it the big card at the top. Use this on
-//               one plugin only.
-//  tagline      Short line under the name on the big card.
+//  featured     true adds a "Flagship synth" label on that card.
+//               The card is the same size as the others. Put the
+//               flagship first in this list if you want it first.
+//  tagline      Not shown. Leave it, or delete the line.
 //
 //  id           Short internal name (lowercase, no spaces).
 //               You can leave the ids as they are.
@@ -51,7 +52,7 @@ const PRODUCTS = [
     name: "Wonk Factory",
     tagline: "A wavetable synth.",
     price: "$XX",
-    description: "Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, voicing, and bend.",
+    description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, and bend.",
     formats: "VST3, Mac, Windows coming",
     system: "Mac. Windows coming.",
     demoLink: "downloads/wonk-factory-demo-PLACEHOLDER.txt",

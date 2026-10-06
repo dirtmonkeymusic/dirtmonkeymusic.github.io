@@ -83,7 +83,7 @@ They live in the `assets/plugins` folder:
 
 To swap one, save the new picture over that file, or save it with a new name and change the `screenshot` line in `js/products.js`. Also update `shotWidth` and `shotHeight` to the new picture’s pixel size so the card stays sharp and does not jump.
 
-A wide screenshot looks best at least twice as wide as it appears on the page. Wonk Factory is the big card, so its picture should be the largest.
+A wide screenshot looks best at least twice as wide as it appears on the page. The three plugin cards are the same size.
 
 Leave `screenshot` as `""` if you want the neon drawing instead.
 
@@ -129,7 +129,7 @@ A square picture fits the card best.
 
 Open `index.html`.
 
-- The hero lockup is the Dirt Monkey logo, then `Plugins & Sample Packs`. Those words are in `index.html`.
+- The hero lockup is the Dirt Monkey logo, then `Sounds of Dirt Monkey`, then `Plugins & Sample Packs`. Those words are in `index.html`.
 - **How demos work** is marked with a comment that says `EDIT THIS SECTION`. The current sentences are a placeholder.
 - **FAQ** answers are drafts. Each one has a yellow label that says `Edit this answer`. Rewrite the answer, then delete that label when you are happy with it. The note above the questions says the same thing.
 - Footer links (Instagram, YouTube, Bandcamp, merch, 19K) are at the bottom of `index.html`. The 19K link currently goes to the 19K SoundCloud page. Change that address if you want it to go somewhere else.

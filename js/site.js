@@ -314,27 +314,24 @@
     }).join("");
   }
 
-  function pluginCard(product, featured) {
+  function pluginCard(product) {
     var accent = ACCENTS[product.id] || "cyan";
     var demo = safeUrl(product.demoLink);
     var buy = safeUrl(product.buyLink);
     var remoteDemo = /^https?:\/\//i.test(demo);
     var system = String(product.system || "").trim();
     var tagsAlreadySayIt = /^mac\.?\s*windows coming\.?$/i.test(system);
-    var tagline = String(product.tagline || "").trim();
     var hasShot = String(product.screenshot || "").trim().length > 0;
-    var sizes = featured ? "(max-width: 900px) 92vw, 780px" : "(max-width: 720px) 92vw, 480px";
-    var title = featured ? "h2" : "h3";
+    var sizes = "(max-width: 720px) 92vw, (max-width: 980px) 46vw, 340px";
     return (
-      '<article class="plugin-card' + (featured ? " flagship" : "") + " accent-" + accent + '" id="' + esc(product.id) + '">' +
+      '<article class="plugin-card accent-' + accent + '" id="' + esc(product.id) + '">' +
         '<div class="plugin-art' + (hasShot ? " is-photo" : "") + '">' + artFor(product, sizes) + "</div>" +
         '<div class="plugin-body">' +
-          (featured ? '<p class="flag-badge">Flagship synth</p>' : "") +
+          (product.featured ? '<p class="flag-badge">Flagship synth</p>' : "") +
           '<div class="plugin-heading">' +
-            "<" + title + ">" + esc(product.name) + "</" + title + ">" +
+            "<h3>" + esc(product.name) + "</h3>" +
             '<p class="price">' + esc(product.price) + "</p>" +
           "</div>" +
-          (tagline ? '<p class="flag-tagline">' + esc(tagline) + "</p>" : "") +
           '<p class="desc">' + esc(product.description) + "</p>" +
           '<ul class="chips">' + chips(product.formats) + "</ul>" +
           (!tagsAlreadySayIt && system ? '<p class="system">' + esc(system) + "</p>" : "") +
@@ -350,28 +347,15 @@
   }
 
   function renderProducts() {
-    var feature = document.getElementById("plugin-feature");
     var grid = document.getElementById("plugin-grid");
-    var restLabel = document.querySelector(".rest-label");
     if (!grid) return;
     if (typeof PRODUCTS === "undefined" || !PRODUCTS.length) {
       grid.innerHTML = '<p class="shop-error">The plugin list did not load. Open js/products.js and check for a missing quote or comma.</p>';
       return;
     }
 
-    var featured = null;
-    var rest = [];
-    PRODUCTS.forEach(function (product) {
-      if (product.featured && !featured) featured = product;
-      else rest.push(product);
-    });
-
-    if (feature) {
-      feature.innerHTML = featured ? pluginCard(featured, true) : "";
-    }
-    if (restLabel) restLabel.hidden = !featured || !rest.length;
-    grid.innerHTML = rest.map(function (product) {
-      return pluginCard(product, false);
+    grid.innerHTML = PRODUCTS.map(function (product) {
+      return pluginCard(product);
     }).join("");
   }
 

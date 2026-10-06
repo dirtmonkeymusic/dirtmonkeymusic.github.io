@@ -65,7 +65,7 @@
     <section class="hero" aria-labelledby="hero-title">
       <!--
         EDIT: the hero lockup.
-        The logo is the wordmark. The line under it is the h1.
+        The logo is the wordmark. The two lines under it are in index.html.
       -->
       <div class="hero-lockup">
         <div class="hero-wordmark logo-mark">
@@ -73,7 +73,8 @@
           <span class="logo-fill" aria-hidden="true"></span>
           <img class="logo-crisp" src="assets/dirt-monkey-logo.png" srcset="assets/dirt-monkey-logo.png 2801w" sizes="(max-width: 720px) 84vw, 680px" alt="Dirt Monkey" width="2801" height="543">
         </div>
-        <h1 id="hero-title">Plugins &amp; Sample Packs</h1>
+        <h1 id="hero-title">Sounds of Dirt Monkey</h1>
+        <p class="hero-line">Plugins &amp; Sample Packs</p>
       </div>
 
       <div class="skwish-stage">
@@ -86,16 +87,13 @@
     </section>
 
     <section id="plugins" class="section" aria-label="Plugins">
-      <div class="wrap wrap-shop">
+      <div class="wrap">
         <div class="section-heading">
           <p class="eyebrow">The shop</p>
           <h2>Plugins</h2>
         </div>
-        <!-- The big Wonk Factory card is drawn from js/products.js (featured: true). -->
-        <div id="plugin-feature"></div>
-        <!-- EDIT: the label above Punch and Updown. -->
-        <p class="eyebrow rest-label">More plugins</p>
-        <div id="plugin-grid" class="plugin-grid plugin-grid-pair"></div>
+        <!-- Plugin cards are drawn from js/products.js, in that order. -->
+        <div id="plugin-grid" class="plugin-grid"></div>
         <noscript>
           <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
         </noscript>
