@@ -46,7 +46,7 @@
       '<svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" focusable="false">' +
         '<rect width="640" height="400" rx="28" fill="#100814"/>' +
         '<rect x="10" y="10" width="620" height="380" rx="20" fill="#0b0710" stroke="' + accent + '" stroke-opacity="0.55" stroke-width="2"/>' +
-        '<text x="32" y="52" fill="#f6f2fb" font-family="Fredoka, Outfit, sans-serif" font-size="26" font-weight="700">' + title + "</text>" +
+        '<text x="32" y="52" fill="#f6f2fb" font-family="JetBrains Mono, ui-monospace, monospace" font-size="26" font-weight="700">' + title + "</text>" +
         inner +
       "</svg>"
     );
@@ -68,15 +68,15 @@
   function punchArt() {
     var inner =
       '<rect x="468" y="28" width="72" height="30" rx="15" fill="#3dfff2"/>' +
-      '<text x="504" y="48" text-anchor="middle" fill="#071016" font-family="Outfit, sans-serif" font-size="13" font-weight="700">LIVE</text>' +
+      '<text x="504" y="48" text-anchor="middle" fill="#071016" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">LIVE</text>' +
       '<rect x="548" y="28" width="72" height="30" rx="15" fill="none" stroke="#6d6478"/>' +
-      '<text x="584" y="48" text-anchor="middle" fill="#8d8498" font-family="Outfit, sans-serif" font-size="12" font-weight="700">RENDER</text>' +
+      '<text x="584" y="48" text-anchor="middle" fill="#8d8498" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">RENDER</text>' +
       knob(196, 214, 78, "#3dfff2", -50) +
-      '<text x="196" y="330" text-anchor="middle" fill="#d9fff8" font-family="Outfit, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">PUNCH</text>' +
+      '<text x="196" y="330" text-anchor="middle" fill="#d9fff8" font-family="JetBrains Mono, ui-monospace, monospace" font-size="15" font-weight="700" letter-spacing="1.5">PUNCH</text>' +
       knob(430, 196, 40, "#ff2bd6", -20) +
-      '<text x="430" y="268" text-anchor="middle" fill="#ffd0f3" font-family="Outfit, sans-serif" font-size="13" font-weight="700">HPF</text>' +
+      '<text x="430" y="268" text-anchor="middle" fill="#ffd0f3" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">HPF</text>' +
       knob(548, 196, 40, "#d6ff4a", -80) +
-      '<text x="548" y="268" text-anchor="middle" fill="#f3ffc4" font-family="Outfit, sans-serif" font-size="13" font-weight="700">DRY/WET</text>';
+      '<text x="548" y="268" text-anchor="middle" fill="#f3ffc4" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">DRY/WET</text>';
     var bars = "";
     for (var i = 0; i < 28; i++) {
       var lit = i < 18;
@@ -91,13 +91,13 @@
 
   function updownArt() {
     var inner =
-      '<text x="32" y="84" fill="#ffb3ea" font-family="Outfit, sans-serif" font-size="14" font-weight="600">SWEEPS · RISERS · DOWNFALLS</text>' +
+      '<text x="32" y="84" fill="#ffb3ea" font-family="JetBrains Mono, ui-monospace, monospace" font-size="14" font-weight="500">SWEEPS · RISERS · DOWNFALLS</text>' +
       '<path d="M48 300 C 150 290, 210 230, 300 150 S 430 70, 470 64" fill="none" stroke="#ff2bd6" stroke-width="5" stroke-linecap="round"/>' +
       '<path d="M70 96 C 160 110, 230 190, 340 250 S 520 330, 560 336" fill="none" stroke="#3dfff2" stroke-width="4" stroke-linecap="round" opacity="0.9"/>' +
       '<polygon points="470,52 492,78 454,74" fill="#ff2bd6"/>' +
       '<polygon points="572,336 548,322 556,352" fill="#3dfff2"/>' +
-      '<text x="392" y="128" fill="#ffd0f3" font-family="Outfit, sans-serif" font-size="13" font-weight="700">RISER</text>' +
-      '<text x="250" y="292" fill="#d9fff8" font-family="Outfit, sans-serif" font-size="13" font-weight="700">DOWNFALL</text>' +
+      '<text x="392" y="128" fill="#ffd0f3" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">RISER</text>' +
+      '<text x="250" y="292" fill="#d9fff8" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">DOWNFALL</text>' +
       '<rect x="586" y="110" width="8" height="190" rx="4" fill="#241c2c"/>' +
       '<rect x="586" y="168" width="8" height="70" rx="4" fill="#ff2bd6"/>' +
       '<circle cx="590" cy="168" r="11" fill="#ff2bd6" stroke="#1a0610" stroke-width="3"/>';
@@ -128,11 +128,11 @@
       grid +
       waves +
       knob(140, 318, 28, "#d6ff4a", -35) +
-      '<text x="140" y="368" text-anchor="middle" fill="#f3ffc4" font-family="Outfit, sans-serif" font-size="12" font-weight="700">POSITION</text>' +
+      '<text x="140" y="368" text-anchor="middle" fill="#f3ffc4" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">POSITION</text>' +
       knob(320, 318, 28, "#ff2bd6", -10) +
-      '<text x="320" y="368" text-anchor="middle" fill="#ffd0f3" font-family="Outfit, sans-serif" font-size="12" font-weight="700">WARP</text>' +
+      '<text x="320" y="368" text-anchor="middle" fill="#ffd0f3" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">WARP</text>' +
       knob(500, 318, 28, "#3dfff2", -70) +
-      '<text x="500" y="368" text-anchor="middle" fill="#d9fff8" font-family="Outfit, sans-serif" font-size="12" font-weight="700">LEVEL</text>';
+      '<text x="500" y="368" text-anchor="middle" fill="#d9fff8" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">LEVEL</text>';
     return frame("wonk", "WONK FACTORY", "#d6ff4a", inner);
   }
 
@@ -268,7 +268,7 @@
     return coverFrame(accent === "magenta" ? "#ff2bd6" : accent === "mint" ? "#d6ff4a" : "#3dfff2",
       '<circle cx="320" cy="280" r="110" fill="none" stroke="' + (accent === "magenta" ? "#ff2bd6" : "#3dfff2") + '" stroke-width="6"/>' +
       '<circle cx="320" cy="280" r="16" fill="#d6ff4a"/>' +
-      '<text x="320" y="470" text-anchor="middle" fill="#f6f2fb" font-family="Fredoka, Outfit, sans-serif" font-size="36" font-weight="700">' + esc(name) + "</text>"
+      '<text x="320" y="470" text-anchor="middle" fill="#f6f2fb" font-family="JetBrains Mono, ui-monospace, monospace" font-size="36" font-weight="700">' + esc(name) + "</text>"
     );
   }
 
