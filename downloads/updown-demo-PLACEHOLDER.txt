@@ -1,0 +1,9 @@
+UPDOWN DEMO — PLACEHOLDER FILE
+
+This is not the real plugin.
+
+When the real Updown demo is ready:
+1. Put the real file in this downloads folder (a .zip is typical).
+2. Open js/products.js.
+3. Change the Updown demoLink to the new file name, for example downloads/Updown-Mac.zip
+4. You can delete this placeholder file.

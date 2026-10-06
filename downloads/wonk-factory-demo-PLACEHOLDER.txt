@@ -1,0 +1,9 @@
+WONK FACTORY DEMO — PLACEHOLDER FILE
+
+This is not the real plugin.
+
+When the real Wonk Factory demo is ready:
+1. Put the real file in this downloads folder (a .zip is typical).
+2. Open js/products.js.
+3. Change the Wonk Factory demoLink to the new file name, for example downloads/Wonk-Factory-Mac.zip
+4. You can delete this placeholder file.

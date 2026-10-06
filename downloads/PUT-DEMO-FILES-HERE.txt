@@ -1,0 +1,7 @@
+Put the real demo downloads in this folder.
+
+Then open js/products.js and point each plugin's demoLink at the new file.
+
+Example: downloads/Punch-Mac.zip
+
+The three files ending in PLACEHOLDER.txt are stand-ins so the Download Demo buttons have somewhere to go. Replace them when the real demos are ready.

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dirt Monkey Plugins</title>
+  <meta name="description" content="Plugins by Dirt Monkey. Punch, Updown, and Wonk Factory. Download a demo or buy.">
+  <meta name="theme-color" content="#07060a">
+  <meta property="og:title" content="Dirt Monkey Plugins">
+  <meta property="og:description" content="Plugins by Dirt Monkey. Punch, Updown, and Wonk Factory.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/skwish-cyan.png">
+  <link rel="icon" href="assets/skwish-cyan.png" type="image/png">
+  <link rel="preload" as="image" href="assets/dirt-monkey-logo.png">
+  <link rel="preload" as="image" href="assets/skwish-cyan.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!--
+    DIRT MONKEY PLUGINS
+    This is a normal website made of files. Nothing to install.
+
+    Change prices, plugin text, demo links, and Lemon Squeezy links
+    in js/products.js.
+
+    Change the hero line, the demo explanation, the FAQ, and the
+    footer in this file. Look for comments that say EDIT.
+  -->
+
+  <a class="skip" href="#plugins">Skip to plugins</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top">
+      <img src="assets/dirt-monkey-logo.png" alt="Dirt Monkey" width="1417" height="265">
+    </a>
+    <nav aria-label="On this page">
+      <a href="#plugins">Plugins</a>
+      <a href="#demos">Demos</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <!-- EDIT: the big logo is the picture. The line below is the tagline. -->
+      <img class="hero-logo" src="assets/dirt-monkey-logo.png" alt="" width="1417" height="265">
+      <h1 id="hero-title">Plugins by Dirt Monkey</h1>
+      <!-- EDIT: optional second line under the tagline. -->
+      <p class="hero-sub">VST3 and Audio Unit plugins for Mac. Windows is coming.</p>
+
+      <div class="skwish-stage">
+        <!-- Looping neon Skwish. The still PNG shows if the video cannot play. -->
+        <video class="skwish-video" autoplay muted loop playsinline poster="assets/skwish-cyan.png" aria-hidden="true">
+          <source src="assets/skwish-loop.mp4" type="video/mp4">
+        </video>
+        <img class="skwish-back" src="assets/skwish-magenta.png" alt="" width="512" height="512">
+        <img class="skwish-front" src="assets/skwish-cyan.png" alt="Skwish, Dirt Monkey's neon monkey" width="512" height="512">
+      </div>
+      <p class="skwish-caption">Skwish</p>
+
+      <a class="btn btn-demo btn-hero" href="#plugins">See the plugins</a>
+    </section>
+
+    <section id="plugins" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <p class="eyebrow">The shop</p>
+          <h2>Plugins</h2>
+          <!-- EDIT: the sentence under the Plugins heading. -->
+          <p class="lede">Three tools from the Dirt Monkey lab. Grab a demo, or buy and unlock it here.</p>
+        </div>
+        <div id="plugin-grid" class="plugin-grid"></div>
+        <noscript>
+          <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
+        </noscript>
+      </div>
+    </section>
+
+    <section id="demos" class="section section-demos">
+      <div class="wrap">
+        <!--
+          EDIT THIS SECTION.
+          Rewrite the sentences below if you want a different explanation.
+          The text here is a placeholder.
+        -->
+        <div class="section-heading">
+          <p class="eyebrow">Before you buy</p>
+          <h2>How demos work</h2>
+          <p class="lede">Demos are full-featured, with a limitation. Buy a plugin to unlock it with a license key.</p>
+        </div>
+        <ol class="steps">
+          <li>
+            <h3>Download</h3>
+            <p>Grab the demo for the plugin you want. It installs the same way the full plugin does.</p>
+          </li>
+          <li>
+            <h3>Play it</h3>
+            <p>The demo is the real plugin, with a limitation so you can hear it in a session before you pay.</p>
+          </li>
+          <li>
+            <h3>Unlock</h3>
+            <p>Buy opens a checkout on this page. Your license key takes the limitation off.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="wrap wrap-narrow">
+        <!--
+          FAQ — EDIT THESE ANSWERS before you publish.
+          Each answer starts with a yellow "Edit this answer" label.
+          Delete that label when the words are final.
+          You can rewrite the questions too. They are the summary lines.
+        -->
+        <div class="section-heading">
+          <p class="eyebrow">Good to know</p>
+          <h2>FAQ</h2>
+          <p class="lede">These answers are drafts. Change them in index.html before you share the site.</p>
+        </div>
+        <div class="faq">
+          <details open>
+            <summary>How do I install in Ableton?</summary>
+            <p><span class="draft-label">Edit this answer</span> Download the Mac installer and run it. In Ableton, open Settings, then Plug-Ins, and turn on Audio Units and VST3. If a plugin is missing, click Rescan. Punch loads as an effect.</p>
+          </details>
+          <details>
+            <summary>How do license keys work?</summary>
+            <p><span class="draft-label">Edit this answer</span> After you buy, Lemon Squeezy emails you a license key. Open the plugin, paste the key, and the demo limitation turns off. Keep that email somewhere safe.</p>
+          </details>
+          <details>
+            <summary>Does this work on Mac and Windows?</summary>
+            <p><span class="draft-label">Edit this answer</span> The plugins run on Mac today: Apple silicon and Intel, macOS 11 or newer. Windows versions are coming. Each card lists its formats.</p>
+          </details>
+          <details>
+            <summary>What is your refund policy?</summary>
+            <p><span class="draft-label">Edit this answer</span> Write your real refund rule here before you publish. For example: refunds within 14 days if the license key has not been used.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="#top">
+        <img src="assets/dirt-monkey-logo.png" alt="Dirt Monkey" width="1417" height="265">
+      </a>
+      <ul class="footer-links">
+        <li><a href="https://www.instagram.com/dirtmonkeymusic/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@dirtmonkeymusic" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="https://dirtmonkey.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a></li>
+        <li><a href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener noreferrer">Merch</a></li>
+        <!-- EDIT: 19K link. This goes to the 19K SoundCloud page. Swap the address if you want a different one. -->
+        <li><a href="https://soundcloud.com/19ksounds" target="_blank" rel="noopener noreferrer">19K</a></li>
+      </ul>
+      <p class="legal">© 2026 Dirt Monkey. Checkout runs through Lemon Squeezy.</p>
+    </div>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/site.js"></script>
+  <!--
+    Lemon Squeezy checkout overlay.
+    Leave this script here. It makes every Buy button (class lemonsqueezy-button)
+    open a payment window on top of the site.
+    Paste each product's real checkout link in js/products.js, on the buyLink line.
+    You do not need to change the web address below.
+  -->
+  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+</body>
+</html>

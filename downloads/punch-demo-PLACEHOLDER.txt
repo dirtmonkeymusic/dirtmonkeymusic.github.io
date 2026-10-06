@@ -1,0 +1,9 @@
+PUNCH DEMO — PLACEHOLDER FILE
+
+This is not the real plugin.
+
+When the real Punch demo is ready:
+1. Put the real file in this downloads folder (a .zip is typical).
+2. Open js/products.js.
+3. Change the Punch demoLink to the new file name, for example downloads/Punch-Mac.zip
+4. You can delete this placeholder file.
