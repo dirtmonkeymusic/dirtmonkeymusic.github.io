@@ -129,7 +129,7 @@ A square picture fits the card best.
 
 Open `index.html`.
 
-- The hero lockup is the Dirt Monkey logo, then `Sounds of Dirt Monkey`, then `Plugins & Sample Packs`. Those words are in `index.html`.
+- The hero lockup is `Sounds of`, then the Dirt Monkey logo, then `Plugins & Sample Packs`. Those words are in `index.html`.
 - **How demos work** is marked with a comment that says `EDIT THIS SECTION`. The current sentences are a placeholder.
 - **FAQ** answers are drafts. Each one has a yellow label that says `Edit this answer`. Rewrite the answer, then delete that label when you are happy with it. The note above the questions says the same thing.
 - Footer links (Instagram, YouTube, Bandcamp, merch, 19K) are at the bottom of `index.html`. The 19K link currently goes to the 19K SoundCloud page. Change that address if you want it to go somewhere else.

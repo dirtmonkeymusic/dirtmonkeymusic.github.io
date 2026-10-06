@@ -339,10 +339,9 @@ h2,
 
 h2 { margin: 8px 0 12px; }
 
-.hero-lockup h1,
-.hero-lockup .hero-line { margin: 14px 0 0; }
+.hero-lockup .hero-line { margin: 0 0 12px; }
 
-.hero-lockup .hero-line { margin-top: 4px; }
+.hero-lockup h1 { margin: 14px 0 0; }
 
 .lede {
   color: var(--muted);
