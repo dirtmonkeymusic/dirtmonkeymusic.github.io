@@ -71,22 +71,19 @@ A GitHub Releases link also works. Paste the full `https://` address as `demoLin
 
 ## Drop in real plugin screenshots
 
-Each card shows a neon stand-in picture until you have a screenshot.
+The pictures on the plugin cards right now are placeholders. Final screenshots can replace them.
 
-1. Save the screenshot in the `assets` folder. Example: `assets/punch.png`
-2. In `js/products.js`, change that plugin's screenshot line from
+They live in the `assets/plugins` folder:
 
-```
-screenshot: ""
-```
+- `assets/plugins/wonk-factory.png`
+- `assets/plugins/punch.png`
+- `assets/plugins/updown.png`
 
-to
+To swap one, save the new picture over that file, or save it with a new name and change the `screenshot` line in `js/products.js`. Also update `shotWidth` and `shotHeight` to the new picture’s pixel size so the card stays sharp and does not jump.
 
-```
-screenshot: "assets/punch.png"
-```
+A wide screenshot looks best at least twice as wide as it appears on the page. Wonk Factory is the big card, so its picture should be the largest.
 
-Leave the quotes empty if you want to keep the neon picture.
+Leave `screenshot` as `""` if you want the neon drawing instead.
 
 ## Sample packs
 

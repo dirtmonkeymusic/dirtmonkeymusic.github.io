@@ -369,6 +369,60 @@ h2 {
   align-items: stretch;
 }
 
+.plugin-grid-pair { grid-template-columns: 1fr 1fr; }
+
+.rest-label {
+  margin: 8px 0 18px;
+  text-align: left;
+}
+
+.flagship {
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(280px, 1fr);
+  gap: 22px 28px;
+  align-items: center;
+  margin-bottom: 42px;
+  padding: 16px;
+}
+
+.flagship .plugin-art,
+.flagship .plugin-body { min-width: 0; }
+
+.flagship .plugin-heading h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.flag-badge {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 43, 214, 0.75);
+  color: #ffd6f6;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  box-shadow: 0 0 16px rgba(255, 43, 214, 0.28);
+}
+
+.flag-tagline {
+  margin-top: -4px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: #f6f2fb;
+}
+
+.flagship .plugin-actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flagship .plugin-actions .btn { flex: 1 1 160px; }
+
 .plugin-card {
   --accent: var(--cyan);
   --glow: rgba(61, 255, 242, 0.35);
@@ -420,6 +474,37 @@ h2 {
 }
 
 .plugin-art img { object-fit: contain; }
+
+.plugin-art.is-photo {
+  aspect-ratio: auto;
+  display: block;
+  padding: 10px;
+  background: #07060d;
+  border: 1px solid rgba(61, 255, 242, 0.38);
+  box-shadow:
+    0 0 0 1px rgba(255, 43, 214, 0.16),
+    0 0 22px rgba(61, 255, 242, 0.14);
+}
+
+.plugin-art.is-photo img {
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #07060d;
+}
+
+.flagship .plugin-art.is-photo {
+  display: grid;
+  place-items: center;
+}
+
+.flagship .plugin-art.is-photo img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+}
 
 .pack-card .plugin-art { aspect-ratio: 1 / 1; }
 
@@ -710,6 +795,17 @@ h2 {
 @media (max-width: 980px) {
   .plugin-grid { grid-template-columns: 1fr 1fr; }
   .steps { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 800px) {
+  .flagship {
+    grid-template-columns: 1fr;
+    margin-bottom: 32px;
+  }
+
+  .flagship .plugin-art.is-photo img { width: 100%; }
+
+  .flagship .plugin-actions { flex-direction: column; }
 }
 
 @media (max-width: 720px) {

@@ -85,15 +85,13 @@
       <a class="btn btn-demo btn-hero" href="#plugins">See the plugins</a>
     </section>
 
-    <section id="plugins" class="section">
+    <section id="plugins" class="section" aria-label="Plugins">
       <div class="wrap">
-        <div class="section-heading">
-          <p class="eyebrow">The shop</p>
-          <h2>Plugins</h2>
-          <!-- EDIT: the sentence under the Plugins heading. -->
-          <p class="lede">Three tools from the Dirt Monkey lab. Grab a demo, or buy and unlock it here.</p>
-        </div>
-        <div id="plugin-grid" class="plugin-grid"></div>
+        <!-- The big Wonk Factory card is drawn from js/products.js (featured: true). -->
+        <div id="plugin-feature"></div>
+        <!-- EDIT: the label above Punch and Updown. -->
+        <p class="eyebrow rest-label">More plugins</p>
+        <div id="plugin-grid" class="plugin-grid plugin-grid-pair"></div>
         <noscript>
           <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
         </noscript>

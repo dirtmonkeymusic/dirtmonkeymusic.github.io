@@ -26,12 +26,17 @@
 //               https://yourstore.lemonsqueezy.com/checkout/buy/abc123
 //               The Buy button opens that checkout on top of this
 //               site, so people do not leave the page.
-//  screenshot   Leave the quotes empty ("") to keep the neon picture.
-//               For a real screenshot: save the image in the assets
-//               folder, then write assets/punch.png here.
+//  screenshot   Picture on the card. These are stand-in screenshots.
+//               Swap the file in assets/plugins, or change this path.
+//               Leave the quotes empty ("") to use the neon drawing.
+//  shotWidth    Width of that picture in pixels.
+//  shotHeight   Height of that picture in pixels.
+//               Update both if you swap in a new file.
+//  featured     true makes it the big card at the top. Use this on
+//               one plugin only.
+//  tagline      Short line under the name on the big card.
 //
 //  id           Short internal name (lowercase, no spaces).
-//               punch, updown, and wonk have their own neon pictures.
 //               You can leave the ids as they are.
 //
 //  If the plugin list ever goes blank, you probably deleted a quote
@@ -39,6 +44,23 @@
 // ============================================================
 
 const PRODUCTS = [
+  {
+    id: "wonk",
+    name: "Wonk Factory",
+    tagline: "A wavetable synth.",
+    price: "$XX",
+    description: "Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, voicing, and bend.",
+    formats: "VST3, Mac, Windows coming",
+    system: "Mac. Windows coming.",
+    demoLink: "downloads/wonk-factory-demo-PLACEHOLDER.txt",
+    // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
+    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/WONK-FACTORY-PLACEHOLDER",
+    // Placeholder screenshot. Replace the file, or paste a new path.
+    screenshot: "assets/plugins/wonk-factory.png",
+    shotWidth: 959,
+    shotHeight: 700,
+    featured: true
+  },
   {
     id: "punch",
     name: "Punch",
@@ -49,7 +71,11 @@ const PRODUCTS = [
     demoLink: "downloads/punch-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/PUNCH-PLACEHOLDER",
-    screenshot: ""
+    // Placeholder screenshot. Replace the file, or paste a new path.
+    screenshot: "assets/plugins/punch.png",
+    shotWidth: 1640,
+    shotHeight: 1600,
+    featured: false
   },
   {
     id: "updown",
@@ -61,19 +87,11 @@ const PRODUCTS = [
     demoLink: "downloads/updown-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/UPDOWN-PLACEHOLDER",
-    screenshot: ""
-  },
-  {
-    id: "wonk",
-    name: "Wonk Factory",
-    price: "$XX",
-    description: "A wavetable synth.",
-    formats: "VST3, Mac, Windows coming",
-    system: "Mac. Windows coming.",
-    demoLink: "downloads/wonk-factory-demo-PLACEHOLDER.txt",
-    // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
-    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/WONK-FACTORY-PLACEHOLDER",
-    screenshot: ""
+    // Placeholder screenshot. Replace the file, or paste a new path.
+    screenshot: "assets/plugins/updown.png",
+    shotWidth: 980,
+    shotHeight: 920,
+    featured: false
   }
 ];
 

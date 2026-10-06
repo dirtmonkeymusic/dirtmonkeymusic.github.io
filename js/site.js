@@ -147,10 +147,16 @@
     );
   }
 
-  function artFor(product) {
+  function artFor(product, sizes) {
     var shot = String(product.screenshot || "").trim();
     if (shot) {
-      return '<img src="' + esc(safeUrl(shot)) + '" alt="' + esc(product.name) + ' plugin">';
+      var width = Number(product.shotWidth) || 0;
+      var height = Number(product.shotHeight) || 0;
+      var src = esc(safeUrl(shot));
+      var srcset = width ? ' srcset="' + src + " " + width + 'w"' : "";
+      var sizeAttr = sizes ? ' sizes="' + sizes + '"' : "";
+      var dims = (width && height) ? ' width="' + width + '" height="' + height + '"' : "";
+      return '<img src="' + src + '"' + srcset + sizeAttr + dims + ' alt="' + esc(product.name) + ' plugin">';
     }
     var svg;
     if (product.id === "punch") svg = punchArt();
@@ -308,40 +314,63 @@
     }).join("");
   }
 
+  function pluginCard(product, featured) {
+    var accent = ACCENTS[product.id] || "cyan";
+    var demo = safeUrl(product.demoLink);
+    var buy = safeUrl(product.buyLink);
+    var remoteDemo = /^https?:\/\//i.test(demo);
+    var system = String(product.system || "").trim();
+    var tagline = String(product.tagline || "").trim();
+    var hasShot = String(product.screenshot || "").trim().length > 0;
+    var sizes = featured ? "(max-width: 800px) 92vw, 520px" : "(max-width: 720px) 92vw, 480px";
+    var title = featured ? "h2" : "h3";
+    return (
+      '<article class="plugin-card' + (featured ? " flagship" : "") + " accent-" + accent + '" id="' + esc(product.id) + '">' +
+        '<div class="plugin-art' + (hasShot ? " is-photo" : "") + '">' + artFor(product, sizes) + "</div>" +
+        '<div class="plugin-body">' +
+          (featured ? '<p class="flag-badge">Flagship synth</p>' : "") +
+          '<div class="plugin-heading">' +
+            "<" + title + ">" + esc(product.name) + "</" + title + ">" +
+            '<p class="price">' + esc(product.price) + "</p>" +
+          "</div>" +
+          (tagline ? '<p class="flag-tagline">' + esc(tagline) + "</p>" : "") +
+          '<p class="desc">' + esc(product.description) + "</p>" +
+          '<ul class="chips">' + chips(product.formats) + "</ul>" +
+          (system ? '<p class="system">' + esc(system) + "</p>" : "") +
+          '<div class="plugin-actions">' +
+            '<a class="btn btn-demo" href="' + esc(demo) + '"' + (remoteDemo ? "" : " download") +
+              ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +
+            '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
+              ' aria-label="Buy ' + esc(product.name) + '">Buy</a>' +
+          "</div>" +
+        "</div>" +
+      "</article>"
+    );
+  }
+
   function renderProducts() {
+    var feature = document.getElementById("plugin-feature");
     var grid = document.getElementById("plugin-grid");
+    var restLabel = document.querySelector(".rest-label");
     if (!grid) return;
     if (typeof PRODUCTS === "undefined" || !PRODUCTS.length) {
       grid.innerHTML = '<p class="shop-error">The plugin list did not load. Open js/products.js and check for a missing quote or comma.</p>';
       return;
     }
 
-    grid.innerHTML = PRODUCTS.map(function (product) {
-      var accent = ACCENTS[product.id] || "cyan";
-      var demo = safeUrl(product.demoLink);
-      var buy = safeUrl(product.buyLink);
-      var remoteDemo = /^https?:\/\//i.test(demo);
-      var system = String(product.system || "").trim();
-      return (
-        '<article class="plugin-card accent-' + accent + '" id="' + esc(product.id) + '">' +
-          '<div class="plugin-art">' + artFor(product) + "</div>" +
-          '<div class="plugin-body">' +
-            '<div class="plugin-heading">' +
-              "<h3>" + esc(product.name) + "</h3>" +
-              '<p class="price">' + esc(product.price) + "</p>" +
-            "</div>" +
-            '<p class="desc">' + esc(product.description) + "</p>" +
-            '<ul class="chips">' + chips(product.formats) + "</ul>" +
-            (system ? '<p class="system">' + esc(system) + "</p>" : "") +
-            '<div class="plugin-actions">' +
-              '<a class="btn btn-demo" href="' + esc(demo) + '"' + (remoteDemo ? "" : " download") +
-                ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +
-              '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
-                ' aria-label="Buy ' + esc(product.name) + '">Buy</a>' +
-            "</div>" +
-          "</div>" +
-        "</article>"
-      );
+    var featured = null;
+    var rest = [];
+    PRODUCTS.forEach(function (product) {
+      if (product.featured && !featured) featured = product;
+      else rest.push(product);
+    });
+
+    if (feature) {
+      feature.innerHTML = featured ? pluginCard(featured, true) : "";
+    }
+    if (restLabel) restLabel.hidden = !featured || !rest.length;
+    grid.innerHTML = rest.map(function (product) {
+      return pluginCard(product, false);
     }).join("");
   }
 
