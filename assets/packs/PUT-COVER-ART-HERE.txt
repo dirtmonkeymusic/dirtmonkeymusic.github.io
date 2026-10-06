@@ -1,0 +1,9 @@
+Put sample-pack cover pictures in this folder.
+
+Square images look best.
+
+Then open js/products.js, find the pack, and set cover to the file name.
+
+Example: cover: "assets/packs/neon-drums.jpg"
+
+Leave cover as "" to keep the neon stand-in picture.

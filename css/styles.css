@@ -126,8 +126,8 @@ nav a:hover {
   position: absolute;
   left: 50%;
   top: 62%;
-  width: min(720px, 110vw);
-  height: min(720px, 110vw);
+  width: min(720px, 100%);
+  height: min(720px, 92vw);
   transform: translate(-50%, -50%);
   background:
     radial-gradient(circle, rgba(61, 255, 242, 0.16), transparent 55%),
@@ -366,6 +366,14 @@ h2 {
 
 .plugin-art img { object-fit: contain; }
 
+.pack-card .plugin-art { aspect-ratio: 1 / 1; }
+
+.pack-card .plugin-art img { object-fit: cover; }
+
+.section-packs {
+  background: linear-gradient(180deg, rgba(61, 255, 242, 0.04), transparent 55%);
+}
+
 .plugin-body {
   display: flex;
   flex-direction: column;
@@ -438,6 +446,11 @@ h2 {
 .chip-soon {
   border-color: rgba(255, 210, 90, 0.5);
   color: #ffe9a8;
+}
+
+.chip-store {
+  border-color: rgba(214, 255, 74, 0.45);
+  color: #f3ffc4;
 }
 
 .system {
@@ -642,7 +655,15 @@ h2 {
 
   .brand img { height: 34px; }
 
-  nav { justify-content: center; }
+  nav {
+    justify-content: center;
+    gap: 6px 14px;
+  }
+
+  nav a {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+  }
 
   .plugin-grid { grid-template-columns: 1fr; }
 

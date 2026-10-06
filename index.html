@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dirt Monkey Plugins</title>
-  <meta name="description" content="Plugins by Dirt Monkey. Punch, Updown, and Wonk Factory. Download a demo or buy.">
+  <title>Dirt Monkey</title>
+  <meta name="description" content="Plugins and sample packs by Dirt Monkey. Punch, Updown, Wonk Factory, and packs on Gumroad and Bandcamp.">
   <meta name="theme-color" content="#07060a">
-  <meta property="og:title" content="Dirt Monkey Plugins">
-  <meta property="og:description" content="Plugins by Dirt Monkey. Punch, Updown, and Wonk Factory.">
+  <meta property="og:title" content="Dirt Monkey">
+  <meta property="og:description" content="Plugins and sample packs by Dirt Monkey.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/skwish-cyan.png">
   <link rel="icon" href="assets/skwish-cyan.png" type="image/png">
@@ -20,12 +20,25 @@
 </head>
 <body>
   <!--
-    DIRT MONKEY PLUGINS
+    DIRT MONKEY
     This is a normal website made of files. Nothing to install.
+    It is one long page, so it can grow into a full artist site later.
 
-    Change prices, plugin text, demo links, and Lemon Squeezy links
-    in js/products.js.
+    PAGE MAP — each part is a section. The nav links jump to them.
+      plugins   Plugin cards. Edit PRODUCTS in js/products.js.
+      packs     Sample pack cards. Edit SAMPLE_PACKS in js/products.js.
+      demos     How demos work. Edit the words in this file.
+      faq       Questions. Edit the words in this file.
 
+    To add a new part later (music, tour, about, anything):
+      1. Copy a <section> ... </section> block.
+      2. Change its id="something".
+      3. Add <a href="#something">Music</a> inside the <nav>.
+    You can also add a new file later, like music.html, and point
+    a nav link at that file instead of a # section.
+
+    Change prices, plugin text, demo links, Lemon Squeezy links,
+    and sample-pack links in js/products.js.
     Change the hero line, the demo explanation, the FAQ, and the
     footer in this file. Look for comments that say EDIT.
   -->
@@ -38,6 +51,7 @@
     </a>
     <nav aria-label="On this page">
       <a href="#plugins">Plugins</a>
+      <a href="#packs">Sample Packs</a>
       <a href="#demos">Demos</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -75,6 +89,26 @@
         <div id="plugin-grid" class="plugin-grid"></div>
         <noscript>
           <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
+        </noscript>
+      </div>
+    </section>
+
+    <section id="packs" class="section section-packs">
+      <div class="wrap">
+        <!--
+          EDIT THE PACKS in js/products.js, in the SAMPLE_PACKS list.
+          Names, prices, descriptions, and buy links there are placeholders.
+          Buy opens Gumroad or Bandcamp in a new tab. It does not use
+          the Lemon Squeezy window (that one is only for the plugins).
+        -->
+        <div class="section-heading">
+          <p class="eyebrow">Also in the lab</p>
+          <h2>Sample Packs</h2>
+          <p class="lede">Loops, one-shots, and ear candy. Buy opens the pack on Gumroad or Bandcamp.</p>
+        </div>
+        <div id="pack-grid" class="plugin-grid pack-grid"></div>
+        <noscript>
+          <p class="shop-error">JavaScript is off, so the sample packs cannot load. That list is in js/products.js.</p>
         </noscript>
       </div>
     </section>
@@ -156,7 +190,7 @@
         <!-- EDIT: 19K link. This goes to the 19K SoundCloud page. Swap the address if you want a different one. -->
         <li><a href="https://soundcloud.com/19ksounds" target="_blank" rel="noopener noreferrer">19K</a></li>
       </ul>
-      <p class="legal">© 2026 Dirt Monkey. Checkout runs through Lemon Squeezy.</p>
+      <p class="legal">© 2026 Dirt Monkey. Plugin checkout stays on this page. Sample packs open Gumroad or Bandcamp.</p>
     </div>
   </footer>
 
@@ -164,9 +198,10 @@
   <script src="js/site.js"></script>
   <!--
     Lemon Squeezy checkout overlay.
-    Leave this script here. It makes every Buy button (class lemonsqueezy-button)
+    Leave this script here. It makes plugin Buy buttons (class lemonsqueezy-button)
     open a payment window on top of the site.
-    Paste each product's real checkout link in js/products.js, on the buyLink line.
+    Sample pack Buy buttons are normal links. They are not part of this script.
+    Paste each plugin's real checkout link in js/products.js, on the buyLink line.
     You do not need to change the web address below.
   -->
   <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>

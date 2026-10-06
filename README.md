@@ -1,14 +1,17 @@
 # Dirt Monkey Plugins
 
-This is the website where Dirt Monkey sells plugins. It is a folder of normal files. There is no app to install, no build step, and no database. You can open it on your computer, put it on GitHub Pages for free, and later point your own web address at it.
+This is the website where Dirt Monkey sells plugins and sample packs. It is one long page made of normal files. There is no app to install, no build step, and no database. You can open it on your computer, put it on GitHub Pages for free, and later point your own web address at it.
 
-The pages are:
+Right now the page has:
 
-- **Punch** — one-knob effect for a mix, bus, or group
-- **Updown** — sweeps, risers, and downfalls
-- **Wonk Factory** — wavetable synth
+- **Plugins** — Punch, Updown, and Wonk Factory
+- **Sample packs** — six placeholder packs (rename them whenever you want)
+- **How demos work** and an **FAQ**
+- Links to Instagram, YouTube, Bandcamp, merch, and 19K
 
-Skwish, the neon monkey, is the mascot in the top of the page.
+Skwish, the neon monkey, is the mascot at the top of the page.
+
+The page is built so you can grow it into a full artist site later. See “Add more to the site later” near the bottom.
 
 ## Look at the site on your computer
 
@@ -18,7 +21,7 @@ Change one thing, save, and refresh the browser to see it.
 
 ## Change prices, descriptions, and buttons
 
-Open `js/products.js`. That is the whole shop. Each plugin is one block.
+Open `js/products.js`. That file is the whole shop. Plugins are the `PRODUCTS` list. Sample packs are the `SAMPLE_PACKS` list further down. Each item is one block.
 
 Change only the words inside the quote marks. Leave the quotes and the commas where they are.
 
@@ -85,6 +88,44 @@ screenshot: "assets/punch.png"
 
 Leave the quotes empty if you want to keep the neon picture.
 
+## Sample packs
+
+The Sample Packs section is the `SAMPLE_PACKS` list in `js/products.js`. The six packs there are placeholders. Change the name, the price, and the one-line description the same way you change a plugin.
+
+Buy on a pack does **not** use Lemon Squeezy. It opens a Gumroad or Bandcamp page in a new tab.
+
+1. Copy the link to the pack on Gumroad or Bandcamp.
+2. Paste it as that pack’s `buyLink`. Keep the quote marks.
+3. Set `store` to `Gumroad` or `Bandcamp` so the little label on the card matches.
+
+There is a comment above each pack `buyLink` that says `PASTE THE REAL GUMROAD OR BANDCAMP LINK BELOW`.
+
+The placeholder links look like:
+
+- `https://YOURNAME.gumroad.com/l/NEON-DRUMS-PLACEHOLDER`
+- `https://dirtmonkey.bandcamp.com/album/WONK-VOCALS-PLACEHOLDER`
+
+To add another pack, copy one whole block (from `{` through `}`), paste it just before the `];` that ends `SAMPLE_PACKS`, and change the words. Give it a new `id`.
+
+### Cover art
+
+Each pack shows a neon stand-in until you have artwork.
+
+1. Save the picture in the `assets/packs` folder. Example: `assets/packs/neon-drums.jpg`
+2. Change that pack’s cover line from
+
+```
+cover: ""
+```
+
+to
+
+```
+cover: "assets/packs/neon-drums.jpg"
+```
+
+A square picture fits the card best.
+
 ## Change the other words on the page
 
 Open `index.html`.
@@ -135,3 +176,19 @@ You can keep the free GitHub address, or send a domain you bought (like `plugins
 6. Back in GitHub Pages, turn on **Enforce HTTPS** once it is offered.
 
 You do not change the website files to do this, except that GitHub may add a small file named `CNAME`. Leave that file in place.
+
+## Add more to the site later
+
+The site is one page on purpose. The top of `index.html` has a short map of the sections. The links in the header (Plugins, Sample Packs, Demos, FAQ) jump down the page.
+
+To add something new, like music, tour dates, or an about blurb:
+
+1. Open `index.html`.
+2. Copy a whole `<section> ... </section>` block.
+3. Change `id="something"` to a new name, like `id="music"`.
+4. In the header nav, add `<a href="#music">Music</a>`.
+5. Replace the words inside the copy with the new ones.
+
+If the new part is a list of things for sale, it is easier to add blocks in `js/products.js` (copy a plugin block or a sample-pack block) than to hand-build cards.
+
+Later, if you want separate pages, you can add files like `music.html` next to `index.html` and point a nav link at `music.html` instead of `#music`. You do not need to do that yet. Keep using the same `css/styles.css` so a new page matches this one.

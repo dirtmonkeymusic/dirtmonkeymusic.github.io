@@ -172,6 +172,142 @@
       .join("");
   }
 
+  var PACK_ACCENTS = ["cyan", "magenta", "mint"];
+
+  function coverFrame(accent, inner) {
+    return (
+      '<svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" focusable="false">' +
+        '<rect width="640" height="640" fill="#120816"/>' +
+        '<rect x="18" y="18" width="604" height="604" rx="36" fill="#0b0710" stroke="' + accent + '" stroke-opacity="0.7" stroke-width="3"/>' +
+        inner +
+      "</svg>"
+    );
+  }
+
+  function coverArt(id, name, accent) {
+    if (id === "neon-drums") {
+      var dots = "";
+      for (var i = 0; i < 18; i++) {
+        var a = (i / 18) * Math.PI * 2;
+        dots +=
+          '<circle cx="' + (320 + Math.cos(a) * 220).toFixed(1) +
+          '" cy="' + (330 + Math.sin(a) * 220).toFixed(1) +
+          '" r="6" fill="#3dfff2"/>';
+      }
+      return coverFrame("#3dfff2",
+        dots +
+        '<circle cx="320" cy="330" r="156" fill="none" stroke="#3dfff2" stroke-width="10"/>' +
+        '<circle cx="320" cy="330" r="96" fill="none" stroke="#ff2bd6" stroke-width="5"/>' +
+        '<circle cx="320" cy="330" r="26" fill="#d6ff4a"/>' +
+        '<line x1="168" y1="150" x2="448" y2="246" stroke="#d6ff4a" stroke-width="10" stroke-linecap="round"/>' +
+        '<line x1="196" y1="500" x2="470" y2="412" stroke="#ff2bd6" stroke-width="10" stroke-linecap="round"/>'
+      );
+    }
+    if (id === "wonk-vocals") {
+      var bars = "";
+      var heights = [48, 90, 140, 220, 280, 160, 320, 200, 120, 260, 80, 180, 300, 110, 70, 210, 250, 130];
+      for (var v = 0; v < heights.length; v++) {
+        var h = heights[v];
+        bars +=
+          '<rect x="' + (64 + v * 28) + '" y="' + (330 - h / 2) + '" width="14" height="' + h +
+          '" rx="7" fill="' + (v % 3 === 0 ? "#ff2bd6" : "#3dfff2") + '"/>';
+      }
+      return coverFrame("#ff2bd6", bars);
+    }
+    if (id === "sub-growl") {
+      var low = "";
+      var high = "";
+      for (var x = 70; x <= 570; x += 8) {
+        var y = 390 + Math.sin((x - 70) / 78) * 78;
+        var cmd = x === 70 ? "M" : "L";
+        low += cmd + x + " " + y.toFixed(1) + " ";
+        high += cmd + x + " " + (y - 150).toFixed(1) + " ";
+      }
+      return coverFrame("#d6ff4a",
+        '<path d="' + low + '" fill="none" stroke="#d6ff4a" stroke-width="18" stroke-linecap="round"/>' +
+        '<path d="' + high + '" fill="none" stroke="#ff2bd6" stroke-width="4" stroke-linecap="round"/>'
+      );
+    }
+    if (id === "jungle-dust") {
+      var blocks = "";
+      var on = [1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0];
+      var n = 0;
+      for (var row = 0; row < 4; row++) {
+        for (var col = 0; col < 8; col++) {
+          if (!on[n % on.length]) { n++; continue; }
+          blocks +=
+            '<rect x="' + (78 + col * 64) + '" y="' + (150 + row * 108) + '" width="36" height="72" rx="8" fill="' +
+            ((row + col) % 2 ? "#ff2bd6" : "#3dfff2") + '"/>';
+          n++;
+        }
+      }
+      return coverFrame("#ff2bd6", blocks);
+    }
+    if (id === "riser-lab") {
+      return coverFrame("#3dfff2",
+        '<path d="M90 500 C 180 480, 240 390, 320 300 S 470 140, 540 110" fill="none" stroke="#3dfff2" stroke-width="8" stroke-linecap="round"/>' +
+        '<path d="M120 530 C 220 500, 280 420, 360 340 S 500 190, 560 160" fill="none" stroke="#ff2bd6" stroke-width="4" stroke-linecap="round" opacity="0.85"/>' +
+        '<polygon points="540,86 572,128 516,124" fill="#d6ff4a"/>' +
+        '<circle cx="180" cy="200" r="8" fill="#ff2bd6"/>' +
+        '<circle cx="250" cy="160" r="5" fill="#3dfff2"/>' +
+        '<circle cx="430" cy="240" r="6" fill="#d6ff4a"/>'
+      );
+    }
+    if (id === "night-market") {
+      return coverFrame("#d6ff4a",
+        '<circle cx="180" cy="220" r="54" fill="none" stroke="#d6ff4a" stroke-width="6"/>' +
+        '<circle cx="430" cy="250" r="80" fill="none" stroke="#ff2bd6" stroke-width="6"/>' +
+        '<circle cx="300" cy="420" r="36" fill="#3dfff2"/>' +
+        '<rect x="360" y="390" width="120" height="18" rx="9" fill="#d6ff4a" transform="rotate(-18 420 399)"/>' +
+        '<rect x="140" y="360" width="90" height="14" rx="7" fill="#ff2bd6" transform="rotate(24 185 367)"/>' +
+        '<circle cx="500" cy="160" r="14" fill="#3dfff2"/>' +
+        '<circle cx="150" cy="480" r="10" fill="#ff2bd6"/>' +
+        '<path d="M240 140 C 280 180, 300 160, 340 200" fill="none" stroke="#d6ff4a" stroke-width="4" stroke-linecap="round"/>'
+      );
+    }
+    return coverFrame(accent === "magenta" ? "#ff2bd6" : accent === "mint" ? "#d6ff4a" : "#3dfff2",
+      '<circle cx="320" cy="280" r="110" fill="none" stroke="' + (accent === "magenta" ? "#ff2bd6" : "#3dfff2") + '" stroke-width="6"/>' +
+      '<circle cx="320" cy="280" r="16" fill="#d6ff4a"/>' +
+      '<text x="320" y="470" text-anchor="middle" fill="#f6f2fb" font-family="Fredoka, Outfit, sans-serif" font-size="36" font-weight="700">' + esc(name) + "</text>"
+    );
+  }
+
+  function renderPacks() {
+    var grid = document.getElementById("pack-grid");
+    if (!grid) return;
+    if (typeof SAMPLE_PACKS === "undefined" || !SAMPLE_PACKS.length) {
+      grid.innerHTML = '<p class="shop-error">The sample pack list did not load. Open js/products.js and check SAMPLE_PACKS for a missing quote or comma.</p>';
+      return;
+    }
+
+    grid.innerHTML = SAMPLE_PACKS.map(function (pack, index) {
+      var accent = PACK_ACCENTS[index % PACK_ACCENTS.length];
+      var buy = safeUrl(pack.buyLink);
+      var store = String(pack.store || "Buy").trim();
+      var cover = String(pack.cover || "").trim();
+      var art = cover
+        ? '<img src="' + esc(safeUrl(cover)) + '" alt="' + esc(pack.name) + ' cover art">'
+        : '<div aria-hidden="true">' + coverArt(pack.id, pack.name, accent) + "</div>";
+      return (
+        '<article class="plugin-card pack-card accent-' + accent + '" id="pack-' + esc(pack.id) + '">' +
+          '<div class="plugin-art">' + art + "</div>" +
+          '<div class="plugin-body">' +
+            '<div class="plugin-heading">' +
+              "<h3>" + esc(pack.name) + "</h3>" +
+              '<p class="price">' + esc(pack.price) + "</p>" +
+            "</div>" +
+            '<p class="desc">' + esc(pack.description) + "</p>" +
+            '<ul class="chips"><li class="chip chip-store">' + esc(store) + "</li></ul>" +
+            '<div class="plugin-actions">' +
+              '<a class="btn btn-buy" href="' + esc(buy) + '" target="_blank" rel="noopener noreferrer"' +
+                ' aria-label="Buy ' + esc(pack.name) + " on " + esc(store) + '">Buy</a>' +
+            "</div>" +
+          "</div>" +
+        "</article>"
+      );
+    }).join("");
+  }
+
   function renderProducts() {
     var grid = document.getElementById("plugin-grid");
     if (!grid) return;
@@ -233,6 +369,7 @@
   }
 
   renderProducts();
+  renderPacks();
   setupVideo();
   bindCheckout();
   window.addEventListener("load", bindCheckout);
