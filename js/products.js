@@ -122,8 +122,8 @@ const PRODUCTS = [
     // PASTE THE REAL GUMROAD LINK BELOW.
     gumroadLink: "https://YOURNAME.gumroad.com/l/CLIPPER-PLACEHOLDER",
     screenshot: "assets/plugins/banana-clip-ui.png",
-    shotWidth: 1600,
-    shotHeight: 1074,
+    shotWidth: 1640,
+    shotHeight: 1600,
     featured: false
   },
   {
@@ -147,8 +147,8 @@ const PRODUCTS = [
     // PASTE THE REAL GUMROAD LINK BELOW.
     gumroadLink: "https://YOURNAME.gumroad.com/l/DIP-PLACEHOLDER",
     screenshot: "assets/plugins/dip-ui.png",
-    shotWidth: 1600,
-    shotHeight: 1429,
+    shotWidth: 1640,
+    shotHeight: 1600,
     featured: false
   },
   {
@@ -172,8 +172,8 @@ const PRODUCTS = [
     // PASTE THE REAL GUMROAD LINK BELOW.
     gumroadLink: "https://YOURNAME.gumroad.com/l/SPACES-PLACEHOLDER",
     screenshot: "assets/plugins/spaces-ui.png",
-    shotWidth: 1329,
-    shotHeight: 1600,
+    shotWidth: 1920,
+    shotHeight: 1720,
     featured: false
   }
 ];
