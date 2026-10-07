@@ -174,13 +174,14 @@ const PRODUCTS = [
 //  One bundle of every plugin. Prices and links are placeholders.
 //  Future plugins are included in this bundle when they ship.
 //  Do not put that sentence on the page. It is only a note here.
+//  The suite price will be revisited as plugins are added.
 // ============================================================
 
 const BUNDLE = {
   id: "full-suite",
   name: "The Full Suite",
-  price: "$100",
-  saveNote: "Save $60 vs. buying separately",
+  price: "$80",
+  saveNote: "Save $80 vs. buying separately",
   description: "Every Dirt Monkey plugin in one download.",
   includes: ["wonk", "punch", "updown", "clipper", "dip", "spaces"],
   // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
