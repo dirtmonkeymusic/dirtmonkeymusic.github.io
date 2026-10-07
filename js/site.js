@@ -322,16 +322,8 @@
     var demo = safeUrl(product.demoLink);
     var buy = safeUrl(product.buyLink);
     var remoteDemo = /^https?:\/\//i.test(demo);
-    var system = String(product.system || "").trim();
-    var tagsAlreadySayIt = /^mac\.?\s*windows coming\.?$/i.test(system);
-    var tagline = String(product.tagline || "").trim();
-    var features = Array.isArray(product.features) ? product.features : [];
-    var gumroad = safeUrl(product.gumroadLink);
     var hasShot = String(product.screenshot || "").trim().length > 0;
     var sizes = "(max-width: 720px) 92vw, (max-width: 980px) 46vw, 340px";
-    var featureList = features.map(function (item) {
-      return "<li>" + esc(item) + "</li>";
-    }).join("");
     return (
       '<article class="plugin-card accent-' + accent + '" id="' + esc(product.id) + '">' +
         '<div class="plugin-art' + (hasShot ? " is-photo" : "") + '">' + artFor(product, sizes) + "</div>" +
@@ -341,18 +333,13 @@
             "<h3>" + esc(product.name) + "</h3>" +
             '<p class="price">' + esc(product.price) + "</p>" +
           "</div>" +
-          (tagline && !product.featured ? '<p class="tagline">' + esc(tagline) + "</p>" : "") +
           '<p class="desc">' + esc(product.description) + "</p>" +
-          (featureList ? '<ul class="features">' + featureList + "</ul>" : "") +
           '<ul class="chips">' + chips(product.formats) + "</ul>" +
-          (!tagsAlreadySayIt && system ? '<p class="system">' + esc(system) + "</p>" : "") +
           '<div class="plugin-actions">' +
             '<a class="btn btn-demo" href="' + esc(demo) + '"' + (remoteDemo ? "" : " download") +
               ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +
             '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
               ' aria-label="Buy ' + esc(product.name) + '">Buy</a>' +
-            (gumroad ? '<a class="btn btn-gumroad" href="' + esc(gumroad) + '" target="_blank" rel="noopener noreferrer"' +
-              ' aria-label="Buy ' + esc(product.name) + ' on Gumroad">Gumroad</a>' : "") +
           "</div>" +
         "</div>" +
       "</article>"

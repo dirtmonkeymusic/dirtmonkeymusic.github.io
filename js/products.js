@@ -37,12 +37,8 @@
 //  featured     true adds a "Flagship synth" label on that card.
 //               The card is the same size as the others. Put the
 //               flagship first in this list if you want it first.
-//  tagline      Short line under the name. The flagship card
-//               does not show this line.
-//  features     Extra lines on the card. One string per line.
-//               Leave this out if you do not want a list.
-//  gumroadLink  Optional. A Gumroad button opens this in a new tab.
-//               Leave it off a plugin that should not have that button.
+//  tagline      Not shown on the card. The description is what shoppers see.
+//  features     Kept for a later product page. Not shown on the card.
 //
 //  id           Short internal name (lowercase, no spaces).
 //               You can leave the ids as they are.
@@ -58,7 +54,7 @@ const PRODUCTS = [
     tagline: "A wavetable synth.",
     price: "$XX",
     description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, and bend.",
-    formats: "VST3, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
     demoLink: "downloads/wonk-factory-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -74,8 +70,8 @@ const PRODUCTS = [
     name: "Punch",
     price: "$XX",
     description: "One-knob effect for a mix, bus, or group. It lifts the front of hits, fills the body with parallel compression, adds a little tape thickness, and doesn't turn the level down. Knobs: PUNCH, HPF, DRY/WET, plus live and render quality.",
-    formats: "VST3, Audio Unit, Mac, Windows coming",
-    system: "Apple silicon and Intel. macOS 11 or newer.",
+    formats: "VST3, AU, Mac, Windows coming",
+    system: "Mac. Windows coming.",
     demoLink: "downloads/punch-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/PUNCH-PLACEHOLDER",
@@ -90,7 +86,7 @@ const PRODUCTS = [
     name: "Updown",
     price: "$XX",
     description: "A VST for sweeps, risers, and downfalls.",
-    formats: "VST, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
     demoLink: "downloads/updown-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -106,7 +102,7 @@ const PRODUCTS = [
     name: "Banana Clip",
     tagline: "A dead-simple clipper that gets loud without going over 0 dB.",
     price: "$XX",
-    description: "A no-fuss clipper made for getting tracks and drums loud. Turn up INPUT to push into the clipper, then dial in JUICE for high-end crunch that gets gritty toward 100%. The output never goes over 0 dB.",
+    description: "A dead-simple clipper that gets tracks and drums loud. INPUT drives it, JUICE adds crunch, and it never goes over 0 dB.",
     features: [
       "Two big knobs, INPUT (drive) and JUICE (high-end crunch).",
       "Hard 0 dB ceiling so it never clips your master.",
@@ -114,13 +110,11 @@ const PRODUCTS = [
       "Back panel with release, soft/hard knee, and live/render oversampling up to 128x.",
       "Output meter that runs purple to red up to 0 dB."
     ],
-    formats: "Mac, VST3, AU, Windows coming",
+    formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
     demoLink: "downloads/clipper-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/CLIPPER-PLACEHOLDER",
-    // PASTE THE REAL GUMROAD LINK BELOW.
-    gumroadLink: "https://YOURNAME.gumroad.com/l/CLIPPER-PLACEHOLDER",
     screenshot: "assets/plugins/banana-clip-ui.png",
     shotWidth: 1640,
     shotHeight: 1600,
@@ -131,7 +125,7 @@ const PRODUCTS = [
     name: "Dip",
     tagline: "Draw the duck.",
     price: "$XX",
-    description: "A simple sidechain ducker. Draw the shape of the dip and it plays every time your kick hits, in time with your track. Turn three knobs, draw a curve, and you're pumping.",
+    description: "Draw the duck. Sketch the shape of the dip and it plays on every kick, in time with your track.",
     features: [
       "Three modes: SIDECHAIN, LOOP (tempo-locked pump, no sidechain needed), and ENVELOPE (follows sidechain level).",
       "Draw freehand and it snaps to a smooth curve with 3 to 20 draggable points.",
@@ -139,13 +133,11 @@ const PRODUCTS = [
       "Live sidechain waveform behind the curve with a neon dot riding the dip.",
       "Dry/wet and bypass."
     ],
-    formats: "Mac, VST3, AU, Windows coming",
+    formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
     demoLink: "downloads/dip-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/DIP-PLACEHOLDER",
-    // PASTE THE REAL GUMROAD LINK BELOW.
-    gumroadLink: "https://YOURNAME.gumroad.com/l/DIP-PLACEHOLDER",
     screenshot: "assets/plugins/dip-ui.png",
     shotWidth: 1640,
     shotHeight: 1600,
@@ -156,7 +148,7 @@ const PRODUCTS = [
     name: "Spaces",
     tagline: "A spring-first reverb that stays out of the way of your mix.",
     price: "$XX",
-    description: "Blend three reverbs, a lush spring, a smooth plate, and a room, from one triangle pad. Drag the dot to morph between all three. Built-in ducking, a wet-only EQ, and width keep the tail sitting behind your mix instead of washing it out.",
+    description: "A spring-first reverb. Blend spring, plate, and room from one triangle pad, with ducking to keep the tail behind your mix.",
     features: [
       "Triangle pad that blends Spring, Plate and Room in one move.",
       "Spring engine with three spring types plus Tension, Drip and Decay.",
@@ -164,13 +156,11 @@ const PRODUCTS = [
       "3-band EQ on the wet signal only, plus Width.",
       "Size, Pre-delay, Mix, Input and Output controls."
     ],
-    formats: "Mac, VST3, AU, Windows coming",
+    formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
     demoLink: "downloads/spaces-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/SPACES-PLACEHOLDER",
-    // PASTE THE REAL GUMROAD LINK BELOW.
-    gumroadLink: "https://YOURNAME.gumroad.com/l/SPACES-PLACEHOLDER",
     screenshot: "assets/plugins/spaces-ui.png",
     shotWidth: 1920,
     shotHeight: 1720,
