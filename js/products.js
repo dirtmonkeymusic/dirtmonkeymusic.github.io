@@ -52,7 +52,7 @@ const PRODUCTS = [
     id: "wonk",
     name: "Wonk Factory",
     tagline: "A wavetable synth.",
-    price: "$XX",
+    price: "$50",
     description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, and bend.",
     formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
@@ -68,7 +68,7 @@ const PRODUCTS = [
   {
     id: "punch",
     name: "Punch",
-    price: "$XX",
+    price: "$20",
     description: "One-knob effect for a mix, bus, or group. It lifts the front of hits, fills the body with parallel compression, adds a little tape thickness, and doesn't turn the level down. Knobs: PUNCH, HPF, DRY/WET, plus live and render quality.",
     formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
@@ -84,7 +84,7 @@ const PRODUCTS = [
   {
     id: "updown",
     name: "Updown",
-    price: "$XX",
+    price: "$20",
     description: "A VST for sweeps, risers, and downfalls.",
     formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
@@ -101,7 +101,7 @@ const PRODUCTS = [
     id: "clipper",
     name: "Banana Clip",
     tagline: "A dead-simple clipper that gets loud without going over 0 dB.",
-    price: "$XX",
+    price: "$20",
     description: "A dead-simple clipper that gets tracks and drums loud. INPUT drives it, JUICE adds crunch, and it never goes over 0 dB.",
     features: [
       "Two big knobs, INPUT (drive) and JUICE (high-end crunch).",
@@ -124,7 +124,7 @@ const PRODUCTS = [
     id: "dip",
     name: "Dip",
     tagline: "Draw the duck.",
-    price: "$XX",
+    price: "$20",
     description: "Draw the duck. Sketch the shape of the dip and it plays on every kick, in time with your track.",
     features: [
       "Three modes: SIDECHAIN, LOOP (tempo-locked pump, no sidechain needed), and ENVELOPE (follows sidechain level).",
@@ -147,7 +147,7 @@ const PRODUCTS = [
     id: "spaces",
     name: "Spaces",
     tagline: "A spring-first reverb that stays out of the way of your mix.",
-    price: "$XX",
+    price: "$30",
     description: "A spring-first reverb. Blend spring, plate, and room from one triangle pad, with ducking to keep the tail behind your mix.",
     features: [
       "Triangle pad that blends Spring, Plate and Room in one move.",
@@ -179,8 +179,8 @@ const PRODUCTS = [
 const BUNDLE = {
   id: "full-suite",
   name: "The Full Suite",
-  price: "$XX",
-  saveNote: "Save X% (placeholder)",
+  price: "$100",
+  saveNote: "Save $60 vs. buying separately",
   description: "Every Dirt Monkey plugin in one download.",
   includes: ["wonk", "punch", "updown", "clipper", "dip", "spaces"],
   // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
