@@ -6,7 +6,10 @@
   var ACCENTS = {
     punch: "cyan",
     updown: "magenta",
-    wonk: "mint"
+    wonk: "mint",
+    clipper: "cyan",
+    dip: "magenta",
+    spaces: "mint"
   };
 
   function esc(value) {
@@ -321,8 +324,14 @@
     var remoteDemo = /^https?:\/\//i.test(demo);
     var system = String(product.system || "").trim();
     var tagsAlreadySayIt = /^mac\.?\s*windows coming\.?$/i.test(system);
+    var tagline = String(product.tagline || "").trim();
+    var features = Array.isArray(product.features) ? product.features : [];
+    var gumroad = safeUrl(product.gumroadLink);
     var hasShot = String(product.screenshot || "").trim().length > 0;
     var sizes = "(max-width: 720px) 92vw, (max-width: 980px) 46vw, 340px";
+    var featureList = features.map(function (item) {
+      return "<li>" + esc(item) + "</li>";
+    }).join("");
     return (
       '<article class="plugin-card accent-' + accent + '" id="' + esc(product.id) + '">' +
         '<div class="plugin-art' + (hasShot ? " is-photo" : "") + '">' + artFor(product, sizes) + "</div>" +
@@ -332,7 +341,9 @@
             "<h3>" + esc(product.name) + "</h3>" +
             '<p class="price">' + esc(product.price) + "</p>" +
           "</div>" +
+          (tagline && !product.featured ? '<p class="tagline">' + esc(tagline) + "</p>" : "") +
           '<p class="desc">' + esc(product.description) + "</p>" +
+          (featureList ? '<ul class="features">' + featureList + "</ul>" : "") +
           '<ul class="chips">' + chips(product.formats) + "</ul>" +
           (!tagsAlreadySayIt && system ? '<p class="system">' + esc(system) + "</p>" : "") +
           '<div class="plugin-actions">' +
@@ -340,6 +351,8 @@
               ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +
             '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
               ' aria-label="Buy ' + esc(product.name) + '">Buy</a>' +
+            (gumroad ? '<a class="btn btn-gumroad" href="' + esc(gumroad) + '" target="_blank" rel="noopener noreferrer"' +
+              ' aria-label="Buy ' + esc(product.name) + ' on Gumroad">Gumroad</a>' : "") +
           "</div>" +
         "</div>" +
       "</article>"
@@ -347,6 +360,7 @@
   }
 
   function renderProducts() {
+    var feature = document.getElementById("plugin-feature");
     var grid = document.getElementById("plugin-grid");
     if (!grid) return;
     if (typeof PRODUCTS === "undefined" || !PRODUCTS.length) {
@@ -354,9 +368,50 @@
       return;
     }
 
-    grid.innerHTML = PRODUCTS.map(function (product) {
-      return pluginCard(product);
+    var featured = [];
+    var rest = [];
+    PRODUCTS.forEach(function (product) {
+      if (product.featured && !featured.length) featured.push(product);
+      else rest.push(product);
+    });
+    if (feature) feature.innerHTML = featured.map(pluginCard).join("");
+    grid.innerHTML = rest.map(pluginCard).join("");
+  }
+
+  function renderSuite() {
+    var root = document.getElementById("suite-root");
+    if (!root || typeof BUNDLE === "undefined") return;
+    var thumbs = (BUNDLE.includes || []).map(function (id) {
+      var product = null;
+      (PRODUCTS || []).forEach(function (item) {
+        if (item.id === id) product = item;
+      });
+      if (!product) return "";
+      var shot = String(product.screenshot || "").trim();
+      var img = shot ? '<img src="' + esc(safeUrl(shot)) + '" alt="">' : "";
+      return "<li><div class=\"suite-thumb\">" + img + "</div><p>" + esc(product.name) + "</p></li>";
     }).join("");
+    var buy = safeUrl(BUNDLE.buyLink);
+    var gumroad = safeUrl(BUNDLE.gumroadLink);
+    root.innerHTML =
+      '<div class="suite-card">' +
+        '<div class="section-heading">' +
+          '<p class="eyebrow">One download</p>' +
+          "<h2>" + esc(BUNDLE.name) + "</h2>" +
+          '<p class="lede">' + esc(BUNDLE.description) + "</p>" +
+        "</div>" +
+        '<ul class="suite-plugins">' + thumbs + "</ul>" +
+        '<div class="suite-offer">' +
+          '<p class="price">' + esc(BUNDLE.price) + "</p>" +
+          '<p class="suite-save">' + esc(BUNDLE.saveNote) + "</p>" +
+          '<div class="suite-actions">' +
+            '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
+              ' aria-label="Buy ' + esc(BUNDLE.name) + '">Buy the suite</a>' +
+            (gumroad ? '<a class="btn btn-gumroad" href="' + esc(gumroad) + '" target="_blank" rel="noopener noreferrer"' +
+              ' aria-label="Buy ' + esc(BUNDLE.name) + ' on Gumroad">Gumroad</a>' : "") +
+          "</div>" +
+        "</div>" +
+      "</div>";
   }
 
   function bindCheckout() {
@@ -383,6 +438,7 @@
   }
 
   renderProducts();
+  renderSuite();
   renderPacks();
   setupVideo();
   bindCheckout();

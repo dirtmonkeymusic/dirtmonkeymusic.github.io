@@ -54,6 +54,7 @@
     </a>
     <nav aria-label="On this page">
       <a href="#plugins">Plugins</a>
+      <a href="#suite">Full Suite</a>
       <a href="#packs">Sample Packs</a>
       <a href="#demos">Demos</a>
       <a href="#faq">FAQ</a>
@@ -89,11 +90,23 @@
           <p class="eyebrow">The shop</p>
           <h2>Plugins</h2>
         </div>
-        <!-- Plugin cards are drawn from js/products.js, in that order. -->
-        <div id="plugin-grid" class="plugin-grid"></div>
+        <!-- Plugin cards are drawn from js/products.js. Wonk Factory is the flagship. The other five sit in the grid under it. -->
+        <div id="plugin-feature" class="plugin-feature"></div>
+        <div id="plugin-grid" class="plugin-grid plugin-grid-rest"></div>
         <noscript>
           <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
         </noscript>
+      </div>
+    </section>
+
+    <section id="suite" class="section section-suite">
+      <div class="wrap">
+        <!--
+          The Full Suite block is drawn from BUNDLE in js/products.js.
+          A note in that file says future plugins are part of the bundle.
+          Do not put that sentence on this page.
+        -->
+        <div id="suite-root"></div>
       </div>
     </section>
 

@@ -80,10 +80,15 @@ They live in the `assets/plugins` folder:
 - `assets/plugins/wonk-factory.png`
 - `assets/plugins/punch.png`
 - `assets/plugins/updown.png`
+- `assets/plugins/banana-clip-ui.png`
+- `assets/plugins/dip-ui.png`
+- `assets/plugins/spaces-ui.png`
 
 To swap one, save the new picture over that file, or save it with a new name and change the `screenshot` line in `js/products.js`. Also update `shotWidth` and `shotHeight` to the new picture’s pixel size so the card stays sharp and does not jump.
 
-A wide screenshot looks best at least twice as wide as it appears on the page. The three plugin cards are the same size.
+A wide screenshot looks best at least twice as wide as it appears on the page. Wonk Factory sits alone at the top. Punch, Updown, Banana Clip, Dip, and Spaces share the grid under it.
+
+The Full Suite is the `BUNDLE` block in `js/products.js`. The price, the save note, the Lemon Squeezy link, and the Gumroad link are placeholders. A comment in that block says future plugins are included. Leave that comment off the page.
 
 Leave `screenshot` as `""` if you want the neon drawing instead.
 

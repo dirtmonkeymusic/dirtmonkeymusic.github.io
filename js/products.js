@@ -37,7 +37,12 @@
 //  featured     true adds a "Flagship synth" label on that card.
 //               The card is the same size as the others. Put the
 //               flagship first in this list if you want it first.
-//  tagline      Not shown. Leave it, or delete the line.
+//  tagline      Short line under the name. The flagship card
+//               does not show this line.
+//  features     Extra lines on the card. One string per line.
+//               Leave this out if you do not want a list.
+//  gumroadLink  Optional. A Gumroad button opens this in a new tab.
+//               Leave it off a plugin that should not have that button.
 //
 //  id           Short internal name (lowercase, no spaces).
 //               You can leave the ids as they are.
@@ -95,8 +100,104 @@ const PRODUCTS = [
     shotWidth: 980,
     shotHeight: 920,
     featured: false
+  },
+  {
+    id: "clipper",
+    name: "Banana Clip",
+    tagline: "A dead-simple clipper that gets loud without going over 0 dB.",
+    price: "$XX",
+    description: "A no-fuss clipper made for getting tracks and drums loud. Turn up INPUT to push into the clipper, then dial in JUICE for high-end crunch that gets gritty toward 100%. The output never goes over 0 dB.",
+    features: [
+      "Two big knobs, INPUT (drive) and JUICE (high-end crunch).",
+      "Hard 0 dB ceiling so it never clips your master.",
+      "Dry/wet slider for parallel clipping.",
+      "Back panel with release, soft/hard knee, and live/render oversampling up to 128x.",
+      "Output meter that runs purple to red up to 0 dB."
+    ],
+    formats: "Mac, VST3, AU, Windows coming",
+    system: "Mac. Windows coming.",
+    demoLink: "downloads/clipper-demo-PLACEHOLDER.txt",
+    // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
+    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/CLIPPER-PLACEHOLDER",
+    // PASTE THE REAL GUMROAD LINK BELOW.
+    gumroadLink: "https://YOURNAME.gumroad.com/l/CLIPPER-PLACEHOLDER",
+    screenshot: "assets/plugins/banana-clip-ui.png",
+    shotWidth: 1600,
+    shotHeight: 1074,
+    featured: false
+  },
+  {
+    id: "dip",
+    name: "Dip",
+    tagline: "Draw the duck.",
+    price: "$XX",
+    description: "A simple sidechain ducker. Draw the shape of the dip and it plays every time your kick hits, in time with your track. Turn three knobs, draw a curve, and you're pumping.",
+    features: [
+      "Three modes: SIDECHAIN, LOOP (tempo-locked pump, no sidechain needed), and ENVELOPE (follows sidechain level).",
+      "Draw freehand and it snaps to a smooth curve with 3 to 20 draggable points.",
+      "DEPTH, LENGTH (synced or ms), SENSITIVITY, plus up to 20 ms lookahead.",
+      "Live sidechain waveform behind the curve with a neon dot riding the dip.",
+      "Dry/wet and bypass."
+    ],
+    formats: "Mac, VST3, AU, Windows coming",
+    system: "Mac. Windows coming.",
+    demoLink: "downloads/dip-demo-PLACEHOLDER.txt",
+    // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
+    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/DIP-PLACEHOLDER",
+    // PASTE THE REAL GUMROAD LINK BELOW.
+    gumroadLink: "https://YOURNAME.gumroad.com/l/DIP-PLACEHOLDER",
+    screenshot: "assets/plugins/dip-ui.png",
+    shotWidth: 1600,
+    shotHeight: 1429,
+    featured: false
+  },
+  {
+    id: "spaces",
+    name: "Spaces",
+    tagline: "A spring-first reverb that stays out of the way of your mix.",
+    price: "$XX",
+    description: "Blend three reverbs, a lush spring, a smooth plate, and a room, from one triangle pad. Drag the dot to morph between all three. Built-in ducking, a wet-only EQ, and width keep the tail sitting behind your mix instead of washing it out.",
+    features: [
+      "Triangle pad that blends Spring, Plate and Room in one move.",
+      "Spring engine with three spring types plus Tension, Drip and Decay.",
+      "Ducking that pulls the reverb down while the dry signal plays.",
+      "3-band EQ on the wet signal only, plus Width.",
+      "Size, Pre-delay, Mix, Input and Output controls."
+    ],
+    formats: "Mac, VST3, AU, Windows coming",
+    system: "Mac. Windows coming.",
+    demoLink: "downloads/spaces-demo-PLACEHOLDER.txt",
+    // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
+    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/SPACES-PLACEHOLDER",
+    // PASTE THE REAL GUMROAD LINK BELOW.
+    gumroadLink: "https://YOURNAME.gumroad.com/l/SPACES-PLACEHOLDER",
+    screenshot: "assets/plugins/spaces-ui.png",
+    shotWidth: 1329,
+    shotHeight: 1600,
+    featured: false
   }
 ];
+
+// ============================================================
+//  FULL SUITE
+//
+//  One bundle of every plugin. Prices and links are placeholders.
+//  Future plugins are included in this bundle when they ship.
+//  Do not put that sentence on the page. It is only a note here.
+// ============================================================
+
+const BUNDLE = {
+  id: "full-suite",
+  name: "The Full Suite",
+  price: "$XX",
+  saveNote: "Save X% (placeholder)",
+  description: "Every Dirt Monkey plugin in one download.",
+  includes: ["wonk", "punch", "updown", "clipper", "dip", "spaces"],
+  // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
+  buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/FULL-SUITE-PLACEHOLDER",
+  // PASTE THE REAL GUMROAD LINK BELOW.
+  gumroadLink: "https://YOURNAME.gumroad.com/l/FULL-SUITE-PLACEHOLDER"
+};
 
 // ============================================================
 //  SAMPLE PACKS
