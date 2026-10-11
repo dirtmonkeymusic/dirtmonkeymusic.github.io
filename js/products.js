@@ -148,10 +148,10 @@ const PRODUCTS = [
     name: "Spaces",
     tagline: "A spring-first reverb that stays out of the way of your mix.",
     price: "$30",
-    description: "A spring-first reverb. Blend spring, plate, and room from one triangle pad, with ducking to keep the tail behind your mix.",
+    description: "A spring-first reverb. Blend spring, plate, and room from one triangle pad, with six spring types and ducking to keep the tail behind your mix.",
     features: [
       "Triangle pad that blends Spring, Plate and Room in one move.",
-      "Spring engine with three spring types plus Tension, Drip and Decay.",
+      "Spring engine with six spring types plus Tension, Drip and Decay.",
       "Ducking that pulls the reverb down while the dry signal plays.",
       "3-band EQ on the wet signal only, plus Width.",
       "Size, Pre-delay, Mix, Input and Output controls."
@@ -163,7 +163,7 @@ const PRODUCTS = [
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/SPACES-PLACEHOLDER",
     screenshot: "assets/plugins/spaces-ui.png",
     shotWidth: 1920,
-    shotHeight: 1720,
+    shotHeight: 1640,
     featured: false
   }
 ];
