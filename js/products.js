@@ -61,8 +61,8 @@ const PRODUCTS = [
     buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/WONK-FACTORY-PLACEHOLDER",
     // Placeholder screenshot. Replace the file, or paste a new path.
     screenshot: "assets/plugins/wonk-factory.png",
-    shotWidth: 1680,
-    shotHeight: 1226,
+    shotWidth: 583,
+    shotHeight: 407,
     featured: true
   },
   {
