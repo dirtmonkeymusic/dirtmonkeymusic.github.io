@@ -26,6 +26,110 @@
     return value;
   }
 
+  function money(value) {
+    var text = String(value == null ? "" : value).trim();
+    if (/^free$/i.test(text)) return 0;
+    var n = parseFloat(text.replace(/[^0-9.]/g, ""));
+    return isFinite(n) ? n : 0;
+  }
+
+  function dollars(amount) {
+    var rounded = Math.round(amount * 100) / 100;
+    if (Math.abs(rounded - Math.round(rounded)) < 0.001) return "$" + Math.round(rounded);
+    return "$" + rounded.toFixed(2);
+  }
+
+  function isFreePlugin(product) {
+    if (!product) return false;
+    if (product.free === true) return true;
+    var text = String(product.price == null ? "" : product.price).trim();
+    return /^free$/i.test(text) || text === "$0" || text === "0";
+  }
+
+  function priceLabel(product) {
+    return isFreePlugin(product) ? "Free" : String(product.price || "");
+  }
+
+  function findProduct(id) {
+    var found = null;
+    (typeof PRODUCTS === "undefined" ? [] : PRODUCTS).forEach(function (item) {
+      if (item.id === id) found = item;
+    });
+    return found;
+  }
+
+  function suiteSaveNote(bundle) {
+    var sum = 0;
+    (bundle.includes || []).forEach(function (id) {
+      var product = findProduct(id);
+      if (!product || isFreePlugin(product)) return;
+      sum += money(product.price);
+    });
+    var save = sum - money(bundle.price);
+    if (!(save > 0)) return "";
+    return "Save " + dollars(save) + " vs. buying separately";
+  }
+
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  function monthName(month) {
+    return MONTHS[(Number(month) || 1) - 1] || "";
+  }
+
+  function clockLabel(part, zoneLabel) {
+    var hour = Number(part.hour) || 0;
+    var minute = Number(part.minute) || 0;
+    var suffix = hour >= 12 ? "PM" : "AM";
+    var h12 = hour % 12 || 12;
+    var mm = minute < 10 ? "0" + minute : String(minute);
+    return h12 + ":" + mm + " " + suffix + (zoneLabel ? " " + zoneLabel : "");
+  }
+
+  function dateLabel(part) {
+    return monthName(part.month) + " " + part.day + ", " + part.year;
+  }
+
+  // Wall-clock time in a named zone, as a UTC millisecond timestamp.
+  function zonedInstant(part, timeZone) {
+    var utcGuess = Date.UTC(part.year, part.month - 1, part.day, part.hour || 0, part.minute || 0, part.second || 0);
+    var dtf = new Intl.DateTimeFormat("en-US", {
+      timeZone: timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23"
+    });
+    var map = {};
+    dtf.formatToParts(new Date(utcGuess)).forEach(function (piece) {
+      if (piece.type !== "literal") map[piece.type] = piece.value;
+    });
+    var asUtc = Date.UTC(+map.year, +map.month - 1, +map.day, +map.hour, +map.minute, +map.second);
+    return utcGuess - (asUtc - utcGuess);
+  }
+
+  function kitForm(opts) {
+    var emailId = "kit-email-" + opts.id;
+    var formId = opts.formId || "PLACEHOLDER";
+    var tags = String(opts.tags || "");
+    return (
+      "<!-- PLACEHOLDER Kit embed. Form ID: " + esc(formId) + ". Tags: " + esc(tags) + ". Replace this whole form with the Kit inline embed. It does not submit anywhere yet. -->" +
+      '<form class="kit-form" action="#kit-placeholder" method="post" novalidate' +
+        ' data-kit-placeholder="true"' +
+        ' data-kit-form-id="' + esc(formId) + '"' +
+        ' data-kit-tags="' + esc(tags) + '"' +
+        ' data-kit-source="source-website">' +
+        '<p class="kit-placeholder-label">Placeholder</p>' +
+        '<label class="kit-label" for="' + esc(emailId) + '">Email</label>' +
+        '<input class="kit-email" id="' + esc(emailId) + '" type="email" name="email_address" autocomplete="email" inputmode="email" placeholder="you@email.com" required>' +
+        '<button class="btn btn-buy" type="submit">' + esc(opts.button || "Get it free") + "</button>" +
+        '<p class="kit-note">' + esc(opts.note || "") + "</p>" +
+      "</form>"
+    );
+  }
+
   function ticks(cx, cy, inner, outer, count, start, end, color) {
     var marks = "";
     for (var i = 0; i < count; i++) {
@@ -331,15 +435,25 @@
           (product.featured ? '<p class="flag-badge">Flagship synth</p>' : "") +
           '<div class="plugin-heading">' +
             "<h3>" + esc(product.name) + "</h3>" +
-            '<p class="price">' + esc(product.price) + "</p>" +
+            '<p class="price' + (isFreePlugin(product) ? " is-free" : "") + '">' + esc(priceLabel(product)) + "</p>" +
           "</div>" +
           '<p class="desc">' + esc(product.description) + "</p>" +
           '<ul class="chips">' + chips(product.formats) + "</ul>" +
           '<div class="plugin-actions">' +
-            '<a class="btn btn-demo" href="' + esc(demo) + '"' + (remoteDemo ? "" : " download") +
-              ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +
-            '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
-              ' aria-label="Buy ' + esc(product.name) + '">Buy</a>' +
+            (isFreePlugin(product)
+              ? kitForm({
+                  id: product.id,
+                  formId: product.kitFormId,
+                  tags: product.kitTags,
+                  button: "Get it free",
+                  note: "The download link arrives in the confirmation email."
+                })
+              : (
+                '<a class="btn btn-demo" href="' + esc(demo) + '"' + (remoteDemo ? "" : " download") +
+                  ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +
+                '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
+                  ' aria-label="Buy ' + esc(product.name) + '">Buy</a>'
+              )) +
           "</div>" +
         "</div>" +
       "</article>"
@@ -380,6 +494,7 @@
     }).join("");
     var buy = safeUrl(BUNDLE.buyLink);
     var gumroad = safeUrl(BUNDLE.gumroadLink);
+    var saveNote = suiteSaveNote(BUNDLE);
     root.innerHTML =
       '<div class="suite-card">' +
         '<div class="section-heading">' +
@@ -390,7 +505,7 @@
         '<ul class="suite-plugins">' + thumbs + "</ul>" +
         '<div class="suite-offer">' +
           '<p class="price">' + esc(BUNDLE.price) + "</p>" +
-          '<p class="suite-save">' + esc(BUNDLE.saveNote) + "</p>" +
+          (saveNote ? '<p class="suite-save">' + esc(saveNote) + "</p>" : "") +
           '<div class="suite-actions">' +
             '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
               ' aria-label="Buy ' + esc(BUNDLE.name) + '">Buy the suite</a>' +
@@ -399,6 +514,120 @@
           "</div>" +
         "</div>" +
       "</div>";
+  }
+
+  function renderFounders() {
+    var root = document.getElementById("founders-root");
+    if (!root || typeof FOUNDERS === "undefined") return;
+    var zone = FOUNDERS.zoneLabel || "CT";
+    var count = Number(FOUNDERS.count);
+    if (!isFinite(count) || count < 0) count = 0;
+    root.innerHTML =
+      '<div class="suite-card founders-card">' +
+        '<div class="section-heading">' +
+          '<p class="eyebrow">One time</p>' +
+          "<h2>" + esc(FOUNDERS.name) + "</h2>" +
+          '<p class="lede">All paid plugins, plus every future plugin, for life.</p>' +
+        "</div>" +
+        '<div class="suite-offer">' +
+          '<p class="price">' + esc(FOUNDERS.price) + "</p>" +
+          '<p class="suite-save">One time. Never repeated.</p>' +
+        "</div>" +
+        "<ul class=\"founders-facts\">" +
+          "<li>Email list early access on " + esc(dateLabel(FOUNDERS.opens)) + ".</li>" +
+          "<li>Opens to everyone on " + esc(monthName(FOUNDERS.publicOpen.month) + " " + FOUNDERS.publicOpen.day) + ".</li>" +
+          "<li>Ends " + esc(dateLabel(FOUNDERS.closes) + " at " + clockLabel(FOUNDERS.closes, zone)) + ".</li>" +
+        "</ul>" +
+        '<div class="founders-countdown" data-founders-countdown>' +
+          '<p class="founders-countdown-label" data-countdown-label>Early access opens in</p>' +
+          '<div class="countdown-units" data-countdown-units>' +
+            '<p class="countdown-unit"><strong data-unit="days">00</strong><span>Days</span></p>' +
+            '<p class="countdown-unit"><strong data-unit="hours">00</strong><span>Hours</span></p>' +
+            '<p class="countdown-unit"><strong data-unit="minutes">00</strong><span>Minutes</span></p>' +
+            '<p class="countdown-unit"><strong data-unit="seconds">00</strong><span>Seconds</span></p>' +
+          "</div>" +
+          '<p class="founders-ended" data-countdown-ended hidden>This offer has ended.</p>' +
+        "</div>" +
+        '<p class="founders-count"><strong data-founders-count>' + esc(String(Math.floor(count))) + "</strong> founders so far</p>" +
+        kitForm({
+          id: FOUNDERS.id,
+          formId: FOUNDERS.kitFormId,
+          tags: FOUNDERS.kitTags,
+          button: "Get early access",
+          note: "Join the list for the November 18 early access. No checkout on this page."
+        }) +
+      "</div>";
+  }
+
+  function pad2(n) {
+    n = Math.max(0, Math.floor(n));
+    return (n < 10 ? "0" : "") + n;
+  }
+
+  function startCountdown() {
+    var root = document.querySelector("[data-founders-countdown]");
+    if (!root || typeof FOUNDERS === "undefined") return;
+    var zone = FOUNDERS.timeZone || "America/Chicago";
+    var openAt = zonedInstant(FOUNDERS.opens, zone);
+    var closeAt = zonedInstant(FOUNDERS.closes, zone);
+    var label = root.querySelector("[data-countdown-label]");
+    var units = root.querySelector("[data-countdown-units]");
+    var ended = root.querySelector("[data-countdown-ended]");
+    var fields = {
+      days: root.querySelector('[data-unit="days"]'),
+      hours: root.querySelector('[data-unit="hours"]'),
+      minutes: root.querySelector('[data-unit="minutes"]'),
+      seconds: root.querySelector('[data-unit="seconds"]')
+    };
+
+    function tick() {
+      var now = Date.now();
+      var target;
+      var phase;
+      if (now < openAt) {
+        target = openAt;
+        phase = "open";
+      } else if (now < closeAt) {
+        target = closeAt;
+        phase = "close";
+      } else {
+        phase = "ended";
+      }
+      if (phase === "ended") {
+        if (label) label.hidden = true;
+        if (units) units.hidden = true;
+        if (ended) ended.hidden = false;
+        return;
+      }
+      var remain = Math.max(0, target - now);
+      var totalSeconds = Math.floor(remain / 1000);
+      var days = Math.floor(totalSeconds / 86400);
+      var hours = Math.floor((totalSeconds % 86400) / 3600);
+      var minutes = Math.floor((totalSeconds % 3600) / 60);
+      var seconds = totalSeconds % 60;
+      if (label) {
+        label.hidden = false;
+        label.textContent = phase === "open" ? "Early access opens in" : "Closes in";
+      }
+      if (units) units.hidden = false;
+      if (ended) ended.hidden = true;
+      if (fields.days) fields.days.textContent = pad2(days);
+      if (fields.hours) fields.hours.textContent = pad2(hours);
+      if (fields.minutes) fields.minutes.textContent = pad2(minutes);
+      if (fields.seconds) fields.seconds.textContent = pad2(seconds);
+    }
+
+    tick();
+    window.setInterval(tick, 1000);
+  }
+
+  function bindKitForms() {
+    var forms = document.querySelectorAll(".kit-form");
+    Array.prototype.forEach.call(forms, function (form) {
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+      });
+    });
   }
 
   function bindCheckout() {
@@ -426,7 +655,10 @@
 
   renderProducts();
   renderSuite();
+  renderFounders();
   renderPacks();
+  bindKitForms();
+  startCountdown();
   setupVideo();
   bindCheckout();
   window.addEventListener("load", bindCheckout);

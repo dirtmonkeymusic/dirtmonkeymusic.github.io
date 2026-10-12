@@ -26,6 +26,8 @@
 
     PAGE MAP — each part is a section. The nav links jump to them.
       plugins   Plugin cards. Edit PRODUCTS in js/products.js.
+      suite     The Everything Suite. Edit BUNDLE in js/products.js.
+      founders  Founders Suite. Edit FOUNDERS in js/products.js.
       packs     Sample pack cards. Edit SAMPLE_PACKS in js/products.js.
       demos     How demos work. Edit the words in this file.
       faq       Questions. Edit the words in this file.
@@ -54,7 +56,8 @@
     </a>
     <nav aria-label="On this page">
       <a href="#plugins">Plugins</a>
-      <a href="#suite">Full Suite</a>
+      <a href="#suite">Suite</a>
+      <a href="#founders">Founders</a>
       <a href="#packs">Sample Packs</a>
       <a href="#demos">Demos</a>
       <a href="#faq">FAQ</a>
@@ -99,16 +102,30 @@
       </div>
     </section>
 
+    <div id="suite-founders">
     <section id="suite" class="section section-suite">
       <div class="wrap">
         <!--
-          The Full Suite block is drawn from BUNDLE in js/products.js.
+          The Everything Suite block is drawn from BUNDLE in js/products.js.
+          The save line is calculated from paid plugin prices. It is not typed here.
           A note in that file says future plugins are part of the bundle.
-          Do not put that sentence on this page.
+          Do not put that sentence on the page.
         -->
         <div id="suite-root"></div>
       </div>
     </section>
+
+    <section id="founders" class="section section-founders" aria-label="Founders Suite">
+      <div class="wrap">
+        <!--
+          Founders Suite is drawn from FOUNDERS in js/products.js.
+          The email form is a placeholder. There is no checkout here.
+          The founders count is FOUNDERS.count until a backend exists.
+        -->
+        <div id="founders-root"></div>
+      </div>
+    </section>
+    </div>
 
     <section id="packs" class="section section-packs">
       <div class="wrap">

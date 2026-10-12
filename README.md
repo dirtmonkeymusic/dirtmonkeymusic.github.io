@@ -4,7 +4,9 @@ This is the website where Dirt Monkey sells plugins and sample packs. It is one 
 
 Right now the page has:
 
-- **Plugins** — Punch, Updown, and Wonk Factory
+- **Plugins** — Wonk Factory, Punch, Updown, Banana Clip, Dip, and Spaces. Dip is free.
+- **The Everything Suite** — every current plugin in one download
+- **Founders Suite** — a one-time $79 offer with a waitlist. No checkout yet.
 - **Sample packs** — six placeholder packs (rename them whenever you want)
 - **How demos work** and an **FAQ**
 - Links to Instagram, YouTube, Bandcamp, merch, and 19K
@@ -35,7 +37,7 @@ Change only the words inside the quote marks. Leave the quotes and the commas wh
 | Buy button | `buyLink` |
 | Plugin picture | `screenshot` |
 
-Prices are `$XX` on purpose. Replace that with the real price, like `"$49"`.
+A paid plugin uses a price like `"$49"`. A free plugin uses `"Free"` and `free: true`. Its card shows an email form instead of Download Demo and Buy. Set `kitFormId` to `"PLACEHOLDER"` until the Kit form exists, and set `kitTags` to the plugin tag plus `source-website` (`free-dip`, `free-meter`, or `free-frequalizer`). To add Meter, Frequalizer, or any later plugin, copy a block in `PRODUCTS`, give it a new `id`, and add that id to `BUNDLE.includes` if it belongs in the suite. The save line on The Everything Suite adds up the paid prices in `includes` and subtracts the suite price. Free plugins are not part of that sum.
 
 `system` is the grey note under the tags. "Mac. Windows coming." is not shown, because the tags already say that. Write something more specific, such as a macOS version, and that note appears.
 
@@ -88,7 +90,9 @@ To swap one, save the new picture over that file, or save it with a new name and
 
 A wide screenshot looks best at least twice as wide as it appears on the page. Wonk Factory sits alone at the top. Punch, Updown, Banana Clip, Dip, and Spaces share the grid under it.
 
-The Full Suite is the `BUNDLE` block in `js/products.js`. The price, the save note, the Lemon Squeezy link, and the Gumroad link are placeholders. A comment in that block says future plugins are included. Leave that comment off the page.
+The Everything Suite is the `BUNDLE` block in `js/products.js`. The price is `$119`. The save line is generated from the paid plugin prices. The Lemon Squeezy link and the Gumroad link are placeholders. A comment in that block says future plugins are included. Leave that comment off the page.
+
+Founders Suite is the `FOUNDERS` block. The price is `$79`. The countdown, the dates, and the founders count all come from that block. `count` is a placeholder until there is a real total. The email form is a placeholder tagged `founders-waitlist` and `source-website`. There is no checkout on that section.
 
 Leave `screenshot` as `""` if you want the neon drawing instead.
 

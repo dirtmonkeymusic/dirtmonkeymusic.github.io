@@ -12,7 +12,18 @@
 //
 //  PLUGIN FIELDS
 //  name         Plugin name on the card.
-//  price        What shoppers see. Example: "$49"
+//  price        What shoppers see. Example: "$49". Write "Free"
+//               for a plugin that has no checkout.
+//  free         true on a free plugin. The card shows Free and a
+//               Kit email form instead of Download Demo and Buy.
+//               Leave this off (or false) for a paid plugin.
+//  kitFormId    The Kit form ID. Leave "PLACEHOLDER" until the
+//               real form exists. One form per free plugin.
+//  kitTags      Tags for that Kit form, separated by commas.
+//               Free plugins use free-dip, free-meter, or
+//               free-frequalizer, plus source-website.
+//               A new free plugin is a new block in this list.
+//               Copy Dip and change the id, name, picture, and tags.
 //  description  A short paragraph. Keep it as one line in this file.
 //  formats      Short labels, separated by commas.
 //  system       Extra computer note under the tags.
@@ -52,7 +63,7 @@ const PRODUCTS = [
     id: "wonk",
     name: "Wonk Factory",
     tagline: "A wavetable synth.",
-    price: "$50",
+    price: "$60",
     description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, and bend.",
     formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
@@ -84,7 +95,7 @@ const PRODUCTS = [
   {
     id: "updown",
     name: "Updown",
-    price: "$20",
+    price: "$30",
     description: "A VST for sweeps, risers, and downfalls.",
     formats: "VST3, AU, Mac, Windows coming",
     system: "Mac. Windows coming.",
@@ -124,7 +135,13 @@ const PRODUCTS = [
     id: "dip",
     name: "Dip",
     tagline: "Draw the duck.",
-    price: "$20",
+    price: "Free",
+    free: true,
+    // PLACEHOLDER Kit form for the Dip download.
+    // Paste the real form ID from Kit (Publish → Embed) over PLACEHOLDER.
+    // Tags on that form: free-dip and source-website.
+    kitFormId: "PLACEHOLDER",
+    kitTags: "free-dip, source-website",
     description: "Draw the duck. Sketch the shape of the dip and it plays on every kick, in time with your track.",
     features: [
       "Three modes: SIDECHAIN, LOOP (tempo-locked pump, no sidechain needed), and ENVELOPE (follows sidechain level).",
@@ -147,7 +164,7 @@ const PRODUCTS = [
     id: "spaces",
     name: "Spaces",
     tagline: "A spring-first reverb that stays out of the way of your mix.",
-    price: "$30",
+    price: "$20",
     description: "A spring-first reverb. Blend spring, plate, and room from one triangle pad, with six spring types and ducking to keep the tail behind your mix.",
     features: [
       "Triangle pad that blends Spring, Plate and Room in one move.",
@@ -169,25 +186,60 @@ const PRODUCTS = [
 ];
 
 // ============================================================
-//  FULL SUITE
+//  THE EVERYTHING SUITE
 //
-//  One bundle of every plugin. Prices and links are placeholders.
+//  One bundle of every plugin. Checkout links are placeholders.
 //  Future plugins are included in this bundle when they ship.
 //  Do not put that sentence on the page. It is only a note here.
-//  The suite price will be revisited as plugins are added.
+//
+//  The "Save $X vs. buying separately" line is not written here.
+//  The page adds up the paid plugins in `includes` and subtracts
+//  `price`. Free plugins are left out of that sum. Add a paid
+//  plugin to PRODUCTS and to `includes`, and the save line updates.
 // ============================================================
 
 const BUNDLE = {
-  id: "full-suite",
-  name: "The Full Suite",
-  price: "$80",
-  saveNote: "Save $80 vs. buying separately",
+  id: "everything-suite",
+  name: "The Everything Suite",
+  price: "$119",
   description: "Every Dirt Monkey plugin in one download.",
   includes: ["wonk", "punch", "updown", "clipper", "dip", "spaces"],
   // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
   buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/FULL-SUITE-PLACEHOLDER",
   // PASTE THE REAL GUMROAD LINK BELOW.
   gumroadLink: "https://YOURNAME.gumroad.com/l/FULL-SUITE-PLACEHOLDER"
+};
+
+// ============================================================
+//  FOUNDERS SUITE
+//
+//  A one-time offer. No checkout on the page yet.
+//  The email form is a placeholder until the Kit form exists.
+//  count is a placeholder. Change the number here when you
+//  have a real total. Nothing on the site fetches it.
+//
+//  Dates are America/Chicago. The countdown uses `opens` until
+//  that moment, then counts down to `closes`.
+// ============================================================
+
+const FOUNDERS = {
+  id: "founders",
+  name: "Founders Suite",
+  price: "$79",
+  // PLACEHOLDER. No backend yet. This is the number on the page.
+  count: 0,
+  // PLACEHOLDER Kit form for the Founders waitlist.
+  // Tags: founders-waitlist and source-website.
+  kitFormId: "PLACEHOLDER",
+  kitTags: "founders-waitlist, source-website",
+  timeZone: "America/Chicago",
+  zoneLabel: "CT",
+  // Email list early access.
+  opens: { year: 2026, month: 11, day: 18, hour: 0, minute: 0, second: 0 },
+  // Opens to everyone. Shown in the copy, not as its own countdown.
+  publicOpen: { year: 2026, month: 11, day: 20, hour: 0, minute: 0, second: 0 },
+  // Last moment of the offer. 11:59 PM CT.
+  closes: { year: 2026, month: 11, day: 30, hour: 23, minute: 59, second: 0 }
 };
 
 // ============================================================
