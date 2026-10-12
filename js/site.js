@@ -9,7 +9,10 @@
     wonk: "mint",
     clipper: "cyan",
     dip: "magenta",
-    spaces: "mint"
+    spaces: "mint",
+    "the-end": "mint",
+    meter: "cyan",
+    frequalizer: "magenta"
   };
 
   function esc(value) {
@@ -470,28 +473,35 @@
     }
 
     var featured = [];
-    var rest = [];
+    var paid = [];
+    var free = [];
     PRODUCTS.forEach(function (product) {
       if (product.featured && !featured.length) featured.push(product);
-      else rest.push(product);
+      else if (isFreePlugin(product)) free.push(product);
+      else paid.push(product);
     });
     if (feature) feature.innerHTML = featured.map(pluginCard).join("");
-    grid.innerHTML = rest.map(pluginCard).join("");
+    grid.innerHTML = paid.map(pluginCard).join("");
+    var freeWrap = document.getElementById("plugin-free-wrap");
+    var freeGrid = document.getElementById("plugin-free");
+    if (freeGrid) freeGrid.innerHTML = free.map(pluginCard).join("");
+    if (freeWrap) freeWrap.hidden = free.length === 0;
+  }
+
+  function bundleThumbs() {
+    return (typeof BUNDLE === "undefined" ? [] : (BUNDLE.includes || [])).map(function (id) {
+      var product = findProduct(id);
+      if (!product || isFreePlugin(product)) return "";
+      var shot = String(product.screenshot || "").trim();
+      var img = shot ? '<img src="' + esc(safeUrl(shot)) + '" alt="">' : "";
+      return "<li><div class=\"suite-thumb\">" + img + "</div><p>" + esc(product.name) + "</p></li>";
+    }).join("");
   }
 
   function renderSuite() {
     var root = document.getElementById("suite-root");
     if (!root || typeof BUNDLE === "undefined") return;
-    var thumbs = (BUNDLE.includes || []).map(function (id) {
-      var product = null;
-      (PRODUCTS || []).forEach(function (item) {
-        if (item.id === id) product = item;
-      });
-      if (!product) return "";
-      var shot = String(product.screenshot || "").trim();
-      var img = shot ? '<img src="' + esc(safeUrl(shot)) + '" alt="">' : "";
-      return "<li><div class=\"suite-thumb\">" + img + "</div><p>" + esc(product.name) + "</p></li>";
-    }).join("");
+    var thumbs = bundleThumbs();
     var buy = safeUrl(BUNDLE.buyLink);
     var gumroad = safeUrl(BUNDLE.gumroadLink);
     var saveNote = suiteSaveNote(BUNDLE);
@@ -529,6 +539,7 @@
           "<h2>" + esc(FOUNDERS.name) + "</h2>" +
           '<p class="lede">All paid plugins, plus every future plugin, for life.</p>' +
         "</div>" +
+        '<ul class="suite-plugins">' + bundleThumbs() + "</ul>" +
         '<div class="suite-offer">' +
           '<p class="price">' + esc(FOUNDERS.price) + "</p>" +
           '<p class="suite-save">One time. Never repeated.</p>' +

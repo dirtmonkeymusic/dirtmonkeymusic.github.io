@@ -93,9 +93,13 @@
           <p class="eyebrow">The shop</p>
           <h2>Plugins</h2>
         </div>
-        <!-- Plugin cards are drawn from js/products.js. Wonk Factory is the flagship. The other five sit in the grid under it. -->
+        <!-- Plugin cards are drawn from js/products.js. Wonk Factory is the flagship. Paid plugins sit in the grid under it. Free plugins sit in the row below. -->
         <div id="plugin-feature" class="plugin-feature"></div>
         <div id="plugin-grid" class="plugin-grid plugin-grid-rest"></div>
+        <div id="plugin-free-wrap" class="free-plugins" hidden>
+          <h3>Free plugins</h3>
+          <div id="plugin-free" class="plugin-grid plugin-grid-rest"></div>
+        </div>
         <noscript>
           <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
         </noscript>

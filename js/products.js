@@ -109,6 +109,28 @@ const PRODUCTS = [
     featured: false
   },
   {
+    id: "the-end",
+    name: "The End",
+    price: "$20",
+    description: "The last plugin on your master. A 4-band limiter with auto Balance that gets you loud, clean, and balanced.",
+    features: [
+      "4-band limiting.",
+      "Clean, Punchy and Loud styles plus Advanced page.",
+      "Auto Balance with Amount, Tone and Focus.",
+      "True-peak ceiling and LUFS meter.",
+      "Light on CPU."
+    ],
+    formats: "VST3, AU, Mac, Windows coming, Standalone",
+    system: "Mac. Windows coming.",
+    demoLink: "downloads/the-end-demo-PLACEHOLDER.txt",
+    // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
+    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/THE-END-PLACEHOLDER",
+    screenshot: "assets/plugins/the-end-ui.png",
+    shotWidth: 1640,
+    shotHeight: 1240,
+    featured: false
+  },
+  {
     id: "clipper",
     name: "Banana Clip",
     tagline: "A dead-simple clipper that gets loud without going over 0 dB.",
@@ -182,6 +204,61 @@ const PRODUCTS = [
     shotWidth: 1920,
     shotHeight: 1640,
     featured: false
+  },
+  {
+    id: "meter",
+    name: "Meter",
+    price: "Free",
+    free: true,
+    // PLACEHOLDER Kit form for the Meter download.
+    // Paste the real form ID from Kit (Publish → Embed) over PLACEHOLDER.
+    // Tags on that form: free-meter and source-website.
+    // The public name may change later. Keep this id as "meter".
+    kitFormId: "PLACEHOLDER",
+    kitTags: "free-meter, source-website",
+    description: "A dead-simple meter for your master. Waveform, spectrum, and loudness at a glance, with no menus or setup.",
+    features: [
+      "Sub-focused waveform with transient flashes.",
+      "Smooth spectrum analyzer with speed knob.",
+      "RMS and integrated LUFS over a chosen window.",
+      "L/R peak meters with peak hold.",
+      "Very light on CPU."
+    ],
+    formats: "VST3, AU, Mac, Windows coming, Standalone",
+    system: "Mac. Windows coming.",
+    demoLink: "downloads/meter-demo-PLACEHOLDER.txt",
+    buyLink: "",
+    screenshot: "assets/plugins/meter-ui.png",
+    shotWidth: 820,
+    shotHeight: 800,
+    featured: false
+  },
+  {
+    id: "frequalizer",
+    name: "Frequalizer",
+    price: "Free",
+    free: true,
+    // PLACEHOLDER Kit form for the Frequalizer download.
+    // Paste the real form ID from Kit (Publish → Embed) over PLACEHOLDER.
+    // Tags on that form: free-frequalizer and source-website.
+    kitFormId: "PLACEHOLDER",
+    kitTags: "free-frequalizer, source-website",
+    description: "A clean, fast 8-band EQ with a little wonk built in. Drag the glowing dots to shape your sound, with dynamic bands, mid/side, and linear phase.",
+    features: [
+      "8 draggable bands up to 48 dB/oct.",
+      "TAME resonance smoothing.",
+      "Dynamic bands and per-band Stereo/Mid/Side.",
+      "WONK tempo-synced movement plus SPREAD.",
+      "Linear phase mode and live analyzer."
+    ],
+    formats: "VST3, AU, Mac, Windows coming",
+    system: "Mac. Windows coming.",
+    demoLink: "downloads/frequalizer-demo-PLACEHOLDER.txt",
+    buyLink: "",
+    screenshot: "assets/plugins/frequalizer-ui.png",
+    shotWidth: 1640,
+    shotHeight: 1600,
+    featured: false
   }
 ];
 
@@ -194,8 +271,9 @@ const PRODUCTS = [
 //
 //  The "Save $X vs. buying separately" line is not written here.
 //  The page adds up the paid plugins in `includes` and subtracts
-//  `price`. Free plugins are left out of that sum. Add a paid
-//  plugin to PRODUCTS and to `includes`, and the save line updates.
+//  `price`. Free plugins are not in this list and are not part
+//  of that sum. Add a paid plugin to PRODUCTS and to `includes`,
+//  and the save line updates.
 // ============================================================
 
 const BUNDLE = {
@@ -203,7 +281,7 @@ const BUNDLE = {
   name: "The Everything Suite",
   price: "$119",
   description: "Every Dirt Monkey plugin in one download.",
-  includes: ["wonk", "punch", "updown", "clipper", "dip", "spaces"],
+  includes: ["wonk", "punch", "updown", "the-end", "clipper", "spaces"],
   // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
   buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/FULL-SUITE-PLACEHOLDER",
   // PASTE THE REAL GUMROAD LINK BELOW.

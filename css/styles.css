@@ -407,6 +407,18 @@ h2 { margin: 8px 0 12px; }
 
 .plugin-grid.plugin-grid-rest > .plugin-card:nth-child(5n + 5) { grid-column: 4 / span 2; }
 
+.free-plugins { margin-top: 42px; }
+
+.free-plugins h3 {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.free-plugins[hidden] { display: none; }
+
 .tagline {
   margin: 0;
   font-weight: 700;
