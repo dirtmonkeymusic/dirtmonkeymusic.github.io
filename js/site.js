@@ -1,19 +1,14 @@
 // You do not need to edit this file.
 // Prices, descriptions, and links live in products.js.
 // Page wording (hero, FAQ, footer) lives in index.html.
+//
+// Preview a date: add ?now= to the address, for example
+//   index.html?now=2026-11-21T12:00:00-06:00
+// The Founders countdown and the suite/Founders switch then act as if
+// it were that moment. Visitors never see this unless they type it.
 
 (function () {
-  var ACCENTS = {
-    punch: "cyan",
-    updown: "magenta",
-    wonk: "mint",
-    clipper: "cyan",
-    dip: "magenta",
-    spaces: "mint",
-    "the-end": "mint",
-    meter: "cyan",
-    frequalizer: "magenta"
-  };
+  var ACCENTS = ["cyan", "magenta", "mint"];
 
   function esc(value) {
     return String(value == null ? "" : value)
@@ -53,6 +48,11 @@
     return isFreePlugin(product) ? "Free" : String(product.price || "");
   }
 
+  function accentOf(product) {
+    var accent = String(product.accent || "").trim().toLowerCase();
+    return ACCENTS.indexOf(accent) === -1 ? "cyan" : accent;
+  }
+
   function findProduct(id) {
     var found = null;
     (typeof PRODUCTS === "undefined" ? [] : PRODUCTS).forEach(function (item) {
@@ -61,16 +61,26 @@
     return found;
   }
 
+  function paidIncluded(ids) {
+    return (ids || []).map(findProduct).filter(function (product) {
+      return product && !isFreePlugin(product);
+    });
+  }
+
   function suiteSaveNote(bundle) {
     var sum = 0;
-    (bundle.includes || []).forEach(function (id) {
-      var product = findProduct(id);
-      if (!product || isFreePlugin(product)) return;
+    paidIncluded(bundle.includes).forEach(function (product) {
       sum += money(product.price);
     });
     var save = sum - money(bundle.price);
     if (!(save > 0)) return "";
     return "Save " + dollars(save) + " vs. buying separately";
+  }
+
+  function listNames(products) {
+    var names = products.map(function (product) { return product.name; });
+    if (names.length < 3) return names.join(" and ");
+    return names.slice(0, -1).join(", ") + ", and " + names[names.length - 1];
   }
 
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -90,6 +100,10 @@
 
   function dateLabel(part) {
     return monthName(part.month) + " " + part.day + ", " + part.year;
+  }
+
+  function dayLabel(part) {
+    return monthName(part.month) + " " + part.day;
   }
 
   // Wall-clock time in a named zone, as a UTC millisecond timestamp.
@@ -113,6 +127,17 @@
     return utcGuess - (asUtc - utcGuess);
   }
 
+  var clockOffset = (function () {
+    var match = /[?&]now=([^&#]+)/.exec(window.location.search);
+    if (!match) return 0;
+    var at = Date.parse(decodeURIComponent(match[1]));
+    return isFinite(at) ? at - Date.now() : 0;
+  })();
+
+  function now() {
+    return Date.now() + clockOffset;
+  }
+
   function kitForm(opts) {
     var emailId = "kit-email-" + opts.id;
     var formId = opts.formId || "PLACEHOLDER";
@@ -133,147 +158,39 @@
     );
   }
 
-  function ticks(cx, cy, inner, outer, count, start, end, color) {
-    var marks = "";
-    for (var i = 0; i < count; i++) {
-      var t = count === 1 ? 0 : i / (count - 1);
-      var deg = start + (end - start) * t;
-      var rad = (deg * Math.PI) / 180;
-      var x1 = cx + Math.cos(rad) * inner;
-      var y1 = cy + Math.sin(rad) * inner;
-      var x2 = cx + Math.cos(rad) * outer;
-      var y2 = cy + Math.sin(rad) * outer;
-      marks +=
-        '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) +
-        '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) +
-        '" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round"/>';
-    }
-    return marks;
-  }
-
-  function frame(id, title, accent, inner) {
+  // Shown only for a plugin with no screenshot yet.
+  function genericArt(name) {
     return (
       '<svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" focusable="false">' +
         '<rect width="640" height="400" rx="28" fill="#100814"/>' +
-        '<rect x="10" y="10" width="620" height="380" rx="20" fill="#0b0710" stroke="' + accent + '" stroke-opacity="0.55" stroke-width="2"/>' +
-        '<text x="32" y="52" fill="#f6f2fb" font-family="JetBrains Mono, ui-monospace, monospace" font-size="26" font-weight="700">' + title + "</text>" +
-        inner +
+        '<rect x="10" y="10" width="620" height="380" rx="20" fill="#0b0710" stroke="#3dfff2" stroke-opacity="0.55" stroke-width="2"/>' +
+        '<text x="32" y="52" fill="#f6f2fb" font-family="JetBrains Mono, ui-monospace, monospace" font-size="26" font-weight="700">' + esc(name).toUpperCase() + "</text>" +
+        '<circle cx="320" cy="220" r="70" fill="none" stroke="#3dfff2" stroke-width="3"/>' +
+        '<circle cx="320" cy="220" r="40" fill="none" stroke="#ff2bd6" stroke-width="3"/>' +
+        '<circle cx="320" cy="220" r="8" fill="#d6ff4a"/>' +
       "</svg>"
     );
   }
 
-  function knob(cx, cy, r, accent, angle) {
-    var rad = (angle * Math.PI) / 180;
-    var x2 = cx + Math.cos(rad) * (r * 0.62);
-    var y2 = cy + Math.sin(rad) * (r * 0.62);
-    return (
-      ticks(cx, cy, r + 10, r + 18, 11, 140, 400, "#3a3344") +
-      '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r + 4) + '" fill="none" stroke="#241c2c" stroke-width="8"/>' +
-      '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#140c1a" stroke="' + accent + '" stroke-width="3"/>' +
-      '<line x1="' + cx + '" y1="' + cy + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + accent + '" stroke-width="4" stroke-linecap="round"/>' +
-      '<circle cx="' + cx + '" cy="' + cy + '" r="5" fill="' + accent + '"/>'
-    );
-  }
-
-  function punchArt() {
-    var inner =
-      '<rect x="468" y="28" width="72" height="30" rx="15" fill="#3dfff2"/>' +
-      '<text x="504" y="48" text-anchor="middle" fill="#071016" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">LIVE</text>' +
-      '<rect x="548" y="28" width="72" height="30" rx="15" fill="none" stroke="#6d6478"/>' +
-      '<text x="584" y="48" text-anchor="middle" fill="#8d8498" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">RENDER</text>' +
-      knob(196, 214, 78, "#3dfff2", -50) +
-      '<text x="196" y="330" text-anchor="middle" fill="#d9fff8" font-family="JetBrains Mono, ui-monospace, monospace" font-size="15" font-weight="700" letter-spacing="1.5">PUNCH</text>' +
-      knob(430, 196, 40, "#ff2bd6", -20) +
-      '<text x="430" y="268" text-anchor="middle" fill="#ffd0f3" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">HPF</text>' +
-      knob(548, 196, 40, "#d6ff4a", -80) +
-      '<text x="548" y="268" text-anchor="middle" fill="#f3ffc4" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">DRY/WET</text>';
-    var bars = "";
-    for (var i = 0; i < 28; i++) {
-      var lit = i < 18;
-      var hot = i >= 15 && i < 18;
-      var h = 16 + (i % 4) * 6;
-      bars +=
-        '<rect x="' + (360 + i * 9) + '" y="' + (348 - h) + '" width="6" height="' + h + '" rx="2" fill="' +
-        (hot ? "#ff2bd6" : lit ? "#3dfff2" : "#2a2433") + '"/>';
-    }
-    return frame("punch", "PUNCH", "#3dfff2", inner + bars);
-  }
-
-  function updownArt() {
-    var inner =
-      '<text x="32" y="84" fill="#ffb3ea" font-family="JetBrains Mono, ui-monospace, monospace" font-size="14" font-weight="500">SWEEPS · RISERS · DOWNFALLS</text>' +
-      '<path d="M48 300 C 150 290, 210 230, 300 150 S 430 70, 470 64" fill="none" stroke="#ff2bd6" stroke-width="5" stroke-linecap="round"/>' +
-      '<path d="M70 96 C 160 110, 230 190, 340 250 S 520 330, 560 336" fill="none" stroke="#3dfff2" stroke-width="4" stroke-linecap="round" opacity="0.9"/>' +
-      '<polygon points="470,52 492,78 454,74" fill="#ff2bd6"/>' +
-      '<polygon points="572,336 548,322 556,352" fill="#3dfff2"/>' +
-      '<text x="392" y="128" fill="#ffd0f3" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">RISER</text>' +
-      '<text x="250" y="292" fill="#d9fff8" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="700">DOWNFALL</text>' +
-      '<rect x="586" y="110" width="8" height="190" rx="4" fill="#241c2c"/>' +
-      '<rect x="586" y="168" width="8" height="70" rx="4" fill="#ff2bd6"/>' +
-      '<circle cx="590" cy="168" r="11" fill="#ff2bd6" stroke="#1a0610" stroke-width="3"/>';
-    return frame("updown", "UPDOWN", "#ff2bd6", inner);
-  }
-
-  function wonkArt() {
-    var waves = "";
-    for (var i = 0; i < 8; i++) {
-      var d = "";
-      var yBase = 168 + i * 7;
-      var amp = 28 - i * 1.2;
-      for (var x = 36; x <= 600; x += 10) {
-        var y = yBase + Math.sin(x / 42 + i * 0.45) * amp;
-        d += (x === 36 ? "M" : "L") + x + " " + y.toFixed(1) + " ";
-      }
-      var color = i % 2 === 0 ? "#d6ff4a" : "#ff2bd6";
-      waves +=
-        '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2.2" opacity="' +
-        (0.95 - i * 0.08).toFixed(2) + '"/>';
-    }
-    var grid = "";
-    for (var g = 0; g < 5; g++) {
-      var gy = 120 + g * 32;
-      grid += '<line x1="36" y1="' + gy + '" x2="604" y2="' + gy + '" stroke="#d6ff4a" stroke-opacity="0.12"/>';
-    }
-    var inner =
-      grid +
-      waves +
-      knob(140, 318, 28, "#d6ff4a", -35) +
-      '<text x="140" y="368" text-anchor="middle" fill="#f3ffc4" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">POSITION</text>' +
-      knob(320, 318, 28, "#ff2bd6", -10) +
-      '<text x="320" y="368" text-anchor="middle" fill="#ffd0f3" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">WARP</text>' +
-      knob(500, 318, 28, "#3dfff2", -70) +
-      '<text x="500" y="368" text-anchor="middle" fill="#d9fff8" font-family="JetBrains Mono, ui-monospace, monospace" font-size="12" font-weight="700">LEVEL</text>';
-    return frame("wonk", "WONK FACTORY", "#d6ff4a", inner);
-  }
-
-  function genericArt(name) {
-    return frame(
-      "generic",
-      esc(name).toUpperCase(),
-      "#3dfff2",
-      '<circle cx="320" cy="220" r="70" fill="none" stroke="#3dfff2" stroke-width="3"/>' +
-      '<circle cx="320" cy="220" r="40" fill="none" stroke="#ff2bd6" stroke-width="3"/>' +
-      '<circle cx="320" cy="220" r="8" fill="#d6ff4a"/>'
-    );
-  }
-
-  function artFor(product, sizes) {
+  // The PNG is the fallback. The WebP copies sit next to it as name-720.webp.
+  function shotImg(product, opts) {
     var shot = String(product.screenshot || "").trim();
-    if (shot) {
-      var width = Number(product.shotWidth) || 0;
-      var height = Number(product.shotHeight) || 0;
-      var src = esc(safeUrl(shot));
-      var srcset = width ? ' srcset="' + src + " " + width + 'w"' : "";
-      var sizeAttr = sizes ? ' sizes="' + sizes + '"' : "";
-      var dims = (width && height) ? ' width="' + width + '" height="' + height + '"' : "";
-      return '<img src="' + src + '"' + srcset + sizeAttr + dims + ' alt="' + esc(product.name) + ' plugin">';
-    }
-    var svg;
-    if (product.id === "punch") svg = punchArt();
-    else if (product.id === "updown") svg = updownArt();
-    else if (product.id === "wonk") svg = wonkArt();
-    else svg = genericArt(product.name);
-    return '<div aria-hidden="true">' + svg + "</div>";
+    var width = Number(product.shotWidth) || 0;
+    var height = Number(product.shotHeight) || 0;
+    var base = shot.replace(/\.(png|jpe?g|webp)$/i, "");
+    var srcset = (product.shotSizes || [])
+      .map(Number)
+      .filter(function (w) { return w > 0; })
+      .map(function (w) { return safeUrl(base + "-" + w + ".webp") + " " + w + "w"; })
+      .join(", ");
+    return (
+      '<img src="' + esc(safeUrl(shot)) + '"' +
+        (srcset ? ' srcset="' + esc(srcset) + '" sizes="' + esc(opts.sizes) + '"' : "") +
+        (width && height ? ' width="' + width + '" height="' + height + '"' : "") +
+        (opts.eager ? "" : ' loading="lazy"') +
+        ' decoding="async"' +
+        ' alt="' + esc(opts.alt) + '">'
+    );
   }
 
   function chips(formats) {
@@ -287,8 +204,6 @@
       })
       .join("");
   }
-
-  var PACK_ACCENTS = ["cyan", "magenta", "mint"];
 
   function coverFrame(accent, inner) {
     return (
@@ -397,12 +312,12 @@
     }
 
     grid.innerHTML = SAMPLE_PACKS.map(function (pack, index) {
-      var accent = PACK_ACCENTS[index % PACK_ACCENTS.length];
+      var accent = ACCENTS[index % ACCENTS.length];
       var buy = safeUrl(pack.buyLink);
       var store = String(pack.store || "Buy").trim();
       var cover = String(pack.cover || "").trim();
       var art = cover
-        ? '<img src="' + esc(safeUrl(cover)) + '" alt="' + esc(pack.name) + ' cover art">'
+        ? '<img src="' + esc(safeUrl(cover)) + '" loading="lazy" decoding="async" alt="' + esc(pack.name) + ' cover art">'
         : '<div aria-hidden="true">' + coverArt(pack.id, pack.name, accent) + "</div>";
       return (
         '<article class="plugin-card pack-card accent-' + accent + '" id="pack-' + esc(pack.id) + '">' +
@@ -424,26 +339,36 @@
     }).join("");
   }
 
+  var CARD_SIZES = "(max-width: 720px) 92vw, (max-width: 980px) 46vw, 340px";
+  var THUMB_SIZES = "(max-width: 980px) 23vw, 130px";
+
   function pluginCard(product) {
-    var accent = ACCENTS[product.id] || "cyan";
+    var free = isFreePlugin(product);
     var demo = safeUrl(product.demoLink);
     var buy = safeUrl(product.buyLink);
     var remoteDemo = /^https?:\/\//i.test(demo);
     var hasShot = String(product.screenshot || "").trim().length > 0;
-    var sizes = "(max-width: 720px) 92vw, (max-width: 980px) 46vw, 340px";
+    var art = hasShot
+      ? shotImg(product, {
+          sizes: CARD_SIZES,
+          eager: !!product.featured,
+          alt: product.shotAlt || product.name + " interface"
+        })
+      : '<div aria-hidden="true">' + genericArt(product.name) + "</div>";
     return (
-      '<article class="plugin-card accent-' + accent + '" id="' + esc(product.id) + '">' +
-        '<div class="plugin-art' + (hasShot ? " is-photo" : "") + '">' + artFor(product, sizes) + "</div>" +
+      '<article class="plugin-card accent-' + accentOf(product) + '" id="' + esc(product.id) + '">' +
+        '<div class="plugin-art' + (hasShot ? " is-photo" : "") + '">' + art + "</div>" +
         '<div class="plugin-body">' +
           (product.featured ? '<p class="flag-badge">Flagship synth</p>' : "") +
           '<div class="plugin-heading">' +
             "<h3>" + esc(product.name) + "</h3>" +
-            '<p class="price' + (isFreePlugin(product) ? " is-free" : "") + '">' + esc(priceLabel(product)) + "</p>" +
+            '<p class="price' + (free ? " is-free" : "") + '">' + esc(priceLabel(product)) + "</p>" +
           "</div>" +
+          (product.priceNote ? '<p class="price-note">' + esc(product.priceNote) + "</p>" : "") +
           '<p class="desc">' + esc(product.description) + "</p>" +
           '<ul class="chips">' + chips(product.formats) + "</ul>" +
           '<div class="plugin-actions">' +
-            (isFreePlugin(product)
+            (free
               ? kitForm({
                   id: product.id,
                   formId: product.kitFormId,
@@ -453,7 +378,7 @@
                 })
               : (
                 '<a class="btn btn-demo" href="' + esc(demo) + '"' + (remoteDemo ? "" : " download") +
-                  ' aria-label="Download ' + esc(product.name) + ' demo">Download Demo</a>' +
+                  ' aria-label="Download Demo: ' + esc(product.name) + '">Download Demo</a>' +
                 '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
                   ' aria-label="Buy ' + esc(product.name) + '">Buy</a>'
               )) +
@@ -488,20 +413,21 @@
     if (freeWrap) freeWrap.hidden = free.length === 0;
   }
 
-  function bundleThumbs() {
-    return (typeof BUNDLE === "undefined" ? [] : (BUNDLE.includes || [])).map(function (id) {
-      var product = findProduct(id);
-      if (!product || isFreePlugin(product)) return "";
-      var shot = String(product.screenshot || "").trim();
-      var img = shot ? '<img src="' + esc(safeUrl(shot)) + '" alt="">' : "";
-      return "<li><div class=\"suite-thumb\">" + img + "</div><p>" + esc(product.name) + "</p></li>";
+  function thumbs(ids) {
+    return paidIncluded(ids).map(function (product) {
+      var hasShot = String(product.screenshot || "").trim().length > 0;
+      var img = hasShot ? shotImg(product, { sizes: THUMB_SIZES, alt: "" }) : "";
+      return '<li><div class="suite-thumb">' + img + "</div><p>" + esc(product.name) + "</p></li>";
     }).join("");
+  }
+
+  function paymentsLine(item) {
+    return item.payments ? '<p class="suite-payments">or ' + esc(item.payments) + "</p>" : "";
   }
 
   function renderSuite() {
     var root = document.getElementById("suite-root");
     if (!root || typeof BUNDLE === "undefined") return;
-    var thumbs = bundleThumbs();
     var buy = safeUrl(BUNDLE.buyLink);
     var gumroad = safeUrl(BUNDLE.gumroadLink);
     var saveNote = suiteSaveNote(BUNDLE);
@@ -512,15 +438,16 @@
           "<h2>" + esc(BUNDLE.name) + "</h2>" +
           '<p class="lede">' + esc(BUNDLE.description) + "</p>" +
         "</div>" +
-        '<ul class="suite-plugins">' + thumbs + "</ul>" +
+        '<ul class="suite-plugins">' + thumbs(BUNDLE.includes) + "</ul>" +
         '<div class="suite-offer">' +
           '<p class="price">' + esc(BUNDLE.price) + "</p>" +
+          paymentsLine(BUNDLE) +
           (saveNote ? '<p class="suite-save">' + esc(saveNote) + "</p>" : "") +
           '<div class="suite-actions">' +
             '<a class="btn btn-buy lemonsqueezy-button" href="' + esc(buy) + '"' +
-              ' aria-label="Buy ' + esc(BUNDLE.name) + '">Buy the suite</a>' +
+              ' aria-label="Buy the suite: ' + esc(BUNDLE.name) + '">Buy the suite</a>' +
             (gumroad ? '<a class="btn btn-gumroad" href="' + esc(gumroad) + '" target="_blank" rel="noopener noreferrer"' +
-              ' aria-label="Buy ' + esc(BUNDLE.name) + ' on Gumroad">Gumroad</a>' : "") +
+              ' aria-label="Gumroad: ' + esc(BUNDLE.name) + '">Gumroad</a>' : "") +
           "</div>" +
         "</div>" +
       "</div>";
@@ -530,26 +457,31 @@
     var root = document.getElementById("founders-root");
     if (!root || typeof FOUNDERS === "undefined") return;
     var zone = FOUNDERS.zoneLabel || "CT";
-    var count = Number(FOUNDERS.count);
-    if (!isFinite(count) || count < 0) count = 0;
+    var count = Math.floor(Number(FOUNDERS.count));
+    var ids = FOUNDERS.includes || (typeof BUNDLE === "undefined" ? [] : BUNDLE.includes);
+    var lineup = paidIncluded(ids);
+    var after = typeof BUNDLE === "undefined" ? "" : String(BUNDLE.price || "");
     root.innerHTML =
       '<div class="suite-card founders-card">' +
         '<div class="section-heading">' +
-          '<p class="eyebrow">One time</p>' +
+          '<p class="eyebrow">One time only</p>' +
           "<h2>" + esc(FOUNDERS.name) + "</h2>" +
-          '<p class="lede">All paid plugins, plus every future plugin, for life.</p>' +
+          '<p class="lede">Every plugin available at launch, in one download.</p>' +
         "</div>" +
-        '<ul class="suite-plugins">' + bundleThumbs() + "</ul>" +
+        '<ul class="suite-plugins founders-plugins">' + thumbs(ids) + "</ul>" +
+        '<p class="founders-lineup">' + lineup.length + " plugins at launch: " + esc(listNames(lineup)) + ".</p>" +
+        '<p class="founders-bonus"><strong>Bonus:</strong> every future Dirt Monkey plugin, free, for life.</p>' +
         '<div class="suite-offer">' +
           '<p class="price">' + esc(FOUNDERS.price) + "</p>" +
-          '<p class="suite-save">One time. Never repeated.</p>' +
+          paymentsLine(FOUNDERS) +
+          '<p class="suite-save">One time only' + (after ? ", then " + esc(after) : "") + ".</p>" +
         "</div>" +
-        "<ul class=\"founders-facts\">" +
-          "<li>Email list early access on " + esc(dateLabel(FOUNDERS.opens)) + ".</li>" +
-          "<li>Opens to everyone on " + esc(monthName(FOUNDERS.publicOpen.month) + " " + FOUNDERS.publicOpen.day) + ".</li>" +
+        '<ul class="founders-facts">' +
+          "<li>Email list early access: " + esc(dayLabel(FOUNDERS.opens) + " to " + dayLabel(dayBefore(FOUNDERS.publicOpen))) + ".</li>" +
+          "<li>Open to everyone: " + esc(dayLabel(FOUNDERS.publicOpen) + " to " + dayLabel(FOUNDERS.closes)) + ".</li>" +
           "<li>Ends " + esc(dateLabel(FOUNDERS.closes) + " at " + clockLabel(FOUNDERS.closes, zone)) + ".</li>" +
         "</ul>" +
-        '<div class="founders-countdown" data-founders-countdown>' +
+        '<div class="founders-countdown" data-founders-countdown role="timer">' +
           '<p class="founders-countdown-label" data-countdown-label>Early access opens in</p>' +
           '<div class="countdown-units" data-countdown-units>' +
             '<p class="countdown-unit"><strong data-unit="days">00</strong><span>Days</span></p>' +
@@ -557,17 +489,22 @@
             '<p class="countdown-unit"><strong data-unit="minutes">00</strong><span>Minutes</span></p>' +
             '<p class="countdown-unit"><strong data-unit="seconds">00</strong><span>Seconds</span></p>' +
           "</div>" +
-          '<p class="founders-ended" data-countdown-ended hidden>This offer has ended.</p>' +
         "</div>" +
-        '<p class="founders-count"><strong data-founders-count>' + esc(String(Math.floor(count))) + "</strong> founders so far</p>" +
+        '<p class="founders-message" data-countdown-message></p>' +
+        (count > 0 ? '<p class="founders-count"><strong>' + esc(String(count)) + "</strong> founders so far</p>" : "") +
         kitForm({
           id: FOUNDERS.id,
           formId: FOUNDERS.kitFormId,
           tags: FOUNDERS.kitTags,
           button: "Get early access",
-          note: "Join the list for the November 18 early access. No checkout on this page."
+          note: "Join the list for the " + dayLabel(FOUNDERS.opens) + " early access. No checkout on this page."
         }) +
       "</div>";
+  }
+
+  function dayBefore(part) {
+    var d = new Date(Date.UTC(part.year, part.month - 1, part.day) - 86400000);
+    return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() };
   }
 
   function pad2(n) {
@@ -575,61 +512,143 @@
     return (n < 10 ? "0" : "") + n;
   }
 
-  function startCountdown() {
-    var root = document.querySelector("[data-founders-countdown]");
-    if (!root || typeof FOUNDERS === "undefined") return;
+  // Phases: soon (before opens), early (email list only), open (everyone), ended.
+  function foundersTimes() {
     var zone = FOUNDERS.timeZone || "America/Chicago";
-    var openAt = zonedInstant(FOUNDERS.opens, zone);
-    var closeAt = zonedInstant(FOUNDERS.closes, zone);
-    var label = root.querySelector("[data-countdown-label]");
-    var units = root.querySelector("[data-countdown-units]");
-    var ended = root.querySelector("[data-countdown-ended]");
-    var fields = {
-      days: root.querySelector('[data-unit="days"]'),
-      hours: root.querySelector('[data-unit="hours"]'),
-      minutes: root.querySelector('[data-unit="minutes"]'),
-      seconds: root.querySelector('[data-unit="seconds"]')
+    return {
+      opens: zonedInstant(FOUNDERS.opens, zone),
+      publicOpen: zonedInstant(FOUNDERS.publicOpen, zone),
+      closes: zonedInstant(FOUNDERS.closes, zone)
     };
+  }
+
+  function foundersPhase(times, at) {
+    if (at < times.opens) return "soon";
+    if (at < times.publicOpen) return "early";
+    if (at < times.closes) return "open";
+    return "ended";
+  }
+
+  function setHidden(selector, hidden) {
+    Array.prototype.forEach.call(document.querySelectorAll(selector), function (el) {
+      el.hidden = hidden;
+    });
+  }
+
+  // While Founders is on sale, The Everything Suite steps aside.
+  function applyPhase(phase) {
+    var founders = phase !== "ended";
+    var suite = phase === "soon" || phase === "ended";
+    setHidden("#founders", !founders);
+    setHidden('nav a[href="#founders"]', !founders);
+    setHidden("#suite", !suite);
+    setHidden('nav a[href="#suite"]', !suite);
+  }
+
+  function startCountdown() {
+    if (typeof FOUNDERS === "undefined") return;
+    var times = foundersTimes();
+    var zone = FOUNDERS.zoneLabel || "CT";
+    var root = document.querySelector("[data-founders-countdown]");
+    var label = document.querySelector("[data-countdown-label]");
+    var message = document.querySelector("[data-countdown-message]");
+    var note = document.querySelector("#founders .kit-note");
+    var fields = {
+      days: document.querySelector('[data-unit="days"]'),
+      hours: document.querySelector('[data-unit="hours"]'),
+      minutes: document.querySelector('[data-unit="minutes"]'),
+      seconds: document.querySelector('[data-unit="seconds"]')
+    };
+    var copy = {
+      soon: {
+        label: "Early access opens in",
+        target: times.opens,
+        message: "Join the email list to get in first on " + dayLabel(FOUNDERS.opens) + ".",
+        note: "Join the list for the " + dayLabel(FOUNDERS.opens) + " early access. No checkout on this page."
+      },
+      early: {
+        label: "Opens to everyone in",
+        target: times.publicOpen,
+        message: "Email list early access is live. Join the list to get the link.",
+        note: "The early access link comes by email. No checkout on this page."
+      },
+      open: {
+        label: "Closes in",
+        target: times.closes,
+        message: "Open to everyone until " + dayLabel(FOUNDERS.closes) + " at " + clockLabel(FOUNDERS.closes, zone) + ".",
+        note: "Join the list and the Founders link comes by email. No checkout on this page."
+      }
+    };
+    var current = "";
+    var timer = 0;
 
     function tick() {
-      var now = Date.now();
-      var target;
-      var phase;
-      if (now < openAt) {
-        target = openAt;
-        phase = "open";
-      } else if (now < closeAt) {
-        target = closeAt;
-        phase = "close";
-      } else {
-        phase = "ended";
+      var at = now();
+      var phase = foundersPhase(times, at);
+      if (phase !== current) {
+        current = phase;
+        applyPhase(phase);
+        if (phase === "ended") {
+          window.clearInterval(timer);
+          return;
+        }
+        if (label) label.textContent = copy[phase].label;
+        if (message) message.textContent = copy[phase].message;
+        if (note) note.textContent = copy[phase].note;
       }
-      if (phase === "ended") {
-        if (label) label.hidden = true;
-        if (units) units.hidden = true;
-        if (ended) ended.hidden = false;
-        return;
-      }
-      var remain = Math.max(0, target - now);
-      var totalSeconds = Math.floor(remain / 1000);
-      var days = Math.floor(totalSeconds / 86400);
-      var hours = Math.floor((totalSeconds % 86400) / 3600);
-      var minutes = Math.floor((totalSeconds % 3600) / 60);
-      var seconds = totalSeconds % 60;
-      if (label) {
-        label.hidden = false;
-        label.textContent = phase === "open" ? "Early access opens in" : "Closes in";
-      }
-      if (units) units.hidden = false;
-      if (ended) ended.hidden = true;
-      if (fields.days) fields.days.textContent = pad2(days);
-      if (fields.hours) fields.hours.textContent = pad2(hours);
-      if (fields.minutes) fields.minutes.textContent = pad2(minutes);
-      if (fields.seconds) fields.seconds.textContent = pad2(seconds);
+      if (phase === "ended" || !root) return;
+      var totalSeconds = Math.floor(Math.max(0, copy[phase].target - at) / 1000);
+      if (fields.days) fields.days.textContent = pad2(totalSeconds / 86400);
+      if (fields.hours) fields.hours.textContent = pad2((totalSeconds % 86400) / 3600);
+      if (fields.minutes) fields.minutes.textContent = pad2((totalSeconds % 3600) / 60);
+      if (fields.seconds) fields.seconds.textContent = pad2(totalSeconds % 60);
     }
 
     tick();
-    window.setInterval(tick, 1000);
+    if (current !== "ended") timer = window.setInterval(tick, 1000);
+  }
+
+  // Product and offer data for search engines, built from products.js.
+  function addStructuredData() {
+    if (typeof PRODUCTS === "undefined") return;
+    var canonical = document.querySelector('link[rel="canonical"]');
+    var base = canonical ? canonical.href : window.location.href.split(/[?#]/)[0];
+    function abs(path) {
+      try { return new URL(path, base).href; } catch (e) { return path; }
+    }
+    var graph = PRODUCTS.map(function (product) {
+      var item = {
+        "@type": "SoftwareApplication",
+        name: product.name,
+        description: product.description,
+        applicationCategory: "MultimediaApplication",
+        operatingSystem: "macOS",
+        url: abs("#" + product.id),
+        offers: {
+          "@type": "Offer",
+          price: String(money(priceLabel(product))),
+          priceCurrency: "USD",
+          url: abs("#" + product.id)
+        },
+        publisher: { "@type": "Organization", name: "Dirt Monkey" }
+      };
+      if (product.screenshot) item.image = abs(product.screenshot);
+      return item;
+    });
+    var script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
+    document.head.appendChild(script);
+  }
+
+  function pauseHeroOffscreen() {
+    var stage = document.querySelector(".skwish-stage");
+    if (!stage || !("IntersectionObserver" in window)) return;
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        stage.classList.toggle("is-offscreen", !entry.isIntersecting);
+      });
+    }).observe(stage);
   }
 
   function bindKitForms() {
@@ -647,30 +666,14 @@
     }
   }
 
-  function setupVideo() {
-    var video = document.querySelector(".skwish-video");
-    if (!video) return;
-    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      video.hidden = true;
-      return;
-    }
-    video.muted = true;
-    video.play().catch(function () {
-      video.hidden = true;
-    });
-    video.addEventListener("error", function () {
-      video.hidden = true;
-    });
-  }
-
   renderProducts();
   renderSuite();
   renderFounders();
   renderPacks();
   bindKitForms();
   startCountdown();
-  setupVideo();
+  addStructuredData();
+  pauseHeroOffscreen();
   bindCheckout();
   window.addEventListener("load", bindCheckout);
 })();

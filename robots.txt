@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dirtmonkeymusic.github.io/sitemap.xml
