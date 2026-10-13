@@ -2,6 +2,8 @@
 
 Audit date: October 13, 2026. This is a review only. No site code was changed.
 
+**Update, same day:** the image, lazy-loading, hero, logo, font, phone header, menu tap size, title and share tags, structured data, canonical, sitemap, robots, 404 page, accent color, dead code, sample-pack collapse, Founders/Everything Suite, countdown phase, and founders count items below are now done. Placeholders (5.1), Kit form feedback and consent line (4.1, 5.7), and trust signals (5.9) are still open. The scores below are from before those changes.
+
 ## Plain-English summary
 
 The site is in good shape. It loads quickly, works on phones, and passes Google's automated accessibility, best-practice, and search checks with perfect scores. The things worth doing fall into five groups:

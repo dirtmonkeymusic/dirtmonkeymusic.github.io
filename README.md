@@ -4,46 +4,90 @@ This is the website where Dirt Monkey sells plugins and sample packs. It is one 
 
 Right now the page has:
 
-- **Plugins** — Wonk Factory, Punch, Updown, Banana Clip, Dip, and Spaces. Dip is free.
-- **The Everything Suite** — every current plugin in one download
-- **Founders Suite** — a one-time $79 offer with a waitlist. No checkout yet.
-- **Sample packs** — six placeholder packs (rename them whenever you want)
+- **Plugins:** Wonk Factory (the flagship synth) on top, then Punch, Updown, The End, Banana Clip, Spaces, Fizz, and Dub Echo. Dip, Meter, and Frequalizer are free, in their own row.
+- **The Everything Suite:** every paid plugin in one download, $89 or 10 payments of $8.99. It steps aside while the Founders Suite is on sale.
+- **Founders Suite:** a one-time $59 offer (or 6 payments of $9.99) from November 18 to November 30, with a countdown and a waitlist form. No checkout yet.
+- **Sample packs:** six placeholder packs (rename them whenever you want). On phones this section is one "Sample packs coming soon" line.
 - **How demos work** and an **FAQ**
 - Links to Instagram, YouTube, Bandcamp, merch, and 19K
 
 Skwish, the neon monkey, is the mascot at the top of the page.
 
-The page is built so you can grow it into a full artist site later. See “Add more to the site later” near the bottom.
+The page is built so you can grow it into a full artist site later. See "Add more to the site later" near the bottom.
 
 ## Look at the site on your computer
 
-Double-click `index.html`. It opens in your browser.
+In a terminal, inside this folder:
 
-Change one thing, save, and refresh the browser to see it.
+```
+python3 -m http.server 8741
+```
+
+Then open `http://127.0.0.1:8741` in your browser. Change one thing, save, and refresh the browser to see it.
+
+Double-clicking `index.html` also works for a quick look.
+
+### Preview a date
+
+The page switches between The Everything Suite and the Founders Suite by date. To see what it looks like on another day, add `?now=` to the address:
+
+| Address | What you see |
+| --- | --- |
+| `http://127.0.0.1:8741/?now=2026-11-19T12:00:00-06:00` | Email-list early access (Everything Suite hidden) |
+| `http://127.0.0.1:8741/?now=2026-11-21T12:00:00-06:00` | Open to everyone (Everything Suite hidden) |
+| `http://127.0.0.1:8741/?now=2026-12-02T12:00:00-06:00` | Offer over (Founders hidden, Everything Suite back) |
+
+Visitors never see this unless they type it.
 
 ## Change prices, descriptions, and buttons
 
-Open `js/products.js`. That file is the whole shop. Plugins are the `PRODUCTS` list. Sample packs are the `SAMPLE_PACKS` list further down. Each item is one block.
+Open `js/products.js`. That file is the whole shop. Plugins are the `PRODUCTS` list. The suites are `BUNDLE` and `FOUNDERS`. Sample packs are the `SAMPLE_PACKS` list further down. Each item is one block.
 
 Change only the words inside the quote marks. Leave the quotes and the commas where they are.
 
 | What you want to change | The line to edit |
 | --- | --- |
 | Price on the card | `price` |
-| The paragraph | `description` |
+| Small line under the price (such as a launch price) | `priceNote` |
+| The paragraph (two sentences at most) | `description` |
 | VST3, AU, Mac, and similar labels | `formats` |
-| Extra computer note | `system` |
+| Card glow color: `cyan`, `magenta`, or `mint` | `accent` |
 | Download Demo button | `demoLink` |
 | Buy button | `buyLink` |
-| Plugin picture | `screenshot` |
+| Plugin picture | `screenshot`, `shotWidth`, `shotHeight`, `shotSizes` |
+| What the picture shows (for screen readers and search) | `shotAlt` |
+| Notes for a later product page (not on the card) | `tagline`, `features` |
 
-A paid plugin uses a price like `"$49"`. A free plugin uses `"Free"` and `free: true`. Its card shows an email form instead of Download Demo and Buy. Set `kitFormId` to `"PLACEHOLDER"` until the Kit form exists, and set `kitTags` to the plugin tag plus `source-website` (`free-dip`, `free-meter`, or `free-frequalizer`). To add Meter, Frequalizer, or any later plugin, copy a block in `PRODUCTS`, give it a new `id`, and add that id to `BUNDLE.includes` if it belongs in the suite. The save line on The Everything Suite adds up the paid prices in `includes` and subtracts the suite price. Free plugins are not part of that sum.
+A paid plugin uses a price like `"$49"`. A free plugin uses `"Free"` and `free: true`. Its card shows an email form instead of Download Demo and Buy. Set `kitFormId` to `"PLACEHOLDER"` until the Kit form exists, and set `kitTags` to the plugin tag plus `source-website` (`free-dip`, `free-meter`, or `free-frequalizer`).
 
-`system` is the grey note under the tags. "Mac. Windows coming." is not shown, because the tags already say that. Write something more specific, such as a macOS version, and that note appears.
+To add a plugin, copy a block in `PRODUCTS`, give it a new `id`, and add that id to `BUNDLE.includes` and `FOUNDERS.includes` if it belongs in the suites. The save line on The Everything Suite adds up the regular prices of the paid plugins in `includes` and subtracts the suite price (right now $164 minus $89, so "Save $75"). Free plugins are not part of that sum.
+
+The name Dub Echo may change (for example to Dub-it). It is set once, at `DUB_ECHO_NAME` near the top of the plugin list. Change it there and the card, the suite lists, and the picture description all follow.
 
 If the plugin cards ever go blank, a quote or a comma was deleted. Undo and try again.
 
 You do not need to open `js/site.js` or `css/styles.css`. Those files draw the page.
+
+## The Everything Suite and the Founders Suite
+
+The Everything Suite is the `BUNDLE` block. `price` is `$89` and `payments` is the "or 10 payments of $8.99" line. The save line is worked out from the plugin prices. The Lemon Squeezy link and the Gumroad link are placeholders. A comment in that block says future plugins are included. Leave that sentence off the page.
+
+The Founders Suite is the `FOUNDERS` block. `price` is `$59` and `payments` is the "or 6 payments of $9.99" line. The card also says "One time only, then $89", using the Everything Suite price. It lists the plugins available at launch (`includes`) and names every future plugin as a bonus.
+
+The dates live in that block too, in Central Time:
+
+| When | What the page does |
+| --- | --- |
+| Before November 18 | Both suites show. Founders counts down to early access and collects emails. |
+| November 18 and 19 | Email list only. The Everything Suite hides. Founders counts down to the public open. |
+| November 20 to November 30, 11:59 PM CT | Open to everyone. The Everything Suite stays hidden. Founders shows "Closes in". |
+| After that | Founders hides. The Everything Suite comes back. |
+
+The menu links for Suite and Founders hide along with their sections.
+
+`count` is the number of founders so far. The "founders so far" line stays hidden while it is `0`. Nothing fetches it. Change the number by hand.
+
+The email form is a placeholder tagged `founders-waitlist` and `source-website`. There is no Founders checkout on the page yet.
 
 ## Paste Lemon Squeezy links
 
@@ -69,32 +113,30 @@ Then change `demoLink` in `js/products.js` to match the file name:
 demoLink: "downloads/Punch-Mac.zip",
 ```
 
-The files named `punch-demo-PLACEHOLDER.txt`, `updown-demo-PLACEHOLDER.txt`, and `wonk-factory-demo-PLACEHOLDER.txt` are stand-ins so the buttons work today. Delete them after the real files are in place.
+The files named like `punch-demo-PLACEHOLDER.txt` are stand-ins so the buttons work today. Delete each one after its real file is in place.
 
 A GitHub Releases link also works. Paste the full `https://` address as `demoLink`.
 
-## Drop in real plugin screenshots
+## Plugin screenshots
 
-The pictures on the plugin cards right now are placeholders. Final screenshots can replace them.
+Each card shows a real screenshot from the `assets/plugins` folder. Every screenshot has a full-size PNG (for example `fizz-ui.png`) and smaller WebP copies next to it (`fizz-ui-360.webp`, `fizz-ui-720.webp`, `fizz-ui-1080.webp`). Phones and laptops pick the smallest copy that still looks sharp, so the page loads fast.
 
-They live in the `assets/plugins` folder:
+To swap or add a screenshot:
 
-- `assets/plugins/wonk-factory.png`
-- `assets/plugins/punch.png`
-- `assets/plugins/updown.png`
-- `assets/plugins/banana-clip-ui.png`
-- `assets/plugins/dip-ui.png`
-- `assets/plugins/spaces-ui.png`
+1. Save the PNG in `assets/plugins`, for example `assets/plugins/fizz-ui.png`.
+2. Make the WebP copies. This needs Python 3 and Pillow (`pip3 install pillow`):
 
-To swap one, save the new picture over that file, or save it with a new name and change the `screenshot` line in `js/products.js`. Also update `shotWidth` and `shotHeight` to the new picture’s pixel size so the card stays sharp and does not jump.
+   ```
+   python3 tools/make-images.py assets/plugins/fizz-ui.png
+   ```
 
-A wide screenshot looks best at least twice as wide as it appears on the page. Wonk Factory sits alone at the top. Punch, Updown, Banana Clip, Dip, and Spaces share the grid under it.
+3. The script prints four lines (`screenshot`, `shotWidth`, `shotHeight`, `shotSizes`). Paste them over the ones in that plugin's block in `js/products.js`.
 
-The Everything Suite is the `BUNDLE` block in `js/products.js`. The price is `$119`. The save line is generated from the paid plugin prices. The Lemon Squeezy link and the Gumroad link are placeholders. A comment in that block says future plugins are included. Leave that comment off the page.
+The script only resizes and re-encodes the picture. It never redraws it. It uses WebP quality 85, which keeps knob labels crisp on resized copies. If a picture is shown at its own size and the knobs look soft, run it again with `--lossless`. The Wonk Factory card does this: its card copy is lossless and its small suite thumbnail is quality 85.
 
-Founders Suite is the `FOUNDERS` block. The price is `$79`. The countdown, the dates, and the founders count all come from that block. `count` is a placeholder until there is a real total. The email form is a placeholder tagged `founders-waitlist` and `source-website`. There is no checkout on that section.
+The Wonk Factory card picture (`wonk-factory.png`) is a crop of the full window (`wonk-factory-ui.png`): the top-left area with the first two oscillators and Filter 1. The full window is kept for a later product page.
 
-Leave `screenshot` as `""` if you want the neon drawing instead.
+Leave `screenshot` as `""` to show a plain neon drawing instead.
 
 ## Sample packs
 
@@ -103,7 +145,7 @@ The Sample Packs section is the `SAMPLE_PACKS` list in `js/products.js`. The six
 Buy on a pack does **not** use Lemon Squeezy. It opens a Gumroad or Bandcamp page in a new tab.
 
 1. Copy the link to the pack on Gumroad or Bandcamp.
-2. Paste it as that pack’s `buyLink`. Keep the quote marks.
+2. Paste it as that pack's `buyLink`. Keep the quote marks.
 3. Set `store` to `Gumroad` or `Bandcamp` so the little label on the card matches.
 
 There is a comment above each pack `buyLink` that says `PASTE THE REAL GUMROAD OR BANDCAMP LINK BELOW`.
@@ -115,12 +157,14 @@ The placeholder links look like:
 
 To add another pack, copy one whole block (from `{` through `}`), paste it just before the `];` that ends `SAMPLE_PACKS`, and change the words. Give it a new `id`.
 
+On phones the packs are replaced by one "Sample packs coming soon" line. That line is in `index.html`, in the packs section. When the packs are real, delete that line from `index.html`, and in `css/styles.css` delete the phone rule that hides `.section-packs .pack-grid`.
+
 ### Cover art
 
 Each pack shows a neon stand-in until you have artwork.
 
 1. Save the picture in the `assets/packs` folder. Example: `assets/packs/neon-drums.jpg`
-2. Change that pack’s cover line from
+2. Change that pack's cover line from
 
 ```
 cover: ""
@@ -142,15 +186,32 @@ Open `index.html`.
 - **How demos work** is marked with a comment that says `EDIT THIS SECTION`. The current sentences are a placeholder.
 - **FAQ** answers are drafts. Each one has a yellow label that says `Edit this answer`. Rewrite the answer, then delete that label when you are happy with it. The note above the questions says the same thing.
 - Footer links (Instagram, YouTube, Bandcamp, merch, 19K) are at the bottom of `index.html`. The 19K link currently goes to the 19K SoundCloud page. Change that address if you want it to go somewhere else.
+- The browser-tab title, the search description, and the share preview text are at the top of `index.html`.
 
-Do not rename the folders `assets`, `css`, `js`, or `downloads`. The page looks for those names.
+Do not rename the folders `assets`, `css`, `js`, `downloads`, or `tools`. The page looks for those names.
 
-## Pictures
+## Search and share previews
 
-- `assets/dirt-monkey-logo.png` — the Dirt Monkey wordmark in the header, the hero, and the footer
-- `assets/skwish-cyan.png` — Skwish, the single neon monkey in the hero
+The top of `index.html` has the page title, a search description, and the share preview used by Instagram, Discord, iMessage, Slack, and X. The share picture is `assets/share-card.jpg` (1200 by 630, made from the real logo and Skwish).
 
-You can leave these files alone. A spare magenta monkey and a short video loop are in `assets` too (`skwish-magenta.png`, `skwish-loop.mp4`). The page does not use them right now.
+Share previews and search need the site's full address. It is set to `https://dirtmonkeymusic.github.io/` in these places:
+
+- the top of `index.html` (marked `SITE ADDRESS`)
+- `robots.txt`
+- `sitemap.xml`
+
+If the site ends up somewhere else (a custom domain, or a repository name after the slash), change the address in all three. `404.html` is the page GitHub shows for a broken link. Its comment explains what to change if the site is not at the top of its domain.
+
+`js/site.js` also writes product details (names, prices, descriptions) for search engines, straight from `js/products.js`. Nothing to edit there.
+
+## Pictures and fonts
+
+- `assets/dirt-monkey-logo-1360.webp`: the Dirt Monkey wordmark in the header, the hero, and the footer. The neon glow is drawn from this same file.
+- `assets/dirt-monkey-logo.png`: the full-size original of that wordmark. The page does not load it. Keep it for making new sizes.
+- `assets/skwish-cyan.webp` and `assets/skwish-cyan.png`: Skwish, the neon monkey in the hero. Browsers that cannot show WebP get the PNG.
+- `assets/favicon-32.png` and `assets/apple-touch-icon.png`: the browser-tab icon and the iPhone home-screen icon.
+- `assets/share-card.jpg`: the share preview picture.
+- `assets/fonts/jetbrains-mono-latin.woff2`: JetBrains Mono, the only font on the site. It is served from this folder, so the page does not wait on Google Fonts. Its license is `assets/fonts/OFL.txt`.
 
 There is also a file named `.nojekyll`. It looks empty. Leave it in the folder. It tells GitHub Pages not to rearrange your files. On a Mac or Windows computer it may be hidden. That is fine.
 
@@ -160,14 +221,14 @@ GitHub Pages hosts the site for free.
 
 1. Go to [github.com](https://github.com) and sign up, or sign in.
 2. Click the **+** button, then **New repository**.
-3. Name the repository. If you name it exactly `yourusername.github.io` (your real username), the site becomes the front page of `https://yourusername.github.io`. Any other name works too. The address will be `https://yourusername.github.io/the-repository-name`.
-4. Upload **every** file and folder: `index.html`, `README.md`, `.nojekyll`, `assets`, `css`, `js`, and `downloads`. If you only upload `index.html`, the pictures will be missing.
+3. Name the repository. If you name it exactly `yourusername.github.io` (your real username), the site becomes the front page of `https://yourusername.github.io`. Any other name works too. The address will be `https://yourusername.github.io/the-repository-name`. If you go that way, update the site address (see "Search and share previews").
+4. Upload **every** file and folder: `index.html`, `404.html`, `robots.txt`, `sitemap.xml`, `README.md`, `.nojekyll`, `assets`, `css`, `js`, `downloads`, and `tools`. If you only upload `index.html`, the pictures will be missing.
 5. Open the repository **Settings**, then **Pages**.
 6. Under **Build and deployment**, choose **Deploy from a branch**.
 7. Choose the `main` branch and the `/ (root)` folder. Save.
 8. Wait a minute and refresh that settings page. GitHub shows the site address at the top. Click it.
 
-When you change a price or a link later, upload the changed file again (or commit it, if you use Git). The live site updates after GitHub finishes, usually within a minute.
+When you change a price or a link later, upload the changed file again (or commit it, if you use Git). The live site updates after GitHub finishes, usually within a minute. Visitors may see the old version for up to 10 minutes after that.
 
 ## Point your own web address at it later
 
@@ -181,12 +242,13 @@ You can keep the free GitHub address, or send a domain you bought (like `plugins
    - For a bare address like `yourdomain.com` (no `www`), GitHub asks for four **A** records. They have listed these for a long time: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153`. Use whatever GitHub shows you if it is different.
 5. Wait. DNS can take a few minutes or a few hours.
 6. Back in GitHub Pages, turn on **Enforce HTTPS** once it is offered.
+7. Change the site address in `index.html`, `robots.txt`, and `sitemap.xml` to the new domain (see "Search and share previews").
 
-You do not change the website files to do this, except that GitHub may add a small file named `CNAME`. Leave that file in place.
+GitHub may add a small file named `CNAME`. Leave that file in place.
 
 ## Add more to the site later
 
-The site is one page on purpose. The top of `index.html` has a short map of the sections. The links in the header (Plugins, Sample Packs, Demos, FAQ) jump down the page.
+The site is one page on purpose. The top of `index.html` has a short map of the sections. The links in the header (Plugins, Suite, Founders, Sample Packs, Demos, FAQ) jump down the page. Suite and Founders hide themselves when their section is hidden.
 
 To add something new, like music, tour dates, or an about blurb:
 
