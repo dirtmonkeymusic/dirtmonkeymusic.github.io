@@ -187,8 +187,7 @@
       '<img src="' + esc(safeUrl(shot)) + '"' +
         (srcset ? ' srcset="' + esc(srcset) + '" sizes="' + esc(opts.sizes) + '"' : "") +
         (width && height ? ' width="' + width + '" height="' + height + '"' : "") +
-        (opts.eager ? "" : ' loading="lazy"') +
-        ' decoding="async"' +
+        ' loading="lazy" decoding="async"' +
         ' alt="' + esc(opts.alt) + '">'
     );
   }
@@ -351,7 +350,6 @@
     var art = hasShot
       ? shotImg(product, {
           sizes: CARD_SIZES,
-          eager: !!product.featured,
           alt: product.shotAlt || product.name + " interface"
         })
       : '<div aria-hidden="true">' + genericArt(product.name) + "</div>";
