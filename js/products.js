@@ -76,7 +76,7 @@ const PRODUCTS = [
     tagline: "A wavetable synth.",
     price: "$49",
     priceNote: "$39 for the first 14 days of launch",
-    description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipping, EQ, amp envelope, vibrato, and bend.",
+    description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, and bend.",
     formats: "VST3, AU, Mac, Windows coming",
     accent: "mint",
     demoLink: "downloads/wonk-factory-demo-PLACEHOLDER.txt",
