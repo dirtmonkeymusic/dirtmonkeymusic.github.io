@@ -1,9 +1,0 @@
-BANANA CLIP DEMO - PLACEHOLDER FILE
-
-This is not the real plugin. The working name is Banana Clip. The id in js/products.js is clipper.
-
-When the real demo is ready:
-1. Put the real file in this downloads folder (a .zip is typical).
-2. Open js/products.js.
-3. Change the clipper demoLink to the new file name, for example downloads/BananaClip-Mac.zip
-4. You can delete this placeholder file.

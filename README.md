@@ -4,7 +4,7 @@ This is the website where Dirt Monkey sells plugins and sample packs. It is one 
 
 Right now the page has:
 
-- **Plugins:** Wonk Factory (the flagship synth) on top, then Punch, Updown, The End, Banana Clip, Spaces, Fizz, and Dub Echo. Dip, Meter, and Frequalizer are free, in their own row.
+- **Plugins:** Wonk Factory (the flagship synth) on top, then Punch, Updown, The End, Slammer, Spaces, Fizz, and Dub-It. Dip, Meter, and Frequalizer are free, in their own row.
 - **The Everything Suite:** every paid plugin in one download, $89 or 10 payments of $8.99. It steps aside while the Founders Suite is on sale.
 - **Founders Suite:** a one-time $59 offer (or 6 payments of $9.99) from November 18 to November 30, with a countdown and a waitlist form. No checkout yet.
 - **Sample packs:** six placeholder packs (rename them whenever you want). On phones this section is one "Sample packs coming soon" line.
@@ -62,7 +62,7 @@ A paid plugin uses a price like `"$49"`. A free plugin uses `"Free"` and `free: 
 
 To add a plugin, copy a block in `PRODUCTS`, give it a new `id`, and add that id to `BUNDLE.includes` and `FOUNDERS.includes` if it belongs in the suites. The save line on The Everything Suite adds up the regular prices of the paid plugins in `includes` and subtracts the suite price (right now $164 minus $89, so "Save $75"). Free plugins are not part of that sum.
 
-The name Dub Echo may change (for example to Dub-it). It is set once, at `DUB_ECHO_NAME` near the top of the plugin list. Change it there and the card, the suite lists, and the picture description all follow.
+The name Dub-It is set once, at `DUB_IT_NAME` near the top of the plugin list. Change it there and the card, the suite lists, and the picture description all follow.
 
 If the plugin cards ever go blank, a quote or a comma was deleted. Undo and try again.
 
@@ -133,6 +133,8 @@ To swap or add a screenshot:
 3. The script prints four lines (`screenshot`, `shotWidth`, `shotHeight`, `shotSizes`). Paste them over the ones in that plugin's block in `js/products.js`.
 
 The script only resizes and re-encodes the picture. It never redraws it. It uses WebP quality 85, which keeps knob labels crisp on resized copies. If a picture is shown at its own size and the knobs look soft, run it again with `--lossless`. The Wonk Factory card does this: its card copy is lossless and its small suite thumbnail is quality 85.
+
+The Slammer and Dub-It pictures are cropped just below the plugin's own title bar, because that bar still shows the old working names. Swap in a fresh export when the plugins show their new names.
 
 The Wonk Factory card picture (`wonk-factory.png`) is a crop of the full window (`wonk-factory-ui.png`): the top-left area with the first two oscillators and Filter 1. The full window is kept for a later product page.
 

@@ -65,9 +65,9 @@
 //  or a comma. Undo and try again.
 // ============================================================
 
-// Dub Echo may be renamed (for example to "Dub-it").
+// The Dub-It name lives here, so a later rename is one edit.
 // Change the name here and every place on the page follows.
-const DUB_ECHO_NAME = "Dub Echo";
+const DUB_IT_NAME = "Dub-It";
 
 const PRODUCTS = [
   {
@@ -76,7 +76,7 @@ const PRODUCTS = [
     tagline: "A wavetable synth.",
     price: "$49",
     priceNote: "$39 for the first 14 days of launch",
-    description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, and bend.",
+    description: "The flagship monophonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipping, EQ, amp envelope, vibrato, and bend.",
     formats: "VST3, AU, Mac, Windows coming",
     accent: "mint",
     demoLink: "downloads/wonk-factory-demo-PLACEHOLDER.txt",
@@ -157,11 +157,11 @@ const PRODUCTS = [
     featured: false
   },
   {
-    id: "clipper",
-    name: "Banana Clip",
-    tagline: "A simple clipper with a clean 0 dB ceiling.",
+    id: "slammer",
+    name: "Slammer",
+    tagline: "Slams your mix to a clean 0 dB ceiling.",
     price: "$15",
-    description: "A simple clipper that slams your mix to a clean 0 dB ceiling, with a CRUNCH knob for extra high-end bite.",
+    description: "A simple clipping plugin that slams your mix to a clean 0 dB ceiling, with a CRUNCH knob for extra high-end bite.",
     features: [
       "Two big knobs: INPUT (drive) and CRUNCH (extra high-end bite).",
       "Clean 0 dB ceiling.",
@@ -171,14 +171,14 @@ const PRODUCTS = [
     ],
     formats: "VST3, AU, Mac, Windows coming",
     accent: "cyan",
-    demoLink: "downloads/clipper-demo-PLACEHOLDER.txt",
+    demoLink: "downloads/slammer-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
-    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/CLIPPER-PLACEHOLDER",
-    screenshot: "assets/plugins/banana-clip-ui.png",
+    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/SLAMMER-PLACEHOLDER",
+    screenshot: "assets/plugins/slammer-ui.png",
     shotWidth: 1640,
-    shotHeight: 1728,
+    shotHeight: 1574,
     shotSizes: [360, 720, 1080],
-    shotAlt: "Banana Clip interface: output meter, Input and Crunch knobs, Tail and Shape knobs, and a dry/wet slider",
+    shotAlt: "Slammer interface: output meter, Input and Crunch knobs, Tail and Shape knobs, and a dry/wet slider",
     featured: false
   },
   {
@@ -231,8 +231,8 @@ const PRODUCTS = [
     featured: false
   },
   {
-    id: "dub-echo",
-    name: DUB_ECHO_NAME,
+    id: "dub-it",
+    name: DUB_IT_NAME,
     tagline: "From crisp digital repeats to dark, gritty dub throws, all on one knob.",
     price: "$15",
     description: "From crisp digital repeats to dark, gritty dub throws, all on one knob. Push the feedback past 100% and add Wobble and Spring.",
@@ -246,14 +246,14 @@ const PRODUCTS = [
     ],
     formats: "VST3, AU, Mac, Windows coming",
     accent: "cyan",
-    demoLink: "downloads/dub-echo-demo-PLACEHOLDER.txt",
+    demoLink: "downloads/dub-it-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
-    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/DUB-ECHO-PLACEHOLDER",
-    screenshot: "assets/plugins/dub-echo-ui.png",
+    buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/DUB-IT-PLACEHOLDER",
+    screenshot: "assets/plugins/dub-it-ui.png",
     shotWidth: 1920,
-    shotHeight: 1412,
+    shotHeight: 1326,
     shotSizes: [360, 720, 1080],
-    shotAlt: DUB_ECHO_NAME + " interface: Echo and Dub knobs, a synced time grid, and a feedback EQ",
+    shotAlt: DUB_IT_NAME + " interface: Echo and Dub knobs, a synced time grid, and a feedback EQ",
     featured: false
   },
   {
@@ -368,7 +368,7 @@ const BUNDLE = {
   price: "$89",
   payments: "10 payments of $8.99",
   description: "Every Dirt Monkey plugin in one download.",
-  includes: ["wonk", "punch", "updown", "the-end", "clipper", "spaces", "fizz", "dub-echo"],
+  includes: ["wonk", "punch", "updown", "the-end", "slammer", "spaces", "fizz", "dub-it"],
   // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
   buyLink: "https://YOURSTORE.lemonsqueezy.com/buy/FULL-SUITE-PLACEHOLDER",
   // PASTE THE REAL GUMROAD LINK BELOW.
@@ -399,7 +399,7 @@ const FOUNDERS = {
   name: "Founders Suite",
   price: "$59",
   payments: "6 payments of $9.99",
-  includes: ["wonk", "punch", "updown", "the-end", "clipper", "spaces", "fizz", "dub-echo"],
+  includes: ["wonk", "punch", "updown", "the-end", "slammer", "spaces", "fizz", "dub-it"],
   // PLACEHOLDER. No backend yet. This is the number on the page.
   count: 0,
   // PLACEHOLDER Kit form for the Founders waitlist.
