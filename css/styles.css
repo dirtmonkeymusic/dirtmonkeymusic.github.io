@@ -111,6 +111,13 @@ a { color: inherit; }
   background: linear-gradient(90deg, transparent, rgba(61, 255, 242, 0.85), rgba(255, 43, 214, 0.85), transparent);
 }
 
+.brand,
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 .logo-mark {
   position: relative;
   display: inline-block;
@@ -214,9 +221,26 @@ nav a {
 
 nav a[hidden] { display: none; }
 
-nav a:hover {
+nav a:hover,
+nav a[aria-current="page"] {
   color: var(--cyan);
   text-shadow: 0 0 12px rgba(61, 255, 242, 0.75);
+}
+
+nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.sub-nav {
+  justify-content: center;
+  padding: 10px 14px 0;
+}
+
+.sub-nav a {
+  color: var(--muted);
+  font-size: 0.68rem;
 }
 
 .hero {
@@ -392,6 +416,7 @@ nav a:hover {
 }
 
 h2,
+.page-title,
 .hero-lockup h1,
 .hero-lockup .hero-line {
   font-size: clamp(1.65rem, 3.2vw, 2.4rem);
@@ -401,7 +426,8 @@ h2,
   color: var(--ink);
 }
 
-h2 { margin: 8px 0 12px; }
+h2,
+.page-title { margin: 8px 0 12px; }
 
 .hero-lockup .hero-line { margin: 0 0 12px; }
 
@@ -1061,8 +1087,6 @@ h2 { margin: 8px 0 12px; }
 
 .footer-inner { text-align: center; }
 
-.footer-brand { display: inline-block; }
-
 .footer-brand .logo-crisp { height: 42px; }
 
 .footer-links {
@@ -1101,6 +1125,319 @@ h2 { margin: 8px 0 12px; }
   line-height: 1.6;
 }
 
+/* Pages other than the shop */
+
+.section-first { padding-top: 40px; }
+
+.section-tight { padding-top: 0; }
+
+.page-cta {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.text-link {
+  color: var(--cyan);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.page-cta .text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.text-link:hover { color: #b9fffa; }
+
+.btn-wide { min-width: 240px; }
+
+.btn-placeholder {
+  color: #ffe9a8;
+  background: transparent;
+  border: 1.5px dashed rgba(255, 210, 90, 0.6);
+  cursor: default;
+  text-align: center;
+}
+
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teaser-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teaser-grid > li {
+  display: flex;
+  width: calc((100% - 44px) / 3);
+}
+
+.teaser-card {
+  width: 100%;
+  gap: 10px;
+  padding: 24px 22px 22px;
+  text-decoration: none;
+}
+
+.teaser-card h3 {
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+  line-height: 1.3;
+}
+
+.teaser-card h3::before,
+.merch-card h3::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  vertical-align: 2px;
+}
+
+.teaser-card .eyebrow { color: var(--accent); text-shadow: 0 0 12px var(--glow); }
+
+.teaser-go,
+.merch-go {
+  margin-top: auto;
+  align-self: stretch;
+}
+
+.teaser-card:hover .teaser-go,
+.merch-card:hover .merch-go {
+  box-shadow: 0 0 22px rgba(61, 255, 242, 0.4);
+  background: rgba(61, 255, 242, 0.08);
+}
+
+.section-signup { padding-top: 8px; }
+
+.signup-card .section-heading { margin-bottom: 22px; }
+
+.signup-card .kit-form {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.album-card { text-align: center; }
+
+.album-title {
+  margin: 10px 0 4px;
+  font-size: clamp(2.8rem, 9vw, 5rem);
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  color: #eafffd;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 10px rgba(61, 255, 242, 0.85),
+    0 0 26px rgba(255, 43, 214, 0.55);
+}
+
+.album-date {
+  color: var(--mint);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.album-chips {
+  justify-content: center;
+  margin: 18px 0;
+}
+
+.album-desc {
+  max-width: 520px;
+  margin: 0 auto 20px;
+}
+
+.show-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.show-row {
+  --accent: var(--cyan);
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(180deg, #18111e, #100a14);
+}
+
+.show-row[hidden] { display: none; }
+
+.show-date {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.show-dow {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.show-day {
+  color: var(--accent);
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-shadow: 0 0 12px var(--glow);
+}
+
+.show-city {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.show-venue {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.shows-empty {
+  padding: 22px;
+  border: 1px dashed rgba(61, 255, 242, 0.45);
+  border-radius: 18px;
+  text-align: center;
+  color: #d9fff8;
+  font-weight: 700;
+}
+
+.shows-empty[hidden] { display: none; }
+
+.merch-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.merch-grid > li { display: flex; }
+
+.merch-card {
+  width: 100%;
+  text-decoration: none;
+}
+
+.merch-art { aspect-ratio: 1 / 1; }
+
+.merch-art img {
+  object-fit: cover;
+}
+
+.merch-noimg {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: #09060d;
+  color: var(--cyan);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.merch-card .plugin-heading {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.merch-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.chip-presale {
+  border-color: rgba(255, 43, 214, 0.75);
+  color: #ffd6f6;
+  box-shadow: 0 0 12px rgba(255, 43, 214, 0.25);
+}
+
+.merch-error { grid-column: 1 / -1; }
+
+.merch-note {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--dim);
+  font-size: 0.78rem;
+}
+
+.merch-note[hidden] { display: none; }
+
+.app-card {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  gap: 26px;
+}
+
+.app-art {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 28px;
+  border: 1px solid rgba(61, 255, 242, 0.4);
+  background: radial-gradient(circle, rgba(255, 43, 214, 0.35), #0b0710 68%);
+  box-shadow: 0 0 26px rgba(61, 255, 242, 0.16);
+}
+
+.app-art img {
+  width: 78%;
+  filter: drop-shadow(0 0 12px rgba(61, 255, 242, 0.45));
+}
+
+.app-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.app-features {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #ebe4f3;
+}
+
+.app-features strong { color: var(--cyan); }
+
+.app-privacy {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 @keyframes floaty {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -1117,6 +1454,10 @@ h2 { margin: 8px 0 12px; }
   .plugin-grid.plugin-grid-rest > .plugin-card { width: calc((100% - 22px) / 2); }
 
   .suite-plugins li { width: calc((100% - 42px) / 4); }
+
+  .teaser-grid > li { width: calc((100% - 22px) / 2); }
+
+  .merch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 720px) {
@@ -1170,6 +1511,38 @@ h2 { margin: 8px 0 12px; }
   .section-packs .pack-grid { display: none; }
 
   .packs-soon { display: block; }
+
+  .teaser-grid { gap: 14px; }
+
+  .teaser-grid > li { width: 100%; }
+
+  .merch-grid { gap: 12px; }
+
+  .merch-card { padding: 10px 10px 14px; }
+
+  .merch-card .plugin-body { padding: 12px 2px 2px; gap: 10px; }
+
+  .merch-card h3 { font-size: 0.86rem; }
+
+  .merch-card h3::before { display: none; }
+
+  .merch-go { padding-inline: 8px; font-size: 0.8rem; }
+
+  .show-row {
+    grid-template-columns: 76px 1fr;
+    gap: 6px 14px;
+    padding: 16px;
+  }
+
+  .show-day { font-size: 1.15rem; }
+
+  .show-tix { grid-column: 1 / -1; }
+
+  .app-card { grid-template-columns: 1fr; }
+
+  .app-art { width: min(220px, 70%); margin: 0 auto; }
+
+  .sub-nav { gap: 0 6px; padding-top: 4px; }
 
   .hero { padding-top: 22px; }
 

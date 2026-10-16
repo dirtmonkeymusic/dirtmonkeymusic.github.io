@@ -1,19 +1,31 @@
-# Dirt Monkey Plugins
+# Dirt Monkey
 
-This is the website where Dirt Monkey sells plugins and sample packs. It is one long page made of normal files. There is no app to install, no build step, and no database. You can open it on your computer, put it on GitHub Pages for free, and later point your own web address at it.
+This is the Dirt Monkey website, made for the address **https://dirtmonkey.music**. It is made of normal files. There is no app to install, no build step, and no database.
 
-Right now the page has:
+## Site map
+
+| Address | File | What is on it |
+| --- | --- | --- |
+| `/` | `index.html` | The hero (Sounds of, the neon logo, Skwish), one block for each section, and the email signup |
+| `/plugins/` | `plugins/index.html` | The whole plugin shop: plugins, The Everything Suite, the Founders Suite, sample packs, how demos work, and the FAQ |
+| `/music/` | `music/index.html` | SKWISH, the new album on 19K, out November 13, 2026. Listen links are placeholders until release day. |
+| `/shows/` | `shows/index.html` | Fall 2026 dates: Richmond, VA (Oct 31), Sacramento (Nov 7), Orlando (Nov 8), Port Charlotte, FL (Nov 21). Ticket links are placeholders. |
+| `/merch/` | `merch/index.html` | Merch cards from the Bass Threads store, plus a Shop all merch button |
+| `/app/` | `app/index.html` | The Dirt Monkey iPhone app, coming November 2 |
+| `/privacy/` | `privacy/index.html` | The app privacy policy, exactly as written |
+| `/#signup` | `index.html` | The email signup (a Kit placeholder form) |
+
+The header on every page links to Plugins, Music, Shows, Merch, App, and Sign up. The footer links to Instagram, YouTube, Bandcamp, 19K, and the privacy policy.
+
+The plugin shop has:
 
 - **Plugins:** Wonk Factory (the flagship synth) on top, then Punch, Updown, The End, Slammer, Spaces, Fizz, and Dub-It. Dip, Meter, and Frequalizer are free, in their own row.
 - **The Everything Suite:** every paid plugin in one download, $89 or 10 payments of $8.99. It steps aside while the Founders Suite is on sale.
 - **Founders Suite:** a one-time $59 offer (or 6 payments of $9.99) from November 18 to November 30, with a countdown and a waitlist form. No checkout yet.
 - **Sample packs:** six placeholder packs (rename them whenever you want). On phones this section is one "Sample packs coming soon" line.
 - **How demos work** and an **FAQ**
-- Links to Instagram, YouTube, Bandcamp, merch, and 19K
 
-Skwish, the neon monkey, is the mascot at the top of the page.
-
-The page is built so you can grow it into a full artist site later. See "Add more to the site later" near the bottom.
+Skwish, the neon monkey, is the mascot at the top of the home page.
 
 ## Look at the site on your computer
 
@@ -25,17 +37,18 @@ python3 -m http.server 8741
 
 Then open `http://127.0.0.1:8741` in your browser. Change one thing, save, and refresh the browser to see it.
 
-Double-clicking `index.html` also works for a quick look.
+Use the command above instead of double-clicking `index.html`. Every page loads its pictures and styles from the top of the site (addresses that start with `/`), and those only work through a web server.
 
 ### Preview a date
 
-The page switches between The Everything Suite and the Founders Suite by date. To see what it looks like on another day, add `?now=` to the address:
+The plugin page switches between The Everything Suite and the Founders Suite by date, and the shows page drops each show the morning after. To see what a page looks like on another day, add `?now=` to the address:
 
 | Address | What you see |
 | --- | --- |
-| `http://127.0.0.1:8741/?now=2026-11-19T12:00:00-06:00` | Email-list early access (Everything Suite hidden) |
-| `http://127.0.0.1:8741/?now=2026-11-21T12:00:00-06:00` | Open to everyone (Everything Suite hidden) |
-| `http://127.0.0.1:8741/?now=2026-12-02T12:00:00-06:00` | Offer over (Founders hidden, Everything Suite back) |
+| `http://127.0.0.1:8741/plugins/?now=2026-11-19T12:00:00-06:00` | Email-list early access (Everything Suite hidden) |
+| `http://127.0.0.1:8741/plugins/?now=2026-11-21T12:00:00-06:00` | Open to everyone (Everything Suite hidden) |
+| `http://127.0.0.1:8741/plugins/?now=2026-12-02T12:00:00-06:00` | Offer over (Founders hidden, Everything Suite back) |
+| `http://127.0.0.1:8741/shows/?now=2026-12-01T12:00:00-05:00` | Every show is over, so the page says "New dates coming soon" |
 
 Visitors never see this unless they type it.
 
@@ -83,7 +96,7 @@ The dates live in that block too, in Central Time:
 | November 20 to November 30, 11:59 PM CT | Open to everyone. The Everything Suite stays hidden. Founders shows "Closes in". |
 | After that | Founders hides. The Everything Suite comes back. |
 
-The menu links for Suite and Founders hide along with their sections.
+The shop links under the header on the plugin page (Suite and Founders) hide along with their sections.
 
 `count` is the number of founders so far. The "founders so far" line stays hidden while it is `0`. Nothing fetches it. Change the number by hand.
 
@@ -101,7 +114,7 @@ Buy buttons already use Lemon Squeezy. A buyer stays on your site. A checkout wi
 
 There is a comment above each `buyLink` that says `PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW`.
 
-The Lemon Squeezy script is already in `index.html` near the bottom (`lemon.js`). Leave that line alone.
+The Lemon Squeezy script is already in `plugins/index.html` near the bottom (`lemon.js`). Leave that line alone.
 
 ## Where demo files go
 
@@ -159,7 +172,7 @@ The placeholder links look like:
 
 To add another pack, copy one whole block (from `{` through `}`), paste it just before the `];` that ends `SAMPLE_PACKS`, and change the words. Give it a new `id`.
 
-On phones the packs are replaced by one "Sample packs coming soon" line. That line is in `index.html`, in the packs section. When the packs are real, delete that line from `index.html`, and in `css/styles.css` delete the phone rule that hides `.section-packs .pack-grid`.
+On phones the packs are replaced by one "Sample packs coming soon" line. That line is in `plugins/index.html`, in the packs section. When the packs are real, delete that line from `plugins/index.html`, and in `css/styles.css` delete the phone rule that hides `.section-packs .pack-grid`.
 
 ### Cover art
 
@@ -180,38 +193,58 @@ cover: "assets/packs/neon-drums.jpg"
 
 A square picture fits the card best.
 
-## Change the other words on the page
+## Change the other words on the site
 
-Open `index.html`.
+Each page is the `index.html` inside its folder. Look for comments that say `EDIT`.
 
-- The hero lockup is `Sounds of`, then the Dirt Monkey logo, then `Plugins & Sample Packs`. Those words are in `index.html`.
-- **How demos work** is marked with a comment that says `EDIT THIS SECTION`. The current sentences are a placeholder.
-- **FAQ** answers are drafts. Each one has a yellow label that says `Edit this answer`. Rewrite the answer, then delete that label when you are happy with it. The note above the questions says the same thing.
-- Footer links (Instagram, YouTube, Bandcamp, merch, 19K) are at the bottom of `index.html`. The 19K link currently goes to the 19K SoundCloud page. Change that address if you want it to go somewhere else.
-- The browser-tab title, the search description, and the share preview text are at the top of `index.html`.
+- **Home (`index.html`):** the hero lockup is `Sounds of`, then the Dirt Monkey logo, then `Plugins & Sample Packs`. Under it are the five section blocks and the email signup.
+- **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
+- **Music (`music/index.html`):** when SKWISH is out, replace the two "link coming November 13" placeholders with real links. The comment above them shows the line to paste.
+- **Shows (`shows/index.html`):** one block per show. Swap "Tickets coming soon" for a ticket link and "Venue to be announced" for the venue. Each block has `data-show-date` (the show day) and `data-show-tz` (the city's time zone). A show drops off the list at 6 AM local time the next morning. When none are left, the page says "New dates coming soon".
+- **App (`app/index.html`):** when the app is live, replace the App Store placeholder with the real link. The comment above it shows the line to paste.
+- **Privacy (`privacy/index.html`):** this is the policy file exactly as it was supplied. It keeps its own simple style and has no site header. Replace the whole file when a final version is ready.
+- **Header and footer:** copied on every page. If you change a nav link or a footer link, change it on every page.
+- **Email signup:** the form on the home page is a Kit placeholder tagged `newsletter` and `source-website`. Replace the whole form with the Kit inline embed. It does not send anywhere yet.
 
-Do not rename the folders `assets`, `css`, `js`, `downloads`, or `tools`. The page looks for those names.
+Do not rename the folders `assets`, `css`, `js`, `downloads`, or `tools`. The pages look for those names.
+
+## Merch cards
+
+The Merch page shows a card for each product in the Bass Threads store (WooCommerce). Each card shows the picture, the name, and the price, plus a Presale label when the name says Presale. A card opens that product on Bass Threads in a new tab. Checkout always happens on Bass Threads. The store is never embedded in this site.
+
+When the page opens, `js/merch.js` shows the saved list in `js/merch-snapshot.js` right away, then asks the store for the live list at:
+
+```
+https://dirtmonkey.bassthreadsmerch.com/wp-json/wc/store/v1/products?per_page=100
+```
+
+If the store answers, the live list replaces the saved one. If it does not, the saved list stays, with a small "Prices as of" line under it.
+
+Right now the store does not allow other websites to read that list (it sends no `Access-Control-Allow-Origin` header), so browsers block the request and the saved list is what visitors see. The browser console shows one blocked-request error on the Merch page. To make the cards live, ask Bass Threads to allow `https://dirtmonkey.music` to read the Store API (a CORS setting on their WordPress site). Nothing on this site needs to change after that.
+
+To refresh the saved list, open the address above in a browser, copy everything it shows, and paste it over the list in `js/merch-snapshot.js` (between `[` and `];`). Update the date in the comment at the top of that file and in the "Prices as of" line in `merch/index.html`. Prices in that list are in cents: `"4500"` is $45.
 
 ## Search and share previews
 
-The top of `index.html` has the page title, a search description, and the share preview used by Instagram, Discord, iMessage, Slack, and X. The share picture is `assets/share-card.jpg` (1200 by 630, made from the real logo and Skwish).
+Every page has its own title, search description, and share preview (used by Instagram, Discord, iMessage, Slack, and X) at the top of its `index.html`. The share picture is `assets/share-card.jpg` (1200 by 630, made from the real logo and Skwish).
 
-Share previews and search need the site's full address. It is set to `https://dirtmonkeymusic.github.io/` in these places:
+Share previews and search need the site's full address. It is `https://dirtmonkey.music/` in these places:
 
-- the top of `index.html` (marked `SITE ADDRESS`)
+- the top of every page (`canonical`, `og:url`, `og:image`, and `twitter:image`), and the JSON-LD block on the home page
 - `robots.txt`
-- `sitemap.xml`
+- `sitemap.xml` (one line per page)
+- `CNAME` (the domain alone, `dirtmonkey.music`)
 
-If the site ends up somewhere else (a custom domain, or a repository name after the slash), change the address in all three. `404.html` is the page GitHub shows for a broken link. Its comment explains what to change if the site is not at the top of its domain.
+If the address ever changes, change it in all of those. `404.html` is the page GitHub shows for a broken link.
 
-`js/site.js` also writes product details (names, prices, descriptions) for search engines, straight from `js/products.js`. Nothing to edit there.
+`js/site.js` also writes product details (names, prices, descriptions) for search engines on the plugin page, straight from `js/products.js`. Nothing to edit there.
 
 ## Pictures and fonts
 
 - `assets/dirt-monkey-logo-1360.webp`: the Dirt Monkey wordmark in the header, the hero, and the footer. The neon glow is drawn from this same file.
 - `assets/dirt-monkey-logo.png`: the full-size original of that wordmark. The page does not load it. Keep it for making new sizes.
-- `assets/skwish-cyan.webp` and `assets/skwish-cyan.png`: Skwish, the neon monkey in the hero. Browsers that cannot show WebP get the PNG.
-- `assets/favicon-32.png` and `assets/apple-touch-icon.png`: the browser-tab icon and the iPhone home-screen icon.
+- `assets/skwish-cyan.webp` and `assets/skwish-cyan.png`: Skwish, the neon monkey in the hero and on the App page. Browsers that cannot show WebP get the PNG.
+- `assets/favicon-32.png` and `assets/apple-touch-icon.png`: the browser-tab icon and the iPhone home-screen icon. `favicon.ico` at the top is the same icon, for pages (like the privacy policy) that do not name one.
 - `assets/share-card.jpg`: the share preview picture.
 - `assets/fonts/jetbrains-mono-latin.woff2`: JetBrains Mono, the only font on the site. It is served from this folder, so the page does not wait on Google Fonts. Its license is `assets/fonts/OFL.txt`.
 
@@ -224,7 +257,7 @@ GitHub Pages hosts the site for free.
 1. Go to [github.com](https://github.com) and sign up, or sign in.
 2. Click the **+** button, then **New repository**.
 3. Name the repository. If you name it exactly `yourusername.github.io` (your real username), the site becomes the front page of `https://yourusername.github.io`. Any other name works too. The address will be `https://yourusername.github.io/the-repository-name`. If you go that way, update the site address (see "Search and share previews").
-4. Upload **every** file and folder: `index.html`, `404.html`, `robots.txt`, `sitemap.xml`, `README.md`, `.nojekyll`, `assets`, `css`, `js`, `downloads`, and `tools`. If you only upload `index.html`, the pictures will be missing.
+4. Upload **every** file and folder: `index.html`, `404.html`, `CNAME`, `favicon.ico`, `robots.txt`, `sitemap.xml`, `README.md`, `.nojekyll`, the page folders (`plugins`, `music`, `shows`, `merch`, `app`, `privacy`), and `assets`, `css`, `js`, `downloads`, and `tools`. If you only upload `index.html`, the other pages and the pictures will be missing.
 5. Open the repository **Settings**, then **Pages**.
 6. Under **Build and deployment**, choose **Deploy from a branch**.
 7. Choose the `main` branch and the `/ (root)` folder. Save.
@@ -232,34 +265,27 @@ GitHub Pages hosts the site for free.
 
 When you change a price or a link later, upload the changed file again (or commit it, if you use Git). The live site updates after GitHub finishes, usually within a minute. Visitors may see the old version for up to 10 minutes after that.
 
-## Point your own web address at it later
+## Connect dirtmonkey.music
 
-You can keep the free GitHub address, or send a domain you bought (like `plugins.yourdomain.com`) to this same site.
+The site is already set up for `https://dirtmonkey.music`: every page, `robots.txt`, and `sitemap.xml` use that address, and the `CNAME` file holds `dirtmonkey.music`. GitHub Pages reads that file to know which domain the site belongs to. Nothing has been published and no DNS has been changed yet.
 
-1. Buy the domain from wherever you like (Cloudflare, Namecheap, Google, and similar).
-2. On GitHub, open the repository **Settings**, then **Pages**.
-3. In **Custom domain**, type the address you want, such as `www.yourdomain.com`. Save.
-4. GitHub shows the DNS records to add. At the company you bought the domain from, add those records.
-   - For a `www` address, that is usually a **CNAME** record pointing at `yourusername.github.io`.
-   - For a bare address like `yourdomain.com` (no `www`), GitHub asks for four **A** records. They have listed these for a long time: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153`. Use whatever GitHub shows you if it is different.
-5. Wait. DNS can take a few minutes or a few hours.
-6. Back in GitHub Pages, turn on **Enforce HTTPS** once it is offered.
-7. Change the site address in `index.html`, `robots.txt`, and `sitemap.xml` to the new domain (see "Search and share previews").
+When you are ready to go live:
 
-GitHub may add a small file named `CNAME`. Leave that file in place.
+1. Publish the site on GitHub Pages (see above).
+2. On GitHub, open the repository **Settings**, then **Pages**. **Custom domain** should already say `dirtmonkey.music` because of the `CNAME` file. If not, type it and save.
+3. At the company you bought the domain from, add the DNS records GitHub shows. For a bare address like `dirtmonkey.music`, GitHub asks for four **A** records. They have listed these for a long time: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153`. Use whatever GitHub shows you if it is different. To make `www.dirtmonkey.music` work too, add a **CNAME** record for `www` pointing at your `yourusername.github.io` address.
+4. Wait. DNS can take a few minutes or a few hours.
+5. Back in GitHub Pages, turn on **Enforce HTTPS** once it is offered.
 
-## Add more to the site later
+Leave the `CNAME` file in place.
 
-The site is one page on purpose. The top of `index.html` has a short map of the sections. The links in the header (Plugins, Suite, Founders, Sample Packs, Demos, FAQ) jump down the page. Suite and Founders hide themselves when their section is hidden.
+## Add a page later
 
-To add something new, like music, tour dates, or an about blurb:
+Each page is a folder with an `index.html` inside, so its address is the folder name (`/music/`, `/shows/`, and so on).
 
-1. Open `index.html`.
-2. Copy a whole `<section> ... </section>` block.
-3. Change `id="something"` to a new name, like `id="music"`.
-4. In the header nav, add `<a href="#music">Music</a>`.
-5. Replace the words inside the copy with the new ones.
+1. Copy a page folder, such as `music`, and rename it (for example `about`).
+2. Change the words inside, and the title, description, and addresses at the top (`https://dirtmonkey.music/about/`).
+3. Add `<a href="/about/">About</a>` to the header nav on every page.
+4. Add the address to `sitemap.xml`.
 
-If the new part is a list of things for sale, it is easier to add blocks in `js/products.js` (copy a plugin block or a sample-pack block) than to hand-build cards.
-
-Later, if you want separate pages, you can add files like `music.html` next to `index.html` and point a nav link at `music.html` instead of `#music`. You do not need to do that yet. Keep using the same `css/styles.css` so a new page matches this one.
+Keep using `/css/styles.css` so a new page matches the rest of the site.

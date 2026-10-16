@@ -3,42 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dirt Monkey: Wonk Factory Synth, Mac Plugins &amp; Sample Packs</title>
-  <meta name="description" content="Mac VST3 and AU plugins by Dirt Monkey: Wonk Factory, the flagship monophonic synth, plus The End, Punch, Spaces, Fizz, and more. Get Dip, Meter, and Frequalizer free.">
+  <title>Dirt Monkey: Music, Shows, Merch, Plugins &amp; the iPhone App</title>
+  <meta name="description" content="Dirt Monkey's home: the SKWISH album on 19K, fall show dates, Bass Threads merch, the iPhone app, and Mac plugins led by the Wonk Factory synth.">
   <meta name="theme-color" content="#07060a">
   <!--
-    SITE ADDRESS: https://dirtmonkeymusic.github.io/
-    Share previews and search need the full address. If the site moves
-    (a custom domain, or a repo name after the slash), change it here
-    (canonical, og:url, og:image, twitter:image, and the JSON-LD below),
-    in robots.txt, in sitemap.xml, and in 404.html.
+    SITE ADDRESS: https://dirtmonkey.music/
+    Share previews and search need the full address. Every page has its
+    own canonical, og:url, og:image, and twitter:image lines. If the
+    address ever changes, change it on every page, in the JSON-LD below,
+    in robots.txt, in sitemap.xml, in CNAME, and in 404.html.
   -->
-  <link rel="canonical" href="https://dirtmonkeymusic.github.io/">
+  <link rel="canonical" href="https://dirtmonkey.music/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Dirt Monkey">
-  <meta property="og:title" content="Dirt Monkey: Plugins &amp; Sample Packs">
-  <meta property="og:description" content="Wonk Factory, the flagship monophonic synth, plus mixing and mastering plugins for Mac. Dip, Meter, and Frequalizer are free.">
-  <meta property="og:url" content="https://dirtmonkeymusic.github.io/">
-  <meta property="og:image" content="https://dirtmonkeymusic.github.io/assets/share-card.jpg">
+  <meta property="og:title" content="Dirt Monkey">
+  <meta property="og:description" content="The SKWISH album on 19K, fall show dates, merch, the iPhone app, and Mac plugins led by the Wonk Factory synth.">
+  <meta property="og:url" content="https://dirtmonkey.music/">
+  <meta property="og:image" content="https://dirtmonkey.music/assets/share-card.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Dirt Monkey: Plugins &amp; Sample Packs">
-  <meta name="twitter:description" content="Wonk Factory, the flagship monophonic synth, plus mixing and mastering plugins for Mac. Dip, Meter, and Frequalizer are free.">
-  <meta name="twitter:image" content="https://dirtmonkeymusic.github.io/assets/share-card.jpg">
+  <meta name="twitter:title" content="Dirt Monkey">
+  <meta name="twitter:description" content="The SKWISH album on 19K, fall show dates, merch, the iPhone app, and Mac plugins led by the Wonk Factory synth.">
+  <meta name="twitter:image" content="https://dirtmonkey.music/assets/share-card.jpg">
   <meta name="twitter:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
-  <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Dirt Monkey",
-    "url": "https://dirtmonkeymusic.github.io/",
-    "logo": "https://dirtmonkeymusic.github.io/assets/apple-touch-icon.png",
+    "url": "https://dirtmonkey.music/",
+    "logo": "https://dirtmonkey.music/assets/apple-touch-icon.png",
     "sameAs": [
       "https://www.instagram.com/dirtmonkeymusic/",
       "https://www.youtube.com/@dirtmonkeymusic",
@@ -49,51 +49,42 @@
 </head>
 <body>
   <!--
-    DIRT MONKEY
+    DIRT MONKEY: dirtmonkey.music
     This is a normal website made of files. Nothing to install.
-    It is one long page, so it can grow into a full artist site later.
 
-    PAGE MAP: each part is a section. The nav links jump to them.
-      plugins   Plugin cards. Edit PRODUCTS in js/products.js.
-      suite     The Everything Suite. Edit BUNDLE in js/products.js.
-      founders  Founders Suite. Edit FOUNDERS in js/products.js.
-      packs     Sample pack cards. Edit SAMPLE_PACKS in js/products.js.
-      demos     How demos work. Edit the words in this file.
-      faq       Questions. Edit the words in this file.
+    SITE MAP: each page is a folder with an index.html inside.
+      /            This page. The hero, a block for each section, and the email signup.
+      /plugins/    The plugin shop. Prices and text live in js/products.js.
+      /music/      Albums and releases.
+      /shows/      Tour dates.
+      /merch/      Merch cards from the Bass Threads store (js/merch.js).
+      /app/        The Dirt Monkey iPhone app.
+      /privacy/    The app's privacy policy.
 
-    To add a new part later (music, tour, about, anything):
-      1. Copy a <section> ... </section> block.
-      2. Change its id="something".
-      3. Add <a href="#something">Music</a> inside the <nav>.
-    You can also add a new file later, like music.html, and point
-    a nav link at that file instead of a # section.
-
-    Change prices, plugin text, demo links, Lemon Squeezy links,
-    and sample-pack links in js/products.js.
-    Change the hero line, the demo explanation, the FAQ, and the
-    footer in this file. Look for comments that say EDIT.
+    The header and footer are copied on every page. If you add a page
+    or rename one, change the nav on every page, and add it to sitemap.xml.
   -->
 
-  <a class="skip" href="#plugins">Skip to plugins</a>
+  <a class="skip" href="#main">Skip to content</a>
 
   <header class="site-header">
-    <a class="brand" href="#top">
+    <a class="brand" href="/" aria-current="page">
       <span class="logo-mark logo-mark-small">
         <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
-        <img class="logo-crisp" src="assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey" width="1360" height="264">
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264">
       </span>
     </a>
-    <nav aria-label="On this page">
-      <a href="#plugins">Plugins</a>
-      <a href="#suite">Suite</a>
-      <a href="#founders">Founders</a>
-      <a href="#packs">Sample Packs</a>
-      <a href="#demos">Demos</a>
-      <a href="#faq">FAQ</a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="/plugins/">Plugins</a>
+      <a href="/music/">Music</a>
+      <a href="/shows/">Shows</a>
+      <a href="/merch/">Merch</a>
+      <a href="/app/">App</a>
+      <a href="/#signup">Sign up</a>
     </nav>
   </header>
 
-  <main id="top">
+  <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <!--
         EDIT: the hero lockup.
@@ -103,7 +94,7 @@
         <p class="hero-line">Sounds of</p>
         <div class="hero-wordmark logo-mark">
           <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
-          <img class="logo-crisp" src="assets/dirt-monkey-logo-1360.webp" alt="" width="1360" height="264">
+          <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="" width="1360" height="264">
         </div>
         <h1 id="hero-title"><span class="visually-hidden">Dirt Monkey </span>Plugins &amp; Sample Packs</h1>
       </div>
@@ -111,142 +102,82 @@
       <div class="skwish-stage">
         <!-- One cyan monkey. The magenta glow behind it is CSS, not a second picture. -->
         <picture>
-          <source type="image/webp" srcset="assets/skwish-cyan.webp">
-          <img class="skwish-front" src="assets/skwish-cyan.png" alt="Dirt Monkey's neon monkey" width="512" height="512" fetchpriority="high">
+          <source type="image/webp" srcset="/assets/skwish-cyan.webp">
+          <img class="skwish-front" src="/assets/skwish-cyan.png" alt="Dirt Monkey's neon monkey" width="512" height="512" fetchpriority="high">
         </picture>
       </div>
 
-      <a class="btn btn-demo btn-hero" href="#plugins">Browse everything</a>
+      <a class="btn btn-demo btn-hero" href="#explore">Browse everything</a>
     </section>
 
-    <section id="plugins" class="section" aria-label="Plugins">
+    <section id="explore" class="section" aria-labelledby="explore-title">
       <div class="wrap">
+        <!-- EDIT: one short block per section. Each one links to its page. -->
         <div class="section-heading">
-          <p class="eyebrow">The shop</p>
-          <h2>Plugins</h2>
+          <p class="eyebrow">Everything Dirt Monkey</p>
+          <h2 id="explore-title">Pick a lane</h2>
         </div>
-        <!-- Plugin cards are drawn from js/products.js. Wonk Factory is the flagship. Paid plugins sit in the grid under it. Free plugins sit in the row below. -->
-        <div id="plugin-feature" class="plugin-feature"></div>
-        <div id="plugin-grid" class="plugin-grid plugin-grid-rest"></div>
-        <div id="plugin-free-wrap" class="free-plugins" hidden>
-          <h3>Free plugins</h3>
-          <div id="plugin-free" class="plugin-grid plugin-grid-rest"></div>
-        </div>
-        <noscript>
-          <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
-        </noscript>
-      </div>
-    </section>
-
-    <div id="suite-founders">
-    <section id="suite" class="section section-suite">
-      <div class="wrap">
-        <!--
-          The Everything Suite block is drawn from BUNDLE in js/products.js.
-          The save line is calculated from paid plugin prices. It is not typed here.
-          The page hides this section while the Founders Suite is on sale.
-          A note in that file says future plugins are part of the bundle.
-          Do not put that sentence on the page.
-        -->
-        <div id="suite-root"></div>
-      </div>
-    </section>
-
-    <section id="founders" class="section section-founders" aria-label="Founders Suite">
-      <div class="wrap">
-        <!--
-          Founders Suite is drawn from FOUNDERS in js/products.js.
-          The email form is a placeholder. There is no checkout here.
-          The founders count is FOUNDERS.count until a backend exists.
-          It stays hidden while the count is 0. The section hides itself
-          after the offer ends.
-        -->
-        <div id="founders-root"></div>
-      </div>
-    </section>
-    </div>
-
-    <section id="packs" class="section section-packs">
-      <div class="wrap">
-        <!--
-          EDIT THE PACKS in js/products.js, in the SAMPLE_PACKS list.
-          Names, prices, descriptions, and buy links there are placeholders.
-          Buy opens Gumroad or Bandcamp in a new tab. It does not use
-          the Lemon Squeezy window (that one is only for the plugins).
-        -->
-        <div class="section-heading">
-          <p class="eyebrow">Also in the lab</p>
-          <h2>Sample Packs</h2>
-          <p class="lede">Loops, one-shots, and ear candy. Buy opens the pack on Gumroad or Bandcamp.</p>
-        </div>
-        <!-- Phones show this one line instead of the heading and the cards. -->
-        <p class="packs-soon">Sample packs coming soon</p>
-        <div id="pack-grid" class="plugin-grid pack-grid"></div>
-        <noscript>
-          <p class="shop-error">JavaScript is off, so the sample packs cannot load. That list is in js/products.js.</p>
-        </noscript>
-      </div>
-    </section>
-
-    <section id="demos" class="section section-demos">
-      <div class="wrap">
-        <!--
-          EDIT THIS SECTION.
-          Rewrite the sentences below if you want a different explanation.
-          The text here is a placeholder.
-        -->
-        <div class="section-heading">
-          <p class="eyebrow">Before you buy</p>
-          <h2>How demos work</h2>
-          <p class="lede">Demos are full-featured, with a limitation. Buy a plugin to unlock it with a license key.</p>
-        </div>
-        <ol class="steps">
+        <ul class="teaser-grid">
           <li>
-            <h3>Download</h3>
-            <p>Grab the demo for the plugin you want. It installs the same way the full plugin does.</p>
+            <a class="plugin-card teaser-card accent-cyan" href="/plugins/">
+              <p class="eyebrow">Mac plugins</p>
+              <h3>Plugins</h3>
+              <p class="desc">Wonk Factory, the flagship monophonic synth, plus mixing and mastering tools. Dip, Meter, and Frequalizer are free.</p>
+              <span class="btn btn-demo teaser-go">Shop plugins</span>
+            </a>
           </li>
           <li>
-            <h3>Play it</h3>
-            <p>The demo is the real plugin, with a limitation so you can hear it in a session before you pay.</p>
+            <a class="plugin-card teaser-card accent-magenta" href="/music/">
+              <p class="eyebrow">New album</p>
+              <h3>Music</h3>
+              <p class="desc">SKWISH, the new album on 19K, comes out Friday, November 13, 2026.</p>
+              <span class="btn btn-demo teaser-go">Album details</span>
+            </a>
           </li>
           <li>
-            <h3>Unlock</h3>
-            <p>Buy opens a checkout on this page. Your license key takes the limitation off.</p>
+            <a class="plugin-card teaser-card accent-mint" href="/shows/">
+              <p class="eyebrow">On the road</p>
+              <h3>Shows</h3>
+              <p class="desc">Richmond, Sacramento, Orlando, and Port Charlotte this fall.</p>
+              <span class="btn btn-demo teaser-go">See dates</span>
+            </a>
           </li>
-        </ol>
+          <li>
+            <a class="plugin-card teaser-card accent-cyan" href="/merch/">
+              <p class="eyebrow">Bass Threads</p>
+              <h3>Merch</h3>
+              <p class="desc">Jerseys, hats, pins, and more, printed and shipped by Bass Threads.</p>
+              <span class="btn btn-demo teaser-go">Shop merch</span>
+            </a>
+          </li>
+          <li>
+            <a class="plugin-card teaser-card accent-magenta" href="/app/">
+              <p class="eyebrow">For iPhone</p>
+              <h3>App</h3>
+              <p class="desc">The Dirt Monkey app launches Monday, November 2, with the Skwish Run game inside.</p>
+              <span class="btn btn-demo teaser-go">About the app</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </section>
 
-    <section id="faq" class="section">
+    <section id="signup" class="section section-signup" aria-labelledby="signup-title">
       <div class="wrap wrap-narrow">
-        <!--
-          FAQ: EDIT THESE ANSWERS before you publish.
-          Each answer starts with a yellow "Edit this answer" label.
-          Delete that label when the words are final.
-          You can rewrite the questions too. They are the summary lines.
-        -->
-        <div class="section-heading">
-          <p class="eyebrow">Good to know</p>
-          <h2>FAQ</h2>
-          <p class="lede">These answers are drafts. Change them in index.html before you share the site.</p>
-        </div>
-        <div class="faq">
-          <details open>
-            <summary>How do I install in Ableton?</summary>
-            <p><span class="draft-label">Edit this answer</span> Download the Mac installer and run it. In Ableton, open Settings, then Plug-Ins, and turn on Audio Units and VST3. If a plugin is missing, click Rescan. Punch loads as an effect.</p>
-          </details>
-          <details>
-            <summary>How do license keys work?</summary>
-            <p><span class="draft-label">Edit this answer</span> After you buy, Lemon Squeezy emails you a license key. Open the plugin, paste the key, and the demo limitation turns off. Keep that email somewhere safe.</p>
-          </details>
-          <details>
-            <summary>Does this work on Mac and Windows?</summary>
-            <p><span class="draft-label">Edit this answer</span> The plugins run on Mac today: Apple silicon and Intel, macOS 11 or newer. Windows versions are coming. Each card lists its formats.</p>
-          </details>
-          <details>
-            <summary>What is your refund policy?</summary>
-            <p><span class="draft-label">Edit this answer</span> Write your real refund rule here before you publish. For example: refunds within 14 days if the license key has not been used.</p>
-          </details>
+        <div class="suite-card signup-card">
+          <div class="section-heading">
+            <p class="eyebrow">Email list</p>
+            <h2 id="signup-title">Get the news first</h2>
+            <p class="lede">New music, show dates, plugin releases, and merch drops, straight to your inbox.</p>
+          </div>
+          <!-- PLACEHOLDER Kit embed. Form ID: PLACEHOLDER. Tags: newsletter, source-website. Replace this whole form with the Kit inline embed. It does not submit anywhere yet. -->
+          <form class="kit-form" action="#kit-placeholder" method="post" novalidate data-kit-placeholder="true" data-kit-form-id="PLACEHOLDER" data-kit-tags="newsletter, source-website" data-kit-source="source-website">
+            <p class="kit-placeholder-label">Placeholder</p>
+            <label class="kit-label" for="kit-email-newsletter">Email</label>
+            <input class="kit-email" id="kit-email-newsletter" type="email" name="email_address" autocomplete="email" inputmode="email" placeholder="you@email.com" required>
+            <button class="btn btn-buy" type="submit">Sign up</button>
+            <p class="kit-note">One list for everything. Unsubscribe any time.</p>
+          </form>
         </div>
       </div>
     </section>
@@ -254,34 +185,24 @@
 
   <footer class="site-footer">
     <div class="wrap footer-inner">
-      <a class="footer-brand" href="#top">
+      <a class="footer-brand" href="/">
         <span class="logo-mark logo-mark-small">
           <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
-          <img class="logo-crisp" src="assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey" width="1360" height="264" loading="lazy" decoding="async">
+          <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264" loading="lazy" decoding="async">
         </span>
       </a>
       <ul class="footer-links">
         <li><a href="https://www.instagram.com/dirtmonkeymusic/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
         <li><a href="https://www.youtube.com/@dirtmonkeymusic" target="_blank" rel="noopener noreferrer">YouTube</a></li>
         <li><a href="https://dirtmonkey.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a></li>
-        <li><a href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener noreferrer">Merch</a></li>
         <!-- EDIT: 19K link. This goes to the 19K SoundCloud page. Swap the address if you want a different one. -->
         <li><a href="https://soundcloud.com/19ksounds" target="_blank" rel="noopener noreferrer">19K</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
       </ul>
-      <p class="legal">© 2026 Dirt Monkey. Plugin checkout stays on this page. Sample packs open Gumroad or Bandcamp.</p>
+      <p class="legal">© 2026 Dirt Monkey.</p>
     </div>
   </footer>
 
-  <script src="js/products.js" defer></script>
-  <script src="js/site.js" defer></script>
-  <!--
-    Lemon Squeezy checkout overlay.
-    Leave this script here. It makes plugin Buy buttons (class lemonsqueezy-button)
-    open a payment window on top of the site.
-    Sample pack Buy buttons are normal links. They are not part of this script.
-    Paste each plugin's real checkout link in js/products.js, on the buyLink line.
-    You do not need to change the web address below.
-  -->
-  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+  <script src="/js/site.js" defer></script>
 </body>
 </html>

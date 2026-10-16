@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dirt Monkey Merch: Jerseys, Hats &amp; More from Bass Threads</title>
+  <meta name="description" content="Official Dirt Monkey merch from Bass Threads: baseball jerseys, bucket hats, pins, and the Can't Kickflip presale.">
+  <meta name="theme-color" content="#07060a">
+  <!-- SITE ADDRESS: https://dirtmonkey.music/ . See the note in /index.html if it ever changes. -->
+  <link rel="canonical" href="https://dirtmonkey.music/merch/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dirt Monkey">
+  <meta property="og:title" content="Dirt Monkey Merch">
+  <meta property="og:description" content="Official Dirt Monkey merch, printed and shipped by Bass Threads.">
+  <meta property="og:url" content="https://dirtmonkey.music/merch/">
+  <meta property="og:image" content="https://dirtmonkey.music/assets/share-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dirt Monkey Merch">
+  <meta name="twitter:description" content="Official Dirt Monkey merch, printed and shipped by Bass Threads.">
+  <meta name="twitter:image" content="https://dirtmonkey.music/assets/share-card.jpg">
+  <meta name="twitter:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="logo-mark logo-mark-small">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264">
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="/plugins/">Plugins</a>
+      <a href="/music/">Music</a>
+      <a href="/shows/">Shows</a>
+      <a href="/merch/" aria-current="page">Merch</a>
+      <a href="/app/">App</a>
+      <a href="/#signup">Sign up</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="section section-first" aria-labelledby="merch-title">
+      <div class="wrap">
+        <!--
+          MERCH: the cards come from the Bass Threads store (WooCommerce).
+          js/merch.js asks the store for its product list each time the page
+          opens. If the store does not answer, the cards come from the saved
+          list in js/merch-snapshot.js. Checkout always happens on Bass Threads.
+        -->
+        <div class="section-heading">
+          <p class="eyebrow">Bass Threads</p>
+          <h1 id="merch-title" class="page-title"><span class="visually-hidden">Dirt Monkey </span>Merch</h1>
+          <p class="lede">Official Dirt Monkey merch, printed and shipped by Bass Threads. Each item opens in their store.</p>
+        </div>
+        <ul id="merch-grid" class="merch-grid" aria-label="Merch items"></ul>
+        <p id="merch-note" class="merch-note" hidden>Prices as of October 16, 2026. The store has the latest prices and sizes.</p>
+        <noscript>
+          <p class="shop-error">JavaScript is off, so the merch cards cannot load. The Shop all merch button below opens the store.</p>
+        </noscript>
+        <p class="page-cta">
+          <a class="btn btn-buy btn-wide" href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener noreferrer">Shop all merch<span class="visually-hidden"> (opens the Bass Threads store in a new tab)</span></a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="/">
+        <span class="logo-mark logo-mark-small">
+          <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+          <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264" loading="lazy" decoding="async">
+        </span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="https://www.instagram.com/dirtmonkeymusic/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@dirtmonkeymusic" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="https://dirtmonkey.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a></li>
+        <!-- EDIT: 19K link. This goes to the 19K SoundCloud page. Swap the address if you want a different one. -->
+        <li><a href="https://soundcloud.com/19ksounds" target="_blank" rel="noopener noreferrer">19K</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul>
+      <p class="legal">© 2026 Dirt Monkey.</p>
+    </div>
+  </footer>
+
+  <script src="/js/merch-snapshot.js" defer></script>
+  <script src="/js/merch.js" defer></script>
+</body>
+</html>

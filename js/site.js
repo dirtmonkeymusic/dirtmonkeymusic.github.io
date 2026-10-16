@@ -1,11 +1,13 @@
 // You do not need to edit this file.
 // Prices, descriptions, and links live in products.js.
-// Page wording (hero, FAQ, footer) lives in index.html.
+// Page wording lives in each page's index.html (the shop wording,
+// demos, and FAQ are in plugins/index.html).
 //
 // Preview a date: add ?now= to the address, for example
-//   index.html?now=2026-11-21T12:00:00-06:00
-// The Founders countdown and the suite/Founders switch then act as if
-// it were that moment. Visitors never see this unless they type it.
+//   /plugins/?now=2026-11-21T12:00:00-06:00
+// The Founders countdown, the suite/Founders switch, and the show list
+// then act as if it were that moment. Visitors never see this unless
+// they type it.
 
 (function () {
   var ACCENTS = ["cyan", "magenta", "mint"];
@@ -22,6 +24,14 @@
     var value = String(url || "").trim();
     if (/^\s*javascript:/i.test(value)) return "#";
     return value;
+  }
+
+  // Paths in products.js are written from the site root ("assets/...").
+  // Pages live in folders (/plugins/), so they need a leading slash.
+  function sitePath(path) {
+    var value = safeUrl(path);
+    if (!value || /^([a-z][a-z0-9+.-]*:|\/|#)/i.test(value)) return value;
+    return "/" + value;
   }
 
   function money(value) {
@@ -181,10 +191,10 @@
     var srcset = (product.shotSizes || [])
       .map(Number)
       .filter(function (w) { return w > 0; })
-      .map(function (w) { return safeUrl(base + "-" + w + ".webp") + " " + w + "w"; })
+      .map(function (w) { return sitePath(base + "-" + w + ".webp") + " " + w + "w"; })
       .join(", ");
     return (
-      '<img src="' + esc(safeUrl(shot)) + '"' +
+      '<img src="' + esc(sitePath(shot)) + '"' +
         (srcset ? ' srcset="' + esc(srcset) + '" sizes="' + esc(opts.sizes) + '"' : "") +
         (width && height ? ' width="' + width + '" height="' + height + '"' : "") +
         ' loading="lazy" decoding="async"' +
@@ -316,7 +326,7 @@
       var store = String(pack.store || "Buy").trim();
       var cover = String(pack.cover || "").trim();
       var art = cover
-        ? '<img src="' + esc(safeUrl(cover)) + '" loading="lazy" decoding="async" alt="' + esc(pack.name) + ' cover art">'
+        ? '<img src="' + esc(sitePath(cover)) + '" loading="lazy" decoding="async" alt="' + esc(pack.name) + ' cover art">'
         : '<div aria-hidden="true">' + coverArt(pack.id, pack.name, accent) + "</div>";
       return (
         '<article class="plugin-card pack-card accent-' + accent + '" id="pack-' + esc(pack.id) + '">' +
@@ -343,7 +353,7 @@
 
   function pluginCard(product) {
     var free = isFreePlugin(product);
-    var demo = safeUrl(product.demoLink);
+    var demo = sitePath(product.demoLink);
     var buy = safeUrl(product.buyLink);
     var remoteDemo = /^https?:\/\//i.test(demo);
     var hasShot = String(product.screenshot || "").trim().length > 0;
@@ -630,13 +640,36 @@
         },
         publisher: { "@type": "Organization", name: "Dirt Monkey" }
       };
-      if (product.screenshot) item.image = abs(product.screenshot);
+      if (product.screenshot) item.image = abs(sitePath(product.screenshot));
       return item;
     });
     var script = document.createElement("script");
     script.type = "application/ld+json";
     script.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
     document.head.appendChild(script);
+  }
+
+  // A show drops off the list at 6 AM local time the morning after.
+  function hidePastShows() {
+    var rows = document.querySelectorAll("[data-show-date]");
+    if (!rows.length) return;
+    var at = now();
+    var left = 0;
+    Array.prototype.forEach.call(rows, function (row) {
+      var parts = String(row.getAttribute("data-show-date")).split("-").map(Number);
+      var zone = row.getAttribute("data-show-tz") || "America/New_York";
+      var after = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + 1));
+      var ends = zonedInstant({
+        year: after.getUTCFullYear(),
+        month: after.getUTCMonth() + 1,
+        day: after.getUTCDate(),
+        hour: 6
+      }, zone);
+      row.hidden = at >= ends;
+      if (!row.hidden) left++;
+    });
+    var empty = document.querySelector("[data-shows-empty]");
+    if (empty) empty.hidden = left > 0;
   }
 
   function pauseHeroOffscreen() {
@@ -671,6 +704,7 @@
   bindKitForms();
   startCountdown();
   addStructuredData();
+  hidePastShows();
   pauseHeroOffscreen();
   bindCheckout();
   window.addEventListener("load", bindCheckout);
