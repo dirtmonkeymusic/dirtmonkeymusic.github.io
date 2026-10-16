@@ -72,7 +72,7 @@
         '<div class="plugin-art merch-art">' + art + "</div>" +
         '<div class="plugin-body">' +
           '<div class="plugin-heading">' +
-            "<h3>" + esc(name) + "</h3>" +
+            '<h2 class="merch-name">' + esc(name) + "</h2>" +
             (price ? '<p class="price">' + esc(price) + "</p>" : "") +
           "</div>" +
           (presale ? '<ul class="chips"><li class="chip chip-presale">Presale</li></ul>' : "") +

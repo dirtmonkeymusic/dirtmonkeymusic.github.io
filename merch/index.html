@@ -63,6 +63,9 @@
         </div>
         <ul id="merch-grid" class="merch-grid" aria-label="Merch items"></ul>
         <p id="merch-note" class="merch-note" hidden>Prices as of October 16, 2026. The store has the latest prices and sizes.</p>
+        <!-- Loaded here, not at the bottom, so the cards are drawn before the footer and nothing jumps. -->
+        <script src="/js/merch-snapshot.js"></script>
+        <script src="/js/merch.js"></script>
         <noscript>
           <p class="shop-error">JavaScript is off, so the merch cards cannot load. The Shop all merch button below opens the store.</p>
         </noscript>
@@ -93,7 +96,5 @@
     </div>
   </footer>
 
-  <script src="/js/merch-snapshot.js" defer></script>
-  <script src="/js/merch.js" defer></script>
 </body>
 </html>
