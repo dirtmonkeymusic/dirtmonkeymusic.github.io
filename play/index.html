@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Skwish Drop: a Dirt Monkey rhythm game</title>
-  <meta name="description" content="Play Skwish Drop, a bass-drop rhythm game starring Skwish. Hit the notes in time with the beat on a keyboard or a phone. Free, in your browser.">
+  <meta name="description" content="Play Skwish Drop, an arrow rhythm game starring Skwish. Four lanes, four difficulties, hold arrows, and a bass drop. Play on a keyboard or a phone, free in your browser.">
   <meta name="theme-color" content="#07060a">
   <!-- SITE ADDRESS: https://dirtmonkey.music/ . See the note in /index.html if it ever changes. -->
   <link rel="canonical" href="https://dirtmonkey.music/play/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Dirt Monkey">
   <meta property="og:title" content="Skwish Drop: a Dirt Monkey rhythm game">
-  <meta property="og:description" content="Hit the notes in time with the bass and keep Skwish dancing. Free, in your browser.">
+  <meta property="og:description" content="Hit the arrows in time with the bass and keep Skwish dancing. Free, in your browser.">
   <meta property="og:url" content="https://dirtmonkey.music/play/">
   <meta property="og:image" content="https://dirtmonkey.music/assets/share-card.jpg">
   <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
   <meta property="og:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Skwish Drop: a Dirt Monkey rhythm game">
-  <meta name="twitter:description" content="Hit the notes in time with the bass and keep Skwish dancing. Free, in your browser.">
+  <meta name="twitter:description" content="Hit the arrows in time with the bass and keep Skwish dancing. Free, in your browser.">
   <meta name="twitter:image" content="https://dirtmonkey.music/assets/share-card.jpg">
   <meta name="twitter:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
   <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -50,14 +50,15 @@
 
   <main id="main">
     <!--
-      THE GAME. js/rhythm.js runs it, and js/beatmap.js holds the song and the notes.
+      THE GAME. js/rhythm.js runs it, and js/beatmap.js holds the song and the charts.
       To use a real Dirt Monkey track, follow the note at the top of js/beatmap.js.
     -->
     <section class="play-stage" aria-labelledby="play-title">
       <div id="game" class="game">
-        <canvas class="game-canvas" tabindex="-1" role="img" aria-label="Skwish Drop: notes fall down four lanes toward a glowing hit line while Skwish dances to the beat"></canvas>
+        <canvas class="game-canvas" tabindex="-1" role="img" aria-label="Skwish Drop: arrows rise up four lanes toward the target arrows at the top while Skwish dances to the beat"></canvas>
 
         <div class="game-tools">
+          <button type="button" class="game-tool" data-retry-tool hidden>Retry</button>
           <button type="button" class="game-tool" data-pause hidden>Pause</button>
           <button type="button" class="game-tool sound-toggle" aria-pressed="true" data-mute>Sound on</button>
         </div>
@@ -70,12 +71,59 @@
               <source type="image/webp" srcset="/assets/skwish-cyan.webp">
               <img src="/assets/skwish-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
             </picture>
-            <p class="game-how">Notes fall down four lanes. Hit each one as it crosses the glowing line. Big combos make Skwish dance, and the bass drop makes him go wild.</p>
+            <p class="game-how">Arrows rise to the targets at the top. Hit the matching arrow the moment it lands. Chain a combo to make Skwish dance, and keep your life bar out of the red.</p>
+
+            <fieldset class="game-diffs">
+              <legend class="visually-hidden">Difficulty</legend>
+              <label class="diff diff-easy">
+                <input type="radio" name="difficulty" value="easy">
+                <span class="diff-name">Easy</span>
+                <span class="diff-meta"><span data-lv>Lv ?</span> <span data-diff-best>No best yet</span></span>
+              </label>
+              <label class="diff diff-normal">
+                <input type="radio" name="difficulty" value="normal" checked>
+                <span class="diff-name">Normal</span>
+                <span class="diff-meta"><span data-lv>Lv ?</span> <span data-diff-best>No best yet</span></span>
+              </label>
+              <label class="diff diff-hard">
+                <input type="radio" name="difficulty" value="hard">
+                <span class="diff-name">Hard</span>
+                <span class="diff-meta"><span data-lv>Lv ?</span> <span data-diff-best>No best yet</span></span>
+              </label>
+              <label class="diff diff-skwished">
+                <input type="radio" name="difficulty" value="skwished">
+                <span class="diff-name">Skwished</span>
+                <span class="diff-meta"><span data-lv>Lv ?</span> <span data-diff-best>No best yet</span></span>
+              </label>
+            </fieldset>
+
+            <div class="game-options">
+              <label class="game-option">
+                <span>Speed</span>
+                <select data-speed>
+                  <option value="1">1x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2" selected>2x</option>
+                  <option value="2.5">2.5x</option>
+                  <option value="3">3x</option>
+                  <option value="4">4x</option>
+                </select>
+              </label>
+              <div class="game-option" role="group" aria-labelledby="offset-label">
+                <span id="offset-label">Offset</span>
+                <button type="button" class="game-step" data-offset-step="-5" aria-label="Offset 5 ms earlier">-5</button>
+                <output data-offset aria-live="polite">0 ms</output>
+                <button type="button" class="game-step" data-offset-step="5" aria-label="Offset 5 ms later">+5</button>
+              </div>
+              <button type="button" class="btn btn-demo game-calibrate" data-calibrate>Calibrate</button>
+            </div>
+
             <p class="game-keys help-keys">
-              <kbd>D</kbd><kbd>F</kbd><kbd>J</kbd><kbd>K</kbd>
-              <span>or the arrow keys</span>
+              <kbd>&larr;</kbd><kbd>&darr;</kbd><kbd>&uarr;</kbd><kbd>&rarr;</kbd>
+              <span>or</span>
+              <kbd>A</kbd><kbd>S</kbd><kbd>W</kbd><kbd>D</kbd>
             </p>
-            <p class="game-keys help-touch">Tap a lane when a note hits the line. Use two thumbs.</p>
+            <p class="game-keys help-touch">Tap the four pads at the bottom. Use both thumbs, and keep a pad pressed for a hold.</p>
             <button type="button" class="btn btn-buy btn-wide game-start" data-start>Start</button>
             <p class="game-best" data-best>No best score yet. Set one.</p>
             <p class="game-credit" data-credit></p>
@@ -86,9 +134,10 @@
           <div class="game-panel">
             <p class="eyebrow">Paused</p>
             <h2 class="game-title game-title-small">Take a breath</h2>
-            <p class="game-how">The beat waits for you. Press Esc or P to jump back in.</p>
+            <p class="game-how">The beat waits for you. Press Esc or P to jump back in, or R to start the song over.</p>
             <div class="game-actions">
               <button type="button" class="btn btn-buy" data-resume>Resume</button>
+              <button type="button" class="btn btn-demo" data-retry>Retry</button>
               <button type="button" class="btn btn-demo" data-quit>Quit</button>
             </div>
           </div>
@@ -96,21 +145,43 @@
 
         <div class="game-screen" data-screen="results" hidden>
           <div class="game-panel game-results" aria-live="polite">
-            <p class="eyebrow">Results</p>
-            <h2 class="game-title game-title-small">Skwish Drop</h2>
+            <p class="eyebrow">Results: <span data-r="difficulty">Normal, 2x</span></p>
             <p class="game-grade"><span class="visually-hidden">Grade </span><span data-r="grade">S</span></p>
+            <p class="game-status" data-r="status">Cleared</p>
+            <p class="game-fc" data-r-fc hidden></p>
             <p class="game-score"><span data-r="score">0</span> <span class="game-score-unit">points</span></p>
             <p class="game-flag" data-r-best hidden></p>
             <dl class="game-stats">
-              <div><dt>Accuracy</dt><dd data-r="accuracy">0%</dd></div>
-              <div><dt>Best combo</dt><dd data-r="combo">0</dd></div>
+              <div class="stat-marvelous"><dt>Marvelous</dt><dd data-r="marvelous">0</dd></div>
               <div class="stat-perfect"><dt>Perfect</dt><dd data-r="perfect">0</dd></div>
+              <div class="stat-great"><dt>Great</dt><dd data-r="great">0</dd></div>
               <div class="stat-good"><dt>Good</dt><dd data-r="good">0</dd></div>
               <div class="stat-miss"><dt>Miss</dt><dd data-r="miss">0</dd></div>
+              <div class="stat-holds"><dt>Holds OK</dt><dd data-r="holds">0</dd></div>
+              <div class="stat-wide"><dt>Max combo</dt><dd data-r="combo">0</dd></div>
+              <div class="stat-wide"><dt>Timing</dt><dd data-r="timing">On time</dd></div>
             </dl>
+            <button type="button" class="btn btn-demo game-nudge" data-nudge hidden>Nudge offset</button>
             <div class="game-actions">
-              <button type="button" class="btn btn-buy" data-again>Play again</button>
-              <button type="button" class="btn btn-demo" data-quit>Back to start</button>
+              <button type="button" class="btn btn-buy" data-retry>Retry</button>
+              <button type="button" class="btn btn-demo" data-quit>Change difficulty</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-screen" data-screen="calibrate" hidden>
+          <div class="game-panel">
+            <p class="eyebrow">Calibrate</p>
+            <h2 class="game-title game-title-small">Tap to the clicks</h2>
+            <p class="game-how" data-cal-status>Listen to 4 clicks, then tap on each of the next 16.</p>
+            <div class="cal-pad" data-cal-pad tabindex="-1">
+              <span class="cal-count" data-cal-count>0 / 16</span>
+              <span class="cal-hint">Any arrow key, WASD, Space, or tap here</span>
+            </div>
+            <p class="game-best" data-cal-result aria-live="polite"></p>
+            <div class="game-actions">
+              <button type="button" class="btn btn-demo" data-cal-again>Again</button>
+              <button type="button" class="btn btn-buy" data-cal-done>Done</button>
             </div>
           </div>
         </div>
@@ -129,14 +200,16 @@
       <div class="wrap wrap-narrow">
         <div class="section-heading">
           <p class="eyebrow">How to play</p>
-          <h2 id="how-title">Hit the line, feed the combo</h2>
+          <h2 id="how-title">Hit the arrows, feed the combo</h2>
         </div>
         <ul class="play-rules">
-          <li><strong>Hit the notes.</strong> Each lane has a key: <kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> from left to right (the arrow keys work too). On a phone or tablet, tap the lane. Press when the note touches the glowing line.</li>
-          <li><strong>Timing counts.</strong> Dead on is Perfect for 300 points. A little early or late is Good for 120. Too far off, or no press at all, is a Miss. Tapping an empty lane costs nothing.</li>
-          <li><strong>Build a combo.</strong> Every 10 hits in a row adds to your multiplier, up to four times the points. A miss resets it, and Skwish winces.</li>
-          <li><strong>Survive the drop.</strong> Watch for DROP! The notes get busy, the screen pulses with the bass, and Skwish goes wild.</li>
-          <li><strong>Chase your best.</strong> Your best score stays saved on this device. Pause any time with Esc, P, or the Pause button, and switch the sound with M or the Sound button.</li>
+          <li><strong>Hit the arrows.</strong> Arrows rise up four lanes: left, down, up, right. Press the matching key the moment one lands on its target at the top: the arrow keys, or <kbd>A</kbd> <kbd>S</kbd> <kbd>W</kbd> <kbd>D</kbd>. On a phone or tablet, tap the four big pads at the bottom. Two arrows at once? Hit both.</li>
+          <li><strong>Timing counts.</strong> Dead on is Marvelous, then Perfect, Great, and Good the further off you are. Miss an arrow and your combo breaks. Great and Good tell you if you were early or late. Pressing with no arrow there costs nothing.</li>
+          <li><strong>Hold the long ones.</strong> On Hard and Skwished, some arrows have a tail. Press on the head and keep holding until the tail runs out for an OK. Let go too soon and it is NG.</li>
+          <li><strong>Watch your life bar.</strong> Good hits fill it, misses drain it. If it empties, the stage fails. Easy is the most forgiving, Skwished the least.</li>
+          <li><strong>Chain a combo.</strong> At 25 the lanes pulse, at 50 Skwish dances harder, at 100 the edges light up, and at 200 the combo goes rainbow. The drop turns it all up.</li>
+          <li><strong>Get a grade.</strong> Scores go up to 1,000,000. S, A, B, C, or D, plus a full combo badge if you never miss. Each difficulty keeps its own best score on this device. Retry any time with the Retry button or R.</li>
+          <li><strong>Make it fair.</strong> Speed sets how fast the arrows scroll (it does not change the song). If hits feel late or early, press Calibrate and tap along with the clicks, or nudge the offset 5 ms at a time.</li>
         </ul>
         <p class="page-cta"><a class="text-link" href="/music/">Hear the real thing: SKWISH, out November 13</a></p>
       </div>
