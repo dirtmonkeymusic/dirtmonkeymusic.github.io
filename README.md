@@ -58,15 +58,38 @@ A rhythm game in the browser. Notes fall down four lanes toward a glowing line, 
 - **Esc** or **P** pauses (so does switching tabs). **M** or the **Sound** button turns the sound on and off.
 - If a visitor's device asks for reduced motion, the screen does not shake or flash and Skwish bounces without spinning. The game plays the same.
 
-**The placeholder beat.** The music right now is an original beat that the browser makes on the spot (kick, snare, hats, sub bass, and a wobble bass), so there is no sound file and nothing copyrighted. It is 140 BPM and about 53 seconds long, with two drops.
+**The placeholder beat.** The music right now is an original beat that the browser makes on the spot (kick, snare, hats, sub bass, and a wobble bass), so there is no sound file and nothing copyrighted. It is 140 BPM and about 53 seconds long, with two drops. It keeps playing until the real track is set up.
 
-**Swap in a real Dirt Monkey track.** Everything is in `js/beatmap.js`, and the note at the top of that file walks through it:
+### Swap in the real track
 
-1. Put the track in the site, for example `assets/audio/skwish-drop.mp3`, and set `audio: "/assets/audio/skwish-drop.mp3"`.
-2. Set `bpm` to the track's tempo, and `offset` to the number of seconds before the first beat.
-3. Rewrite `notes`. Each note is `[beat, lane]`: the beat counts from 0 at the first beat of the track (quarter notes, so `4.5` is the "and" right after beat 4), and the lane is 0 to 3 from left to right.
-4. Set `sections` so the drops line up (that is when Skwish goes wild and the screen pulses). Change `title` too; each title keeps its own best score.
-5. If hits feel late or early on every note, nudge `inputOffsetMs`: raise it (try 30) if hits feel late, lower it if they feel early.
+`js/beatmap.js` has two parts: `track` (the real song) and `placeholder` (the beat above). The game plays the track as soon as `track.audio` has a file in it. Three lines are enough:
+
+1. Put the file in the site, for example `assets/audio/skwish-drop.mp3`. MP3 or WAV both work. One steady tempo, start to finish.
+2. In `track`, set `audio: "/assets/audio/skwish-drop.mp3"`, `bpm` to the tempo (for example `145`), and `offset` to the seconds from the very start of the file to beat 1 of bar 1 (`0` if the file starts right on it).
+3. Open `/play/`. With no notes listed, the game listens to the track when Start is pressed (well under a second) and makes the notes and the drops itself.
+
+Not sure of the BPM or offset? Set either one to `"auto"` (or leave it out) and the game, or the beatmap maker below, works it out from the audio.
+
+**Try a track without editing anything:** open `/play/?audio=/assets/audio/skwish-drop.mp3&bpm=145&offset=0`. Leave out `bpm` or `offset` to have them guessed. Each track keeps its own best score. If the file is missing or will not play, the game says so under the Start button and plays the placeholder beat instead.
+
+### Make a cleaner chart from the stems
+
+The notes the game makes from the full track are good. Notes made from the stems are better, because a kick stem has nothing but kicks in it. The beatmap maker does this, and it can also guess the BPM and offset (it was right to the hundredth of a BPM and within a few milliseconds on test tracks from 141 to 150 BPM).
+
+- **In a browser, no install:** run the site on your computer (see below) and open `http://127.0.0.1:8741/tools/beatmap/`. Pick the full track and any stems (kick, snare, bass, hats), press **Make the beatmap**, then **Play with clicks** to hear a tick on every note. If the ticks sit on the hits, it is right. **Download beatmap.js** gives you the whole file with the new track in it. Put it at `js/beatmap.js`.
+- **In a terminal:** needs Node. WAV works as is. MP3 needs [ffmpeg](https://ffmpeg.org).
+
+```
+node tools/make-beatmap.js --mix skwish-drop.wav --kick kick.wav --snare snare.wav --bass bass.wav --bpm 145 --write
+```
+
+`--write` puts the result straight into `js/beatmap.js`. Leave it off to print the track block instead. Leave out `--bpm` or add `--offset 0.12` as needed, and add `--difficulty easy` or `--difficulty hard` for a lighter or busier chart. `--audio` sets the address the game loads (it defaults to `/assets/audio/` plus the mix's file name).
+
+Export the stems from the same session as the full track, all starting at the same moment, so they line up. Each kind of hit gets its own lanes: kicks on the left (D, F), snares on the right (K, J), bass in the middle, hats anywhere (hard only). The loudest long stretches become the drops, where Skwish goes wild.
+
+The chart it writes is plain lines in `js/beatmap.js`, so any note can be moved or deleted by hand. Each note is `[beat, lane]`: beat 0 is beat 1 of bar 1, `4.5` is the "and" right after beat 4, and lanes are 0 to 3 from left to right. If every hit feels a little late or early, nudge `inputOffsetMs`: raise it (try 30) if hits feel late, lower it if they feel early.
+
+The listening code is `js/chart-maker.js`. The game, the page, and the terminal tool all share it, so they give the same notes.
 
 ## Look at the site on your computer
 
@@ -238,7 +261,7 @@ A square picture fits the card best.
 
 Each page is the `index.html` inside its folder. Look for comments that say `EDIT`.
 
-- **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The song, tempo, and notes are in `js/beatmap.js`.
+- **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The track, tempo, offset, and notes are in `js/beatmap.js`. The line under the Start button is `credit` in the track.
 - **Home (`index.html`):** the logo, the play area (one portal per section, each a normal link), and the email signup. The words under the play area are the steering hints.
 - **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
 - **Music (`music/index.html`):** when SKWISH is out, replace the two "link coming November 13" placeholders with real links. The comment above them shows the line to paste.
