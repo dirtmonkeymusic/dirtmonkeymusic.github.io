@@ -2356,6 +2356,9 @@ kbd {
   box-shadow: 0 0 16px color-mix(in srgb, var(--diff) 40%, transparent);
 }
 
+/* The tinted card is lighter, so its small text steps up to stay readable. */
+.diff:has(input:checked) .diff-meta { color: var(--muted); }
+
 .diff:has(input:checked) .diff-name { color: var(--diff); }
 
 .diff:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }

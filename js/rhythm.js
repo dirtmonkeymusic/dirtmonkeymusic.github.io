@@ -625,6 +625,7 @@
       L.recY = 48 * dpr + L.arrow / 2;
       L.sk = { x: L.x / 2, y: H * 0.56, size: Math.min(L.x * 0.78, H * 0.5), dim: 1 };
       L.hud = { x: L.x + L.laneW * LANES + L.x / 2, y: H * 0.3 };
+      L.top = 0;
     } else {
       // The Retry, Pause, and Sound buttons sit on the right of the top strip.
       var strip = 56 * dpr;
@@ -635,6 +636,9 @@
       L.arrow = Math.min(L.laneW * 0.8, 76 * dpr);
       L.recY = strip + 8 * dpr + L.arrow / 2;
       L.hud = null;
+      // Arrows that fly past the targets stop at the strip, so they never cover the life bar.
+      // (They also stay above the pads; see drawArrows.)
+      L.top = strip;
     }
     L.right = L.x + L.laneW * LANES;
     L.bottom = H - L.padH;
@@ -1517,6 +1521,12 @@
     var perBeat = (L.bottom + L.arrow - L.recY) / (8 / r.speed);
     var nowBeat = beatPos;
     var bodyW = L.arrow * 0.46;
+    g.save();
+    if (L.top || L.pads) {
+      g.beginPath();
+      g.rect(0, L.top, W, L.bottom - L.top);
+      g.clip();
+    }
     for (var pass = 0; pass < 2; pass++) {
       for (var i = r.first; i < r.notes.length; i++) {
         var n = r.notes[i];
@@ -1551,6 +1561,7 @@
         }
       }
     }
+    g.restore();
     // A held arrow stays lit on its target until the hold ends.
     for (var a = 0; a < r.active.length; a++) {
       var h = r.active[a];
@@ -1755,7 +1766,7 @@
         g.globalAlpha = 1;
       }
     }
-    if (r.combo >= 4 && !r.failing) {
+    if (r.combo >= 4 && !r.failing && state !== "results") {
       var bump = still ? 0 : r.comboBump * 0.18;
       var cs = size * 1.15 * (1 + bump) * (r.combo >= 100 ? 1.15 : 1);
       var cy = L.judgeY + size * 1.25;

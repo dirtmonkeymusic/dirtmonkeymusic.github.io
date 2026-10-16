@@ -1,4 +1,4 @@
-THE END DEMO — PLACEHOLDER FILE
+THE END DEMO: PLACEHOLDER FILE
 
 This is not the real plugin.
 

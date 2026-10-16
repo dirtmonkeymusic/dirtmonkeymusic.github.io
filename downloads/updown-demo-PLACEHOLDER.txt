@@ -1,4 +1,4 @@
-UPDOWN DEMO — PLACEHOLDER FILE
+UPDOWN DEMO: PLACEHOLDER FILE
 
 This is not the real plugin.
 
