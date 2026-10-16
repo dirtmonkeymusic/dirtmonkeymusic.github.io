@@ -416,12 +416,15 @@
       L.sk = { x: L.x / 2, y: H * 0.5, size: Math.min(L.x * 0.8, H * 0.52) };
       L.hud = { x: L.x + L.laneW * LANES + L.x / 2, y: H * 0.3 };
     } else {
-      var band = Math.min(H * 0.24, 168 * dpr);
+      // The Pause and Sound buttons sit over the top strip.
+      var pad = 56 * dpr;
+      var band = pad + Math.min(H * 0.2, 150 * dpr);
       L.laneW = (W - 16 * dpr) / LANES;
       L.x = 8 * dpr;
       L.top = band;
+      L.pad = pad;
       L.hitY = band + (H - band) * 0.86;
-      L.sk = { x: W / 2, y: band * 0.52, size: band * 0.92 };
+      L.sk = { x: W / 2, y: pad + (band - pad) * 0.5, size: (band - pad) * 0.96 };
       L.hud = null;
     }
     L.right = L.x + L.laneW * LANES;
@@ -645,7 +648,10 @@
       startBtn.disabled = false;
       startBtn.textContent = "Start";
     }
-    if (canvas.scrollIntoView && canvas.getBoundingClientRect().top < 0) root.scrollIntoView({ block: "start" });
+    var box = root.getBoundingClientRect();
+    if (box.top < 0 || box.bottom > window.innerHeight) {
+      root.scrollIntoView({ block: box.height > window.innerHeight ? "start" : "nearest", behavior: calm() ? "auto" : "smooth" });
+    }
     canvas.focus({ preventScroll: true });
     lastFrame = 0;
     cancelAnimationFrame(raf);
@@ -1067,11 +1073,11 @@
       text(String(r.combo), L.hud.x, L.hud.y + 92 * dpr, 46 * dpr, r.combo >= 10 ? "#d6ff4a" : "#f4f0f8", "center", r.combo >= 10 ? 16 * dpr : 0);
       text("x" + mult, L.hud.x, L.hud.y + 140 * dpr, 20 * dpr, mult > 1 ? "#ff2bd6" : "rgba(196,184,210,0.7)", "center", mult > 1 ? 12 * dpr : 0);
     } else {
-      var band = L.top;
-      text(scoreStr, 14 * dpr, band * 0.32, 20 * dpr, "#f4f0f8", "left", 8 * dpr);
-      text("SCORE", 14 * dpr, band * 0.32 + 20 * dpr, 10 * dpr, "rgba(196,184,210,0.9)", "left");
-      text(String(r.combo), W - 14 * dpr, band * 0.32, 24 * dpr, r.combo >= 10 ? "#d6ff4a" : "#f4f0f8", "right", r.combo >= 10 ? 12 * dpr : 0);
-      text("COMBO x" + mult, W - 14 * dpr, band * 0.32 + 21 * dpr, 10 * dpr, mult > 1 ? "#ff2bd6" : "rgba(196,184,210,0.9)", "right");
+      var hy = L.pad + (L.top - L.pad) * 0.42;
+      text(scoreStr, 14 * dpr, hy, 20 * dpr, "#f4f0f8", "left", 8 * dpr);
+      text("SCORE", 14 * dpr, hy + 20 * dpr, 10 * dpr, "rgba(196,184,210,0.9)", "left");
+      text(String(r.combo), W - 14 * dpr, hy, 24 * dpr, r.combo >= 10 ? "#d6ff4a" : "#f4f0f8", "right", r.combo >= 10 ? 12 * dpr : 0);
+      text("COMBO x" + mult, W - 14 * dpr, hy + 21 * dpr, 10 * dpr, mult > 1 ? "#ff2bd6" : "rgba(196,184,210,0.9)", "right");
     }
 
     // Progress along the top of the lanes.
@@ -1197,6 +1203,18 @@
   if (credit && map.credit) credit.textContent = map.credit + ".";
 
   window.addEventListener("resize", resize);
+
+  // Open /play/?debug to read the clock from the console or an automated test.
+  if (/[?&]debug\b/.test(window.location.search)) {
+    window.skwishDrop = {
+      songTime: songTime,
+      state: function () { return state; },
+      notes: function () { return run ? run.notes.map(function (n) { return [n.t, n.lane, n.result]; }) : []; },
+      combo: function () { return run ? run.combo : 0; },
+      score: function () { return run ? run.score : 0; }
+    };
+  }
+
   showBest();
   show("start");
   resize();

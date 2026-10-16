@@ -1949,7 +1949,7 @@ h2,
   .portal-merch { --x: 83%; --y: 50%; }
   .portal-app { --x: 25%; --y: 88%; }
   .portal-signup { --x: 75%; --y: 88%; }
-  .portal-play { --x: 50%; --y: 31%; }
+  .portal-play { --x: 50%; --y: 70%; }
 
   .skwish { top: calc(50% - var(--skw) / 2); }
 
@@ -1963,14 +1963,12 @@ h2,
 
 /* Play: the Skwish Drop rhythm game */
 nav a.nav-play {
-  gap: 7px;
-  margin-inline: 2px;
+  position: relative;
+  isolation: isolate;
+  gap: 6px;
   padding: 0 12px 0 10px;
-  border: 1.5px solid var(--magenta);
-  border-radius: 999px;
   color: #ffe0f8;
   font-weight: 800;
-  box-shadow: 0 0 12px rgba(255, 43, 214, 0.35), inset 0 0 10px rgba(255, 43, 214, 0.18);
 }
 
 nav a.nav-play::before {
@@ -1983,12 +1981,26 @@ nav a.nav-play::before {
   filter: drop-shadow(0 0 4px var(--cyan));
 }
 
+nav a.nav-play::after {
+  content: "";
+  position: absolute;
+  inset: 7px 0;
+  z-index: -1;
+  border: 1.5px solid var(--magenta);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(255, 43, 214, 0.35), inset 0 0 10px rgba(255, 43, 214, 0.18);
+}
+
 nav a.nav-play:hover,
 nav a.nav-play[aria-current="page"] {
   color: #1a0610;
-  background: var(--magenta);
   text-shadow: none;
   text-decoration: none;
+}
+
+nav a.nav-play:hover::after,
+nav a.nav-play[aria-current="page"]::after {
+  background: var(--magenta);
   box-shadow: 0 0 20px rgba(255, 43, 214, 0.6);
 }
 
@@ -1996,7 +2008,7 @@ nav a.nav-play:hover::before,
 nav a.nav-play[aria-current="page"]::before { border-left-color: #1a0610; filter: none; }
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  nav a.nav-play { animation: play-pulse 2.6s ease-in-out infinite; }
+  nav a.nav-play::after { animation: play-pulse 2.6s ease-in-out infinite; }
 }
 
 @keyframes play-pulse {
@@ -2272,6 +2284,12 @@ kbd {
 .play-rules strong { color: var(--ink); }
 
 @media (max-width: 720px) {
+  nav a.nav-play { gap: 5px; padding: 0 8px 0 7px; }
+
+  nav a.nav-play::after { inset: 9px 0; }
+
+  nav a.nav-play::before { border-width: 4px 0 4px 6px; }
+
   .play-stage { padding: 8px 8px 0; }
 
   .game {
