@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skwish Drop: a Dirt Monkey rhythm game</title>
+  <meta name="description" content="Play Skwish Drop, a bass-drop rhythm game starring Skwish. Hit the notes in time with the beat on a keyboard or a phone. Free, in your browser.">
+  <meta name="theme-color" content="#07060a">
+  <!-- SITE ADDRESS: https://dirtmonkey.music/ . See the note in /index.html if it ever changes. -->
+  <link rel="canonical" href="https://dirtmonkey.music/play/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dirt Monkey">
+  <meta property="og:title" content="Skwish Drop: a Dirt Monkey rhythm game">
+  <meta property="og:description" content="Hit the notes in time with the bass and keep Skwish dancing. Free, in your browser.">
+  <meta property="og:url" content="https://dirtmonkey.music/play/">
+  <meta property="og:image" content="https://dirtmonkey.music/assets/share-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Skwish Drop: a Dirt Monkey rhythm game">
+  <meta name="twitter:description" content="Hit the notes in time with the bass and keep Skwish dancing. Free, in your browser.">
+  <meta name="twitter:image" content="https://dirtmonkey.music/assets/share-card.jpg">
+  <meta name="twitter:image:alt" content="Sounds of Dirt Monkey: the neon logo and the cyan monkey">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="is-play">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="logo-mark logo-mark-small">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264">
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="/plugins/">Plugins</a>
+      <a href="/music/">Music</a>
+      <a href="/shows/">Shows</a>
+      <a href="/merch/">Merch</a>
+      <a href="/app/">App</a>
+      <a href="/play/" class="nav-play" aria-current="page">Play</a>
+      <a href="/#signup">Sign up</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!--
+      THE GAME. js/rhythm.js runs it, and js/beatmap.js holds the song and the notes.
+      To use a real Dirt Monkey track, follow the note at the top of js/beatmap.js.
+    -->
+    <section class="play-stage" aria-labelledby="play-title">
+      <div id="game" class="game">
+        <canvas class="game-canvas" tabindex="-1" role="img" aria-label="Skwish Drop: notes fall down four lanes toward a glowing hit line while Skwish dances to the beat"></canvas>
+
+        <div class="game-tools">
+          <button type="button" class="game-tool" data-pause hidden>Pause</button>
+          <button type="button" class="game-tool sound-toggle" aria-pressed="true" data-mute>Sound on</button>
+        </div>
+
+        <div class="game-screen" data-screen="start">
+          <div class="game-panel">
+            <p class="eyebrow">A Dirt Monkey rhythm game</p>
+            <h1 id="play-title" class="game-title">Skwish Drop</h1>
+            <picture class="game-skwish">
+              <source type="image/webp" srcset="/assets/skwish-cyan.webp">
+              <img src="/assets/skwish-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
+            </picture>
+            <p class="game-how">Notes fall down four lanes. Hit each one as it crosses the glowing line. Big combos make Skwish dance, and the bass drop makes him go wild.</p>
+            <p class="game-keys help-keys">
+              <kbd>D</kbd><kbd>F</kbd><kbd>J</kbd><kbd>K</kbd>
+              <span>or the arrow keys</span>
+            </p>
+            <p class="game-keys help-touch">Tap a lane when a note hits the line. Use two thumbs.</p>
+            <button type="button" class="btn btn-buy btn-wide game-start" data-start>Start</button>
+            <p class="game-best" data-best>No best score yet. Set one.</p>
+            <p class="game-credit" data-credit></p>
+          </div>
+        </div>
+
+        <div class="game-screen" data-screen="pause" hidden>
+          <div class="game-panel">
+            <p class="eyebrow">Paused</p>
+            <h2 class="game-title game-title-small">Take a breath</h2>
+            <p class="game-how">The beat waits for you. Press Esc or P to jump back in.</p>
+            <div class="game-actions">
+              <button type="button" class="btn btn-buy" data-resume>Resume</button>
+              <button type="button" class="btn btn-demo" data-quit>Quit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-screen" data-screen="results" hidden>
+          <div class="game-panel game-results" aria-live="polite">
+            <p class="eyebrow">Results</p>
+            <h2 class="game-title game-title-small">Skwish Drop</h2>
+            <p class="game-grade"><span class="visually-hidden">Grade </span><span data-r="grade">S</span></p>
+            <p class="game-score"><span data-r="score">0</span> <span class="game-score-unit">points</span></p>
+            <p class="game-flag" data-r-best hidden></p>
+            <dl class="game-stats">
+              <div><dt>Accuracy</dt><dd data-r="accuracy">0%</dd></div>
+              <div><dt>Best combo</dt><dd data-r="combo">0</dd></div>
+              <div class="stat-perfect"><dt>Perfect</dt><dd data-r="perfect">0</dd></div>
+              <div class="stat-good"><dt>Good</dt><dd data-r="good">0</dd></div>
+              <div class="stat-miss"><dt>Miss</dt><dd data-r="miss">0</dd></div>
+            </dl>
+            <div class="game-actions">
+              <button type="button" class="btn btn-buy" data-again>Play again</button>
+              <button type="button" class="btn btn-demo" data-quit>Back to start</button>
+            </div>
+          </div>
+        </div>
+
+        <noscript>
+          <div class="game-screen">
+            <div class="game-panel">
+              <p class="game-how">Skwish Drop needs JavaScript to run. Switch it on and reload to play.</p>
+            </div>
+          </div>
+        </noscript>
+      </div>
+    </section>
+
+    <section class="section section-tight play-help" aria-labelledby="how-title">
+      <div class="wrap wrap-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">How to play</p>
+          <h2 id="how-title">Hit the line, feed the combo</h2>
+        </div>
+        <ul class="play-rules">
+          <li><strong>Hit the notes.</strong> Each lane has a key: <kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> from left to right (the arrow keys work too). On a phone or tablet, tap the lane. Press when the note touches the glowing line.</li>
+          <li><strong>Timing counts.</strong> Dead on is Perfect for 300 points. A little early or late is Good for 120. Too far off, or no press at all, is a Miss. Tapping an empty lane costs nothing.</li>
+          <li><strong>Build a combo.</strong> Every 10 hits in a row adds to your multiplier, up to four times the points. A miss resets it, and Skwish winces.</li>
+          <li><strong>Survive the drop.</strong> Watch for DROP! The notes get busy, the screen pulses with the bass, and Skwish goes wild.</li>
+          <li><strong>Chase your best.</strong> Your best score stays saved on this device. Pause any time with Esc, P, or the Pause button, and switch the sound with M or the Sound button.</li>
+        </ul>
+        <p class="page-cta"><a class="text-link" href="/music/">Hear the real thing: SKWISH, out November 13</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="/">
+        <span class="logo-mark logo-mark-small">
+          <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+          <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264" loading="lazy" decoding="async">
+        </span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="https://www.instagram.com/dirtmonkeymusic/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@dirtmonkeymusic" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="https://dirtmonkey.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a></li>
+        <!-- EDIT: 19K link. This goes to the 19K SoundCloud page. Swap the address if you want a different one. -->
+        <li><a href="https://soundcloud.com/19ksounds" target="_blank" rel="noopener noreferrer">19K</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul>
+      <p class="legal">© 2026 Dirt Monkey.</p>
+    </div>
+  </footer>
+
+  <script src="/js/beatmap.js" defer></script>
+  <script src="/js/rhythm.js" defer></script>
+</body>
+</html>

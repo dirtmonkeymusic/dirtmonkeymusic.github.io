@@ -12,10 +12,11 @@ This is the Dirt Monkey website, made for the address **https://dirtmonkey.music
 | `/shows/` | `shows/index.html` | Fall 2026 dates: Richmond, VA (Oct 31), Sacramento (Nov 7), Orlando (Nov 8), Port Charlotte, FL (Nov 21). Ticket links are placeholders. |
 | `/merch/` | `merch/index.html` | Merch cards from the Bass Threads store, plus a Shop all merch button |
 | `/app/` | `app/index.html` | The Dirt Monkey iPhone app, coming November 2 |
+| `/play/` | `play/index.html` | Skwish Drop, a bass-drop rhythm game starring Skwish |
 | `/privacy/` | `privacy/index.html` | The app privacy policy, exactly as written |
 | `/#signup` | `index.html` | The email signup (a Kit placeholder form) |
 
-The header on every page links to Plugins, Music, Shows, Merch, App, and Sign up. The footer links to Instagram, YouTube, Bandcamp, 19K, and the privacy policy.
+The header on every page links to Plugins, Music, Shows, Merch, App, Play (a glowing pill), and Sign up. The footer links to Instagram, YouTube, Bandcamp, 19K, and the privacy policy.
 
 The plugin shop has:
 
@@ -29,7 +30,7 @@ Skwish, the neon monkey, is the mascot. On the home page he is a character you c
 
 ## The home page play area
 
-The home page is the logo and a neon play area. Six portals sit around Skwish: Plugins, Music, Shows, Merch, App, and Sign up. `js/play.js` runs it. Nothing to install, and no outside code.
+The home page is the logo and a neon play area. Seven portals sit around Skwish: Plugins, Music, Shows, Merch, App, Play, and Sign up. `js/play.js` runs it. Nothing to install, and no outside code.
 
 - **Steer Skwish:** arrow keys or WASD on a computer (the arrow keys steer once you click or tab into the play area, so they still scroll the page otherwise). Click any empty spot and he walks there. On a phone, tap a spot or drag him.
 - **Jump into a section:** park Skwish on a portal. Its ring fills up while he shrinks into it, then the screen warps to that page. Clicking or tapping a portal sends him dashing over first.
@@ -41,6 +42,31 @@ The home page is the logo and a neon play area. Six portals sit around Skwish: P
 Nobody has to play. The menu at the top of every page is always there, every portal is a normal link, and Tab plus Enter works on them. If a visitor's device asks for reduced motion, Skwish stops bobbing, nothing spins or warps, and a portal goes straight to its page.
 
 To move a portal, change its `--x` and `--y` in `css/styles.css` (look for `.portal-plugins`). There is one set for computers and one for phones.
+
+## Skwish Drop, the game at /play/
+
+A rhythm game in the browser. Notes fall down four lanes toward a glowing line, in time with a bass beat. `js/rhythm.js` runs it (plain JavaScript, a canvas, and the Web Audio API, with no outside code). `js/beatmap.js` holds the song and every note.
+
+**How to play**
+
+- Press **Start**. A short count-in plays, then the notes start falling.
+- Hit each note as it touches the glowing line. On a computer the lanes are **D F J K** from left to right (the arrow keys work too). On a phone or tablet, tap the lane. Two thumbs work best.
+- Right on time is **Perfect** (300 points). A little early or late is **Good** (120). Too far off, or no press at all, is a **Miss**. Tapping an empty lane costs nothing.
+- Every 10 hits in a row raises the multiplier, up to four times the points. A miss resets it and Skwish winces.
+- When **DROP!** shows up, the notes get busy, the screen pulses with the bass, and Skwish goes wild.
+- At the end you get a grade (S, A, B, C, or D), your score, accuracy, best combo, and a **Play again** button. Your best score is saved in the browser on that device.
+- **Esc** or **P** pauses (so does switching tabs). **M** or the **Sound** button turns the sound on and off.
+- If a visitor's device asks for reduced motion, the screen does not shake or flash and Skwish bounces without spinning. The game plays the same.
+
+**The placeholder beat.** The music right now is an original beat that the browser makes on the spot (kick, snare, hats, sub bass, and a wobble bass), so there is no sound file and nothing copyrighted. It is 140 BPM and about 53 seconds long, with two drops.
+
+**Swap in a real Dirt Monkey track.** Everything is in `js/beatmap.js`, and the note at the top of that file walks through it:
+
+1. Put the track in the site, for example `assets/audio/skwish-drop.mp3`, and set `audio: "/assets/audio/skwish-drop.mp3"`.
+2. Set `bpm` to the track's tempo, and `offset` to the number of seconds before the first beat.
+3. Rewrite `notes`. Each note is `[beat, lane]`: the beat counts from 0 at the first beat of the track (quarter notes, so `4.5` is the "and" right after beat 4), and the lane is 0 to 3 from left to right.
+4. Set `sections` so the drops line up (that is when Skwish goes wild and the screen pulses). Change `title` too; each title keeps its own best score.
+5. If hits feel late or early on every note, nudge `inputOffsetMs`: raise it (try 30) if hits feel late, lower it if they feel early.
 
 ## Look at the site on your computer
 
@@ -212,6 +238,7 @@ A square picture fits the card best.
 
 Each page is the `index.html` inside its folder. Look for comments that say `EDIT`.
 
+- **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The song, tempo, and notes are in `js/beatmap.js`.
 - **Home (`index.html`):** the logo, the play area (one portal per section, each a normal link), and the email signup. The words under the play area are the steering hints.
 - **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
 - **Music (`music/index.html`):** when SKWISH is out, replace the two "link coming November 13" placeholders with real links. The comment above them shows the line to paste.
