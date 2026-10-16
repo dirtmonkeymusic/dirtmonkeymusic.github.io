@@ -63,20 +63,35 @@ These ran on this machine with puppeteer against Chrome.
 
 ## What's left
 
-1. **Fix one test, not the game.** "After nudge the same late presses are on time" in `dev/ddr-test.js` (the `late` case) fails because the test's autoplay times its presses from `songTime()`, which already includes the new offset. Time the presses from `heard()` and the note times instead.
-2. **Finish the test pass.** Run the `holds` (speed-4 part), `reduce`, and `shots` cases of `dev/ddr-test.js`. Then run `dev/track-test.js`, `dev/tool-test.js`, `dev/score-chart.js`, and the home page and site checks again.
-3. **Review the in-game screenshots.** Nobody has looked at mid-game desktop or mobile screenshots of the arrow version yet. Check the judgment and combo placement, the hold bodies, the life bar next to the toolbar on phones, and the pads.
-4. **Lighthouse mobile on /play/.** It must stay at 95 or above. It was 97 before the DDR rework and has not been rerun since.
-5. **Screenshots for the report.** Save the start screen with the difficulty picker, mid-game on desktop, mid-game on mobile with the pads (`skwish-ddr-mobile.png` already exists on the old machine only), results with an FC badge, and the calibration screen.
-6. **Tuning, if wanted.** Life starts at 50, so about 5 straight misses fail Skwished and 7 fail Normal. Raise the start or lower `MISS_LIFE` in `js/rhythm.js` if that feels too harsh.
-7. **Real track.** When Patrick sends it, follow the note at the top of `js/beatmap.js`, or run `node tools/make-beatmap.js --mix ... --kick ... --snare ... --bass ... --write`.
+Done on 2026-10-16 (committed locally, not pushed):
+
+- The `late` test now presses as each note is heard, so it passes; the game was not changed for it.
+- Full test pass: `ddr-test.js all` (35 of 35), `track-test.js`, `tool-test.js`, `score-chart.js`, and the new `site-check.js` (91 of 91) all pass with no console errors.
+- In-game screenshots reviewed. Fixed: on phones, missed arrows no longer fly over the life bar, and hold bodies stop at the tap pads. The faded combo number no longer shows through the results screen.
+- Lighthouse mobile: home 98 / 100 / 100 / 100, /play/ 96 / 100 / 100 / 100 (accessibility was 97 until the "No best yet" text on the selected difficulty got more contrast).
+- Report screenshots are in `~/DMBuilds/DMSite-shots/` (`dev/report-shots.js` and `dev/site-check.js` make them).
+
+Still open:
+
+1. **Tuning, if wanted.** Life starts at 50, so 5 straight misses fail Hard and Skwished, 7 fail Normal, and 9 fail Easy. To soften it, raise the start or lower `MISS_LIFE` in `js/rhythm.js`. See the recommendation in `~/DMBuilds/DMSite-shots/REPORT.md`.
+2. **Real track.** When Patrick sends it, follow the note at the top of `js/beatmap.js`, or run `node tools/make-beatmap.js --mix ... --kick ... --snare ... --bass ... --write`.
 
 ## About `dev/`
 
-The test scripts were copied from a scratch folder on the old machine, so they still use its paths. Before running them:
+The test scripts now find their paths on their own (see `dev/env.js`), so they run on any machine with Chrome:
 
-- install `puppeteer-core` and set the Chrome path (`/usr/bin/google-chrome`);
-- `make_test_track.py` needs numpy and ffmpeg, and writes test audio to `tmp-audio/` (keep that folder out of git);
-- `gen_charts.py` rewrites the placeholder charts in `js/beatmap.js` in place.
+```
+cd dev && npm install                      # puppeteer-core, plus an ffmpeg for the test audio
+python3 -m http.server 47321 --bind 127.0.0.1   # from the repo root, in another terminal
+node ddr-test.js all                       # the game (or one case: clear, fail, holds, late, calibrate, shots, mobile, reduce)
+node site-check.js                         # every page on desktop and phone, plus the home play area
+node report-shots.js                       # report screenshots
+python3 make_test_track.py                 # needs numpy; writes tmp-audio/ (then track-test.js, tool-test.js, score-chart.js)
+```
 
-Do not commit `uploads/` or `tmp-audio/`.
+- Chrome is found in the usual Mac and Linux places. Set `CHROME` to point somewhere else.
+- Screenshots worth keeping go to `~/DMBuilds/DMSite-shots/` (set `ART` to change it). Scratch files go to the system temp folder (`SHOT`).
+- `make_test_track.py` uses ffmpeg from your PATH, or the one `npm install` puts in `dev/node_modules`.
+- `gen_charts.py` rewrites the placeholder charts in `js/beatmap.js` in place. Run as is, it writes the same charts that are there now.
+
+Do not commit `uploads/`, `tmp-audio/`, or `node_modules/` (all three are in `.gitignore`).

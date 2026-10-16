@@ -1,13 +1,16 @@
 // Compare a chart from tools/make-beatmap.js against the test track's ground truth.
 const { execFileSync } = require("child_process");
 const fs = require("fs");
-const dir = "/workspace/tmp-audio";
+const path = require("path");
+const { ROOT, SHOT, AUDIO } = require("./env");
+const dir = AUDIO;
+const block = path.join(SHOT, "block.js");
 const truth = JSON.parse(fs.readFileSync(dir + "/truth.json"));
-const ChartMaker = require("/workspace/js/chart-maker.js");
+const ChartMaker = require(path.join(ROOT, "js/chart-maker.js"));
 
 function run(args) {
-  const out = execFileSync("node", ["/workspace/tools/make-beatmap.js", ...args, "--out", "/tmp/shot/block.js"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
-  const text = fs.readFileSync("/tmp/shot/block.js", "utf8");
+  const out = execFileSync(process.execPath, [path.join(ROOT, "tools/make-beatmap.js"), ...args, "--out", block], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  const text = fs.readFileSync(block, "utf8");
   const obj = eval("({" + text.replace(/\/\/.*$/gm, "") + "})").track;
   return obj;
 }

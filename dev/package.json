@@ -1,0 +1,9 @@
+{
+  "name": "dmsite-dev-tests",
+  "private": true,
+  "description": "Test scripts for the local site. Run npm install here first.",
+  "devDependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "puppeteer-core": "^24.0.0"
+  }
+}

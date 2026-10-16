@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer-core");
+const { LAUNCH } = require("./env");
 const BASE = process.env.BASE || "http://127.0.0.1:47321";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const which = process.argv[2] || "all";
@@ -60,7 +61,7 @@ async function autoplay(p, opts = {}) {
 }
 
 (async () => {
-  const b = await puppeteer.launch({ executablePath: "/usr/bin/google-chrome", args: ["--no-sandbox", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required"] });
+  const b = await puppeteer.launch(LAUNCH);
   const out = {};
 
   if (which === "all" || which === "auto") {

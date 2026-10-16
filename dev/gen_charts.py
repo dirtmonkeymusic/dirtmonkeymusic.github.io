@@ -1,5 +1,5 @@
 """Write the four placeholder charts for js/beatmap.js, following the synth arrangement in js/rhythm.js."""
-import re, sys
+import os, re, sys
 
 # Sections in beats: countin 0-4, intro 4-20, build 20-36, drop 36-68, break 68-84, drop2 84-116, outro 116-124
 PATTERNS = [[0, 1, 2, 3], [3, 2, 1, 0], [0, 2, 1, 3], [3, 1, 2, 0], [1, 0, 2, 3], [2, 3, 1, 0], [0, 1, 3, 2], [3, 2, 0, 1]]
@@ -292,9 +292,9 @@ for i, ch in enumerate(charts):
     block.append("      ]" + ("," if i < len(charts) - 1 else ""))
 block.append("    }")
 
-path = "/workspace/js/beatmap.js"
+path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "js", "beatmap.js")
 src = open(path).read()
-start = src.index("    notes: [", src.index("placeholder:"))
-end = src.index("\n    ]", start) + len("\n    ]")
+start = src.index("    charts: {", src.index("placeholder:"))
+end = src.index("\n    }", start) + len("\n    }")
 src = src[:start] + "\n".join(block) + src[end:]
 open(path, "w").write(src)

@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer-core");
 const BASE = process.env.BASE || "http://127.0.0.1:47321/play/?debug";
-const ART = "/opt/cursor/artifacts";
+const { SHOT, ART, LAUNCH } = require("./env");
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const only = process.argv[2] || "all";
 const results = {};
@@ -58,12 +58,16 @@ async function autoplay(p, opts = {}) {
     const early = new Set(opts.early || []);
     const late = (opts.late || 0) / 1000;
     const queued = new Set();
+    // Press when the note is heard, like a player would. songTime() has the timing offset
+    // taken off, so add it back; otherwise a nudged offset would shift the presses too.
+    const offset = S.settings().offsetMs / 1000 + (typeof BEATMAP !== "undefined" ? Number(BEATMAP.inputOffsetMs) || 0 : 0) / 1000;
+    const heardSong = () => S.songTime() + offset;
     function key(type, k) { document.dispatchEvent(new KeyboardEvent(type, { key: k, bubbles: true })); }
     function tick() {
       const s = S.state();
       if (s === "results" || s === "start") return;
       if (s === "playing") {
-        const t = S.songTime();
+        const t = heardSong();
         S.notes().forEach((n, i) => {
           if (queued.has(i) || skip.has(i) || n[0] + late - t > 0.06) return;
           queued.add(i);
@@ -71,9 +75,9 @@ async function autoplay(p, opts = {}) {
           setTimeout(() => {
             key("keydown", k);
             const upAt = n[3] ? (early.has(i) ? (n[0] + n[3]) / 2 : n[3] + 0.03) : null;
-            const delay = upAt ? Math.max(30, (upAt - S.songTime()) * 1000) : 40;
+            const delay = upAt ? Math.max(30, (upAt - heardSong()) * 1000) : 40;
             setTimeout(() => key("keyup", k), delay);
-          }, Math.max(0, (n[0] + late - S.songTime()) * 1000));
+          }, Math.max(0, (n[0] + late - heardSong()) * 1000));
         });
       }
       requestAnimationFrame(tick);
@@ -119,10 +123,7 @@ async function fps(p, ms) {
 }
 
 (async () => {
-  const b = await puppeteer.launch({
-    executablePath: "/usr/bin/google-chrome",
-    args: ["--no-sandbox", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required"]
-  });
+  const b = await puppeteer.launch(LAUNCH);
 
   if (only === "all" || only === "clear") {
     const p = await fresh(b);
@@ -206,7 +207,7 @@ async function fps(p, ms) {
     await untilState(p, "playing", 5000);
     await autoplay(p, { keys: "wasd" });
     await untilSong(p, 9);
-    await p.screenshot({ path: "/tmp/shot/speed4.png" });
+    await p.screenshot({ path: `${SHOT}/speed4.png` });
     await p.keyboard.press("Escape");
     await p.click('[data-screen="pause"] [data-quit]');
     ok("no console errors (holds)", p.errors.length === 0, p.errors);
@@ -245,7 +246,7 @@ async function fps(p, ms) {
     await wait(100);
     ok("calibration screen", (await st(p)) === "calibrating" && (await p.evaluate(() => !document.querySelector('[data-screen="calibrate"]').hidden)));
     await wait(900);
-    await p.screenshot({ path: "/tmp/shot/calibrate.png" });
+    await p.screenshot({ path: `${SHOT}/calibrate.png` });
     // Tap 32 ms after each click as heard.
     await p.evaluate(() => {
       const S = window.skwishDrop;
@@ -259,7 +260,7 @@ async function fps(p, ms) {
     const s = await p.evaluate(() => window.skwishDrop.settings());
     const text = await p.evaluate(() => document.querySelector("[data-cal-result]").textContent);
     ok("calibration finds the delay", s.offsetMs >= 27 && s.offsetMs <= 37, { s, text });
-    await p.screenshot({ path: "/tmp/shot/calibrate-done.png" });
+    await p.screenshot({ path: `${SHOT}/calibrate-done.png` });
     await p.click("[data-cal-done]");
     ok("back to start, offset shown", (await st(p)) === "start" && (await p.evaluate(() => document.querySelector("[data-offset]").textContent)) === "+" + s.offsetMs + " ms");
     ok("no console errors (calibrate)", p.errors.length === 0, p.errors);
@@ -327,7 +328,7 @@ async function fps(p, ms) {
     await untilState(p, "playing", 5000);
     await autoplay(p, { keys: "arrows" });
     await untilSong(p, 40 * 60 / 140);
-    await p.screenshot({ path: "/tmp/shot/reduce.png" });
+    await p.screenshot({ path: `${SHOT}/reduce.png` });
     const f = await fps(p, 2000);
     ok("reduced motion runs", f.fps >= 55 && p.errors.length === 0, { f, e: p.errors });
     await p.close();

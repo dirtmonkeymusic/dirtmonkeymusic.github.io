@@ -1,11 +1,14 @@
 """Synthesize a stand-in track with stems and ground truth, for testing the beatmap maker."""
-import json, subprocess, sys, wave
+import json, os, shutil, subprocess, sys, wave
 import numpy as np
 
 SR = 44100
 BPM = float(sys.argv[1]) if len(sys.argv) > 1 else 145.0
 OFFSET = float(sys.argv[2]) if len(sys.argv) > 2 else 0.37
-OUT = sys.argv[3] if len(sys.argv) > 3 else "/workspace/tmp-audio"
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = sys.argv[3] if len(sys.argv) > 3 else os.path.join(HERE, "..", "tmp-audio")
+# ffmpeg from PATH, or the one npm install puts in dev/node_modules.
+FFMPEG = os.environ.get("FFMPEG") or shutil.which("ffmpeg") or os.path.join(HERE, "node_modules", "ffmpeg-static", "ffmpeg")
 SPB = 60 / BPM
 # (type, bars)
 PLAN = [("intro", 8), ("build", 4), ("drop", 16), ("break", 8), ("drop", 16), ("outro", 6)]
@@ -98,10 +101,9 @@ def write24_stereo(path, x):
         w.setnchannels(2); w.setsampwidth(3); w.setframerate(SR)
         w.writeframes(raw)
 
-import os
 os.makedirs(OUT, exist_ok=True)
 write16(f"{OUT}/kick.wav", kick); write16(f"{OUT}/snare.wav", snare); write16(f"{OUT}/bass.wav", bass)
 write24_stereo(f"{OUT}/mix.wav", mix)
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f"{OUT}/mix.wav", "-b:a", "192k", f"{OUT}/mix.mp3"], check=True)
+subprocess.run([FFMPEG, "-y", "-loglevel", "error", "-i", f"{OUT}/mix.wav", "-b:a", "192k", f"{OUT}/mix.mp3"], check=True)
 json.dump(truth, open(f"{OUT}/truth.json", "w"))
 print("bars", BARS, "seconds", round(N / SR, 1), "kicks", len(truth["kick"]), "snares", len(truth["snare"]), "drops", truth["drops"])

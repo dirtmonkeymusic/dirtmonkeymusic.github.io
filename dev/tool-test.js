@@ -1,9 +1,12 @@
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const A = "/workspace/tmp-audio/";
+const path = require("path");
+const { SHOT, ART, AUDIO, LAUNCH } = require("./env");
+const BASE = process.env.BASE || "http://127.0.0.1:47321";
+const A = AUDIO + "/";
 (async () => {
-  const b = await puppeteer.launch({ executablePath: "/usr/bin/google-chrome", args: ["--no-sandbox", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required"] });
+  const b = await puppeteer.launch(LAUNCH);
   const out = {};
   for (const [name, vp] of [["desktop", { width: 1280, height: 900, deviceScaleFactor: 2 }], ["mobile", { width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true }]]) {
     const p = await b.newPage();
@@ -11,11 +14,11 @@ const A = "/workspace/tmp-audio/";
     p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
     p.on("pageerror", (e) => errors.push("PAGEERROR " + e.message));
     await p.setViewport(vp);
-    const dl = "/tmp/shot/dl-" + name; fs.rmSync(dl, { recursive: true, force: true }); fs.mkdirSync(dl);
+    const dl = path.join(SHOT, "dl-" + name); fs.rmSync(dl, { recursive: true, force: true }); fs.mkdirSync(dl);
     const cdp = await p.target().createCDPSession();
     await cdp.send("Page.setDownloadBehavior", { behavior: "allow", downloadPath: dl });
-    await p.goto("http://127.0.0.1:47321/tools/beatmap/", { waitUntil: "networkidle0" });
-    if (name === "desktop") await p.screenshot({ path: "/tmp/shot/tool-empty.png", fullPage: true });
+    await p.goto(BASE + "/tools/beatmap/", { waitUntil: "networkidle0" });
+    if (name === "desktop") await p.screenshot({ path: path.join(SHOT, "tool-empty.png"), fullPage: true });
     // nothing picked
     await p.click("[data-go]"); await wait(300);
     out[name + "Empty"] = await p.$eval("[data-status]", (e) => e.textContent);
@@ -44,7 +47,7 @@ const A = "/workspace/tmp-audio/";
     await p.click("[data-listen]"); await wait(1500);
     out[name + "Listen"] = await p.$eval("[data-listen]", (e) => e.textContent + " " + e.getAttribute("aria-pressed"));
     await p.addStyleTag({ content: ".site-header{position:static !important}" });
-    await p.screenshot({ path: "/opt/cursor/artifacts/beatmap-maker-" + name + ".png", fullPage: true });
+    await p.screenshot({ path: path.join(SHOT, "beatmap-maker-" + name + ".png"), fullPage: true });
     await p.click("[data-listen]"); await wait(200);
     out[name + "Stopped"] = await p.$eval("[data-listen]", (e) => e.textContent);
     out[name + "Overflow"] = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
