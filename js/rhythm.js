@@ -4,12 +4,13 @@
 //
 // Timing uses the Web Audio clock, so notes stay locked to the music
 // even if the screen stutters. The placeholder beat is synthesized here
-// from the sections in the beatmap. Set BEATMAP.audio to use a real file.
+// from its sections. When BEATMAP.track has an audio file, that plays
+// instead, and js/chart-maker.js makes any notes the track is missing.
 
 (function () {
   var map = typeof BEATMAP === "undefined" ? null : BEATMAP;
   var root = document.getElementById("game");
-  if (!root || !map || !map.notes) return;
+  if (!root || !map || !map.placeholder) return;
 
   var canvas = root.querySelector("canvas");
   var g = canvas.getContext("2d");
@@ -22,6 +23,7 @@
   var muteBtn = root.querySelector("[data-mute]");
   var pauseBtn = root.querySelector("[data-pause]");
   var bestEl = root.querySelector("[data-best]");
+  var creditEl = root.querySelector("[data-credit]");
   var motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
 
   var LANES = 4;
@@ -32,11 +34,23 @@
   var POINTS = { perfect: 300, good: 120 };
   var TRAVEL = 1.45;
   var FONT = '"JetBrains Mono", ui-monospace, monospace';
-  var BEST_KEY = "dm-play-best:" + map.title;
-
-  var spb = 60 / map.bpm;
-  var offset = Number(map.offset) || 0;
   var inputOffset = (Number(map.inputOffsetMs) || 0) / 1000;
+
+  // ?audio=/assets/audio/x.mp3&bpm=145&offset=0 tries a track without editing js/beatmap.js.
+  var params = new URLSearchParams(window.location.search);
+  var track = map.track || {};
+  var trial = params.get("audio");
+  if (trial && /^\/[^/\\]/.test(trial)) {
+    track = {
+      audio: trial,
+      bpm: params.get("bpm") || "auto",
+      offset: params.has("offset") ? params.get("offset") : "auto",
+      difficulty: params.get("difficulty") || track.difficulty,
+      credit: "Trying " + trial.split("/").pop()
+    };
+  }
+  var useTrack = !!track.audio;
+  var trackReady = false;
 
   function calm() {
     return !!(motionQuery && motionQuery.matches);
@@ -51,19 +65,50 @@
     }
   }
 
-  // ---------- song layout from the beatmap
+  // ---------- the song: tempo, offset, sections, and notes
 
+  var song = null;
+  var spb = 0.5;
+  var offset = 0;
   var sections = [];
-  (function () {
+  var totalBeats = 0;
+  var drops = [];
+  var chart = [];
+
+  function setSong(def) {
+    song = def;
+    spb = 60 / (Number(def.bpm) || 140);
+    offset = Number(def.offset) || 0;
+    sections = [];
     var at = 0;
-    (map.sections || []).forEach(function (sec) {
+    (def.sections || []).forEach(function (sec) {
       var bars = Math.max(0, Math.floor(sec.bars) || 0);
       sections.push({ type: sec.type, variant: sec.variant || 1, from: at, to: at + bars * 4, bars: bars });
       at += bars * 4;
     });
-  })();
-  var totalBeats = sections.length ? sections[sections.length - 1].to : 0;
-  var drops = sections.filter(function (s) { return s.type === "drop"; });
+    totalBeats = at;
+    drops = sections.filter(function (s) { return s.type === "drop"; });
+    chart = (def.notes || [])
+      .map(function (n) { return { beat: Number(n[0]), lane: Math.max(0, Math.min(LANES - 1, Number(n[1]) | 0)) }; })
+      .filter(function (n) { return isFinite(n.beat); })
+      .sort(function (a, b) { return a.beat - b.beat || a.lane - b.lane; });
+  }
+
+  function isSet(v) {
+    return v !== undefined && v !== null && v !== "" && v !== "auto" && isFinite(Number(v));
+  }
+
+  function trackComplete() {
+    return isSet(track.bpm) && isSet(track.offset) && track.notes && track.notes.length && track.sections && track.sections.length;
+  }
+
+  function bestKey() {
+    return "dm-play-best:" + map.title + (useTrack ? "|" + track.audio : "");
+  }
+
+  function creditLine() {
+    return useTrack ? track.credit || "Music by Dirt Monkey" : map.placeholder.credit;
+  }
 
   function inDrop(beat) {
     for (var i = 0; i < drops.length; i++) {
@@ -72,10 +117,7 @@
     return null;
   }
 
-  var chart = map.notes
-    .map(function (n) { return { beat: Number(n[0]), lane: Math.max(0, Math.min(LANES - 1, Number(n[1]) | 0)) }; })
-    .filter(function (n) { return isFinite(n.beat); })
-    .sort(function (a, b) { return a.beat - b.beat || a.lane - b.lane; });
+  setSong(useTrack && trackComplete() ? track : map.placeholder);
 
   // ---------- audio
 
@@ -360,7 +402,7 @@
           for (i = 0; i < 8; i++) at(s + i * 0.5, (function (open) { return function (t) { synth.hat(t, open); }; })(i % 2 === 1 && v2));
           var dr = DROP_ROOTS[bar % 4];
           var rates = DROP_RATES[bar % 4];
-          var bps = map.bpm / 60;
+          var bps = 1 / spb;
           at(s, (function (m, r) { return function (t) { synth.wobble(t, m, 2, r); }; })(dr, rates[0] * bps * (v2 ? 1.5 : 1)));
           if (last) {
             for (i = 0; i < 4; i++) at(s + 2 + i * 0.5, (function (v) { return function (t) { synth.snare(t, v); }; })(0.6 + i * 0.12));
@@ -550,7 +592,7 @@
 
   function readBest() {
     try {
-      return JSON.parse(store(BEST_KEY) || "null");
+      return JSON.parse(store(bestKey()) || "null");
     } catch (e) {
       return null;
     }
@@ -565,9 +607,27 @@
     }
   }
 
+  function busy(label) {
+    if (startBtn) startBtn.textContent = label;
+    return new Promise(function (resolve) { window.setTimeout(resolve, 30); });
+  }
+
+  function loadMaker() {
+    if (window.ChartMaker) return Promise.resolve(window.ChartMaker);
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = "/js/chart-maker.js";
+      s.onload = function () { resolve(window.ChartMaker); };
+      s.onerror = function () { reject(new Error("chart maker did not load")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  // Fetch and decode the track, then fill in whatever the beatmap left out
+  // (notes, drops, BPM, offset) by listening to it.
   function loadTrack() {
-    if (!map.audio || trackBuf) return Promise.resolve();
-    return fetch(map.audio)
+    if (!useTrack || trackReady) return Promise.resolve();
+    return fetch(track.audio)
       .then(function (r) {
         if (!r.ok) throw new Error("track " + r.status);
         return r.arrayBuffer();
@@ -577,7 +637,32 @@
           ctx.decodeAudioData(data, resolve, reject);
         });
       })
-      .then(function (buf) { trackBuf = buf; });
+      .then(function (buf) {
+        trackBuf = buf;
+        if (trackComplete()) return setSong(track);
+        return Promise.all([loadMaker(), busy("Listening to the track...")]).then(function (got) {
+          var channels = [];
+          for (var c = 0; c < buf.numberOfChannels; c++) channels.push(buf.getChannelData(c));
+          var made = got[0].analyze({
+            sampleRate: buf.sampleRate,
+            mix: got[0].toMono(channels),
+            bpm: isSet(track.bpm) ? track.bpm : null,
+            offset: isSet(track.offset) ? track.offset : null,
+            difficulty: track.difficulty
+          });
+          var hasNotes = track.notes && track.notes.length;
+          setSong({
+            bpm: made.bpm,
+            offset: made.offset,
+            sections: track.sections && track.sections.length ? track.sections : made.sections,
+            notes: hasNotes ? track.notes : made.notes
+          });
+          if (window.console) {
+            console.info("Skwish Drop: " + (hasNotes ? "" : made.notes.length + " notes made from the track. ") + "BPM " + made.bpm + ", offset " + made.offset + " s. For a cleaner chart, run the beatmap maker on the stems (/tools/beatmap/).");
+          }
+        });
+      })
+      .then(function () { trackReady = true; });
   }
 
   function begin() {
@@ -587,25 +672,27 @@
     }
     if (startBtn) {
       startBtn.disabled = true;
-      startBtn.textContent = map.audio ? "Loading the track..." : "Get ready...";
+      startBtn.textContent = useTrack && !trackReady ? "Loading the track..." : "Get ready...";
     }
     var fonts = document.fonts && document.fonts.load ? document.fonts.load("800 32px " + FONT).catch(function () {}) : Promise.resolve();
-    Promise.all([fonts, loadTrack(), ctx.resume()])
-      .then(startRun)
-      .catch(function () {
-        if (startBtn) {
-          startBtn.disabled = false;
-          startBtn.textContent = "Start";
-        }
-        if (bestEl) bestEl.textContent = "The track did not load. Check the audio line in js/beatmap.js.";
-      });
+    Promise.all([fonts, ctx.resume(), loadTrack().catch(fallBack)]).then(startRun);
+  }
+
+  // The track is missing or broken: play the placeholder beat instead, and say so.
+  function fallBack(err) {
+    if (window.console) console.warn("Skwish Drop: could not use " + track.audio + " (" + (err && err.message) + "). Playing the placeholder beat.");
+    useTrack = false;
+    trackBuf = null;
+    setSong(map.placeholder);
+    if (creditEl) creditEl.textContent = "The track did not load, so this is the placeholder beat.";
+    showBest();
   }
 
   function startRun() {
     stopAudio();
     bus = ctx.createGain();
     bus.connect(master);
-    var lead = map.audio ? 1.6 : 0.25;
+    var lead = useTrack ? 1.6 : 0.25;
     run = {
       start: ctx.currentTime + lead,
       notes: chart.map(function (n) { return { t: offset + n.beat * spb, beat: n.beat, lane: n.lane, done: false, result: "" }; }),
@@ -627,11 +714,11 @@
       lastBeat: -1
     };
     var lastNote = run.notes.length ? run.notes[run.notes.length - 1].t : 0;
-    run.end = map.audio
-      ? Math.min(trackBuf ? trackBuf.duration - offset : lastNote + 3, lastNote + 3)
+    run.end = useTrack
+      ? Math.min(trackBuf.duration, lastNote + 4)
       : Math.max(totalBeats * spb, lastNote + 1.5);
     run.end = Math.max(run.end, lastNote + 0.6);
-    if (map.audio && trackBuf) {
+    if (useTrack) {
       trackSource = ctx.createBufferSource();
       trackSource.buffer = trackBuf;
       trackSource.connect(bus);
@@ -700,7 +787,7 @@
     ctx.resume().then(function () {
       state = "playing";
       show(null);
-      if (!map.audio) scheduler = window.setInterval(schedule, 25);
+      if (!useTrack) scheduler = window.setInterval(schedule, 25);
       canvas.focus({ preventScroll: true });
       lastFrame = 0;
       raf = requestAnimationFrame(frame);
@@ -734,7 +821,7 @@
     var best = readBest();
     var isBest = !best || run.score > best.score;
     if (isBest && run.score > 0) {
-      store(BEST_KEY, JSON.stringify({ score: run.score, grade: letter, combo: run.maxCombo, accuracy: acc }));
+      store(bestKey(), JSON.stringify({ score: run.score, grade: letter, combo: run.maxCombo, accuracy: acc }));
     }
     var el = screens.results;
     function set(name, value) {
@@ -1199,8 +1286,7 @@
     else begin();
   });
 
-  var credit = root.querySelector("[data-credit]");
-  if (credit && map.credit) credit.textContent = map.credit + ".";
+  if (creditEl) creditEl.textContent = creditLine() + ".";
 
   window.addEventListener("resize", resize);
 
@@ -1211,7 +1297,8 @@
       state: function () { return state; },
       notes: function () { return run ? run.notes.map(function (n) { return [n.t, n.lane, n.result]; }) : []; },
       combo: function () { return run ? run.combo : 0; },
-      score: function () { return run ? run.score : 0; }
+      score: function () { return run ? run.score : 0; },
+      song: function () { return { track: useTrack, bpm: Math.round((60 / spb) * 100) / 100, offset: offset, notes: chart.length, sections: sections.map(function (s) { return s.type + ":" + s.bars; }) }; }
     };
   }
 
