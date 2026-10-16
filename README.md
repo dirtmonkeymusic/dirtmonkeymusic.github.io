@@ -6,7 +6,7 @@ This is the Dirt Monkey website, made for the address **https://dirtmonkey.music
 
 | Address | File | What is on it |
 | --- | --- | --- |
-| `/` | `index.html` | The hero (Sounds of, the neon logo, Skwish), one block for each section, and the email signup |
+| `/` | `index.html` | The bubble logo and the Skwish play area, with a glowing portal for each section, then the email signup |
 | `/plugins/` | `plugins/index.html` | The whole plugin shop: plugins, The Everything Suite, the Founders Suite, sample packs, how demos work, and the FAQ |
 | `/music/` | `music/index.html` | SKWISH, the new album on 19K, out November 13, 2026. Listen links are placeholders until release day. |
 | `/shows/` | `shows/index.html` | Fall 2026 dates: Richmond, VA (Oct 31), Sacramento (Nov 7), Orlando (Nov 8), Port Charlotte, FL (Nov 21). Ticket links are placeholders. |
@@ -25,7 +25,22 @@ The plugin shop has:
 - **Sample packs:** six placeholder packs (rename them whenever you want). On phones this section is one "Sample packs coming soon" line.
 - **How demos work** and an **FAQ**
 
-Skwish, the neon monkey, is the mascot at the top of the home page.
+Skwish, the neon monkey, is the mascot. On the home page he is a character you can steer.
+
+## The home page play area
+
+The home page is the logo and a neon play area. Six portals sit around Skwish: Plugins, Music, Shows, Merch, App, and Sign up. `js/play.js` runs it. Nothing to install, and no outside code.
+
+- **Steer Skwish:** arrow keys or WASD on a computer (the arrow keys steer once you click or tab into the play area, so they still scroll the page otherwise). Click any empty spot and he walks there. On a phone, tap a spot or drag him.
+- **Jump into a section:** park Skwish on a portal. Its ring fills up while he shrinks into it, then the screen warps to that page. Clicking or tapping a portal sends him dashing over first.
+- **Skwish reacts:** he leans into turns, flips to face the way he runs, and turns his head to watch the mouse. Portals wobble and glow on hover. Poke Skwish and he squishes.
+- **Two secrets** (the counter under the play area shows how many you have found): poke Skwish five times fast for a spin, and type the Konami code (up, up, down, down, left, right, left, right, B, A) for Wonk mode, which cycles the colors. Type the code again to switch it off.
+- **Sound:** short synth blips made in the browser (no sound files). Off until the visitor presses **Sound off** to turn it on. The choice is remembered.
+- **Moving between pages:** in browsers that support it, the old page shrinks away and the new one pops in. The header stays put.
+
+Nobody has to play. The menu at the top of every page is always there, every portal is a normal link, and Tab plus Enter works on them. If a visitor's device asks for reduced motion, Skwish stops bobbing, nothing spins or warps, and a portal goes straight to its page.
+
+To move a portal, change its `--x` and `--y` in `css/styles.css` (look for `.portal-plugins`). There is one set for computers and one for phones.
 
 ## Look at the site on your computer
 
@@ -197,7 +212,7 @@ A square picture fits the card best.
 
 Each page is the `index.html` inside its folder. Look for comments that say `EDIT`.
 
-- **Home (`index.html`):** the hero lockup is `Sounds of`, then the Dirt Monkey logo, then `Plugins & Sample Packs`. Under it are the five section blocks and the email signup.
+- **Home (`index.html`):** the logo, the play area (one portal per section, each a normal link), and the email signup. The words under the play area are the steering hints.
 - **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
 - **Music (`music/index.html`):** when SKWISH is out, replace the two "link coming November 13" placeholders with real links. The comment above them shows the line to paste.
 - **Shows (`shows/index.html`):** one block per show. Swap "Tickets coming soon" for a ticket link and "Venue to be announced" for the venue. Each block has `data-show-date` (the show day) and `data-show-tz` (the city's time zone). A show drops off the list at 6 AM local time the next morning. When none are left, the page says "New dates coming soon".
@@ -241,9 +256,9 @@ If the address ever changes, change it in all of those. `404.html` is the page G
 
 ## Pictures and fonts
 
-- `assets/dirt-monkey-logo-1360.webp`: the Dirt Monkey wordmark in the header, the hero, and the footer. The neon glow is drawn from this same file.
+- `assets/dirt-monkey-logo-1360.webp`: the Dirt Monkey wordmark in the header, at the top of the home page, and in the footer. The neon glow is drawn from this same file.
 - `assets/dirt-monkey-logo.png`: the full-size original of that wordmark. The page does not load it. Keep it for making new sizes.
-- `assets/skwish-cyan.webp` and `assets/skwish-cyan.png`: Skwish, the neon monkey in the hero and on the App page. Browsers that cannot show WebP get the PNG.
+- `assets/skwish-cyan.webp` and `assets/skwish-cyan.png`: Skwish, the neon monkey in the home page play area and on the App page. Browsers that cannot show WebP get the PNG.
 - `assets/favicon-32.png` and `assets/apple-touch-icon.png`: the browser-tab icon and the iPhone home-screen icon. `favicon.ico` at the top is the same icon, for pages (like the privacy policy) that do not name one.
 - `assets/share-card.jpg`: the share preview picture.
 - `assets/fonts/jetbrains-mono-latin.woff2`: JetBrains Mono, the only font on the site. It is served from this folder, so the page does not wait on Google Fonts. Its license is `assets/fonts/OFL.txt`.

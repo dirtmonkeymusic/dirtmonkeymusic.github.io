@@ -47,13 +47,14 @@
   }
   </script>
 </head>
-<body>
+<body class="is-home">
   <!--
     DIRT MONKEY: dirtmonkey.music
     This is a normal website made of files. Nothing to install.
 
     SITE MAP: each page is a folder with an index.html inside.
-      /            This page. The hero, a block for each section, and the email signup.
+      /            This page. The logo, the Skwish play area with a portal
+                   for each section (js/play.js), and the email signup.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
       /music/      Albums and releases.
       /shows/      Tour dates.
@@ -84,82 +85,52 @@
     </nav>
   </header>
 
-  <main id="main">
-    <section class="hero" aria-labelledby="hero-title">
+  <main id="main" class="home">
+    <section class="playground" aria-labelledby="home-title">
+      <h1 id="home-title" class="home-logo logo-mark">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="" width="1360" height="264">
+        <span class="visually-hidden">Dirt Monkey</span>
+      </h1>
+
       <!--
-        EDIT: the hero lockup.
-        "Sounds of" sits above the logo. "Plugins & Sample Packs" sits under it.
+        THE PLAY AREA. js/play.js runs it.
+        Each portal is a normal link, so it works without the game too.
+        To add a portal: copy one <li>, change the link and the word,
+        and give it a new portal-something class with a spot in css/styles.css.
       -->
-      <div class="hero-lockup">
-        <p class="hero-line">Sounds of</p>
-        <div class="hero-wordmark logo-mark">
-          <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
-          <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="" width="1360" height="264">
-        </div>
-        <h1 id="hero-title"><span class="visually-hidden">Dirt Monkey </span>Plugins &amp; Sample Packs</h1>
-      </div>
-
-      <div class="skwish-stage">
-        <!-- One cyan monkey. The magenta glow behind it is CSS, not a second picture. -->
-        <picture>
-          <source type="image/webp" srcset="/assets/skwish-cyan.webp">
-          <img class="skwish-front" src="/assets/skwish-cyan.png" alt="Dirt Monkey's neon monkey" width="512" height="512" fetchpriority="high">
-        </picture>
-      </div>
-
-      <a class="btn btn-demo btn-hero" href="#explore">Browse everything</a>
-    </section>
-
-    <section id="explore" class="section" aria-labelledby="explore-title">
-      <div class="wrap">
-        <!-- EDIT: one short block per section. Each one links to its page. -->
-        <div class="section-heading">
-          <p class="eyebrow">Everything Dirt Monkey</p>
-          <h2 id="explore-title">Pick a lane</h2>
-        </div>
-        <ul class="teaser-grid">
-          <li>
-            <a class="plugin-card teaser-card accent-cyan" href="/plugins/">
-              <p class="eyebrow">Mac plugins</p>
-              <h3>Plugins</h3>
-              <p class="desc">Wonk Factory, the flagship monophonic synth, plus mixing and mastering tools. Dip, Meter, and Frequalizer are free.</p>
-              <span class="btn btn-demo teaser-go">Shop plugins</span>
-            </a>
-          </li>
-          <li>
-            <a class="plugin-card teaser-card accent-magenta" href="/music/">
-              <p class="eyebrow">New album</p>
-              <h3>Music</h3>
-              <p class="desc">SKWISH, the new album on 19K, comes out Friday, November 13, 2026.</p>
-              <span class="btn btn-demo teaser-go">Album details</span>
-            </a>
-          </li>
-          <li>
-            <a class="plugin-card teaser-card accent-mint" href="/shows/">
-              <p class="eyebrow">On the road</p>
-              <h3>Shows</h3>
-              <p class="desc">Richmond, Sacramento, Orlando, and Port Charlotte this fall.</p>
-              <span class="btn btn-demo teaser-go">See dates</span>
-            </a>
-          </li>
-          <li>
-            <a class="plugin-card teaser-card accent-cyan" href="/merch/">
-              <p class="eyebrow">Bass Threads</p>
-              <h3>Merch</h3>
-              <p class="desc">Jerseys, hats, pins, and more, printed and shipped by Bass Threads.</p>
-              <span class="btn btn-demo teaser-go">Shop merch</span>
-            </a>
-          </li>
-          <li>
-            <a class="plugin-card teaser-card accent-magenta" href="/app/">
-              <p class="eyebrow">For iPhone</p>
-              <h3>App</h3>
-              <p class="desc">The Dirt Monkey app launches Monday, November 2, with the Skwish Run game inside.</p>
-              <span class="btn btn-demo teaser-go">About the app</span>
-            </a>
-          </li>
+      <div id="arena" class="arena" tabindex="0" role="group" aria-label="Play area" aria-describedby="arena-help">
+        <div class="arena-floor" aria-hidden="true"></div>
+        <ul class="portals">
+          <li><a class="portal portal-plugins accent-cyan" href="/plugins/"><span class="portal-label">Plugins</span></a></li>
+          <li><a class="portal portal-music accent-magenta" href="/music/"><span class="portal-label">Music</span></a></li>
+          <li><a class="portal portal-shows accent-mint" href="/shows/"><span class="portal-label">Shows</span></a></li>
+          <li><a class="portal portal-merch accent-cyan" href="/merch/"><span class="portal-label">Merch</span></a></li>
+          <li><a class="portal portal-app accent-magenta" href="/app/"><span class="portal-label">App</span></a></li>
+          <li><a class="portal portal-signup accent-mint" href="/#signup"><span class="portal-label">Sign up</span></a></li>
         </ul>
+        <div id="skwish" class="skwish" aria-hidden="true">
+          <div class="skwish-body">
+            <div class="skwish-bob">
+              <picture>
+                <source type="image/webp" srcset="/assets/skwish-cyan.webp">
+                <img class="skwish-front" src="/assets/skwish-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
+              </picture>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div class="arena-bar">
+        <p id="arena-help" class="arena-help">
+          <span class="help-keys">Steer Skwish with the arrow keys or WASD, or click a spot.</span>
+          <span class="help-touch">Tap or drag to steer Skwish.</span>
+          Park on a portal to jump in, or pick one.
+        </p>
+        <p class="arena-secrets">Secrets found: <strong data-secrets>0</strong> of 2</p>
+        <button class="sound-toggle" type="button" aria-pressed="false" data-sound>Sound off</button>
+      </div>
+      <p class="toast" role="status" aria-live="polite" data-toast></p>
     </section>
 
     <section id="signup" class="section section-signup" aria-labelledby="signup-title">
@@ -168,7 +139,7 @@
           <div class="section-heading">
             <p class="eyebrow">Email list</p>
             <h2 id="signup-title">Get the news first</h2>
-            <p class="lede">New music, show dates, plugin releases, and merch drops, straight to your inbox.</p>
+            <p class="lede">One email list for everything Dirt Monkey.</p>
           </div>
           <!-- PLACEHOLDER Kit embed. Form ID: PLACEHOLDER. Tags: newsletter, source-website. Replace this whole form with the Kit inline embed. It does not submit anywhere yet. -->
           <form class="kit-form" action="#kit-placeholder" method="post" novalidate data-kit-placeholder="true" data-kit-form-id="PLACEHOLDER" data-kit-tags="newsletter, source-website" data-kit-source="source-website">
@@ -203,6 +174,9 @@
     </div>
   </footer>
 
+  <div class="warp" aria-hidden="true" data-warp></div>
+
   <script src="/js/site.js" defer></script>
+  <script src="/js/play.js" defer></script>
 </body>
 </html>
