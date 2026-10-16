@@ -1,4 +1,4 @@
-// The beatmap maker page. The listening and note-making is in /js/chart-maker.js,
+// The beatmap maker page. The listening and chart-making is in /js/chart-maker.js,
 // the same code tools/make-beatmap.js and the game use.
 
 (function () {
@@ -18,6 +18,7 @@
   var copyBtn = resultEl.querySelector("[data-copy]");
   var downloadBtn = resultEl.querySelector("[data-download]");
   var whereEl = resultEl.querySelector("[data-where]");
+  var levelEl = resultEl.querySelector("[data-level]");
 
   var ctx = null;
   var decoded = {};
@@ -117,15 +118,14 @@
           mix: decoded.mix ? mono(decoded.mix.buf) : null,
           stems: stems,
           bpm: bpm ? Number(bpm) : null,
-          offset: offset === "" ? null : Number(offset),
-          difficulty: form.querySelector("[data-level]").value
+          offset: offset === "" ? null : Number(offset)
         });
         result.givenBpm = !!bpm;
         result.givenOffset = offset !== "";
         var from = ROLES.filter(function (r) { return decoded[r]; }).map(function (r) { return decoded[r].name; }).join(", ");
         block = ChartMaker.trackBlock(result, { audio: audioEl.value.trim(), credit: form.querySelector("[data-credit]").value.trim(), from: from });
         show();
-        say("Done. " + result.notes.length + " notes. Check them with Play with clicks.");
+        say("Done. " + ChartMaker.ORDER.map(function (d) { return result.charts[d].length + " " + d; }).join(", ") + " arrows. Check them with Play with clicks.");
       })
       .catch(function (err) {
         say(err && err.message && err.message !== "bad file" ? err.message : "One of the files could not be read.", true);
@@ -167,7 +167,11 @@
     stat("Offset", result.offset + " s", result.givenOffset ? "It sounds like " + result.offsetGuess + " s" : "Guessed from the audio");
     var d = dropList();
     stat("Length", seconds(result.duration), d.bars + " bars");
-    stat("Notes", String(result.notes.length), result.difficulty + ", from " + result.source);
+    ChartMaker.ORDER.forEach(function (name) {
+      var c = result.charts[name];
+      var holds = c.filter(function (n) { return n.length > 2; }).length;
+      stat(name.charAt(0).toUpperCase() + name.slice(1), String(c.length), (holds ? holds + " holds, " : "") + "from " + result.source);
+    });
     stat("Drops", String(d.drops.length), d.drops.map(function (x) { return "bars " + (x.from + 1) + " to " + x.to; }).join(", ") || "None found, so Skwish stays calm");
     blockEl.value = block;
     var where = audioEl.value.trim() || "/assets/audio/";
@@ -202,9 +206,15 @@
     g.fillStyle = "rgba(255,255,255,0.06)";
     for (var b = 0; b <= d.bars; b += 4) g.fillRect(Math.round(x(result.offset + b * 4 * spb)), 0, 1, h);
     var row = (h - 20) / 4;
-    result.notes.forEach(function (n) {
+    chart().forEach(function (n) {
+      var a = x(result.offset + n[0] * spb);
       g.fillStyle = LANE_COLORS[n[1]];
-      g.fillRect(x(result.offset + n[0] * spb) - 1, 10 + n[1] * row + row * 0.2, 2, row * 0.6);
+      if (n[2]) {
+        g.globalAlpha = 0.55;
+        g.fillRect(a, 10 + n[1] * row + row * 0.35, Math.max(2, x(result.offset + (n[0] + n[2]) * spb) - a), row * 0.3);
+        g.globalAlpha = 1;
+      }
+      g.fillRect(a - 1, 10 + n[1] * row + row * 0.2, 2, row * 0.6);
     });
     if (playhead >= 0) {
       g.fillStyle = "#d6ff4a";
@@ -234,7 +244,7 @@
     });
     var spb = 60 / result.bpm;
     var seen = {};
-    result.notes.forEach(function (n) {
+    chart().forEach(function (n) {
       if (seen[n[0]]) return;
       seen[n[0]] = true;
       var t = start + result.offset + n[0] * spb;
@@ -272,7 +282,19 @@
     drawPreview(-1);
   }
 
+  function chart() {
+    return (result && result.charts[levelEl.value]) || [];
+  }
+
   listenBtn.addEventListener("click", listen);
+  levelEl.addEventListener("change", function () {
+    if (playing) {
+      stop();
+      listen();
+    } else {
+      drawPreview(-1);
+    }
+  });
 
   copyBtn.addEventListener("click", function () {
     var done = function () { say("Copied. Paste it over the TRACK part of js/beatmap.js."); };

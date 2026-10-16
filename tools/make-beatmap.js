@@ -17,7 +17,6 @@
 //   --bpm N            the tempo. Leave it out to have it guessed.
 //   --offset S         seconds from the start of the file to beat 1 of bar 1.
 //                      Leave it out to have it guessed.
-//   --difficulty D     easy, normal (the default), or hard
 //   --audio PATH       what the game loads, default /assets/audio/<mix file name>
 //   --credit TEXT      the line under the Start button, default "Music by Dirt Monkey"
 //   --write            put the result into js/beatmap.js (between the TRACK lines)
@@ -173,8 +172,7 @@ function main() {
       mix: loaded.mix ? resample(loaded.mix, rate) : null,
       stems,
       bpm: opts.bpm,
-      offset: opts.offset,
-      difficulty: opts.difficulty
+      offset: opts.offset
     });
   } catch (e) {
     fail(e.message);
@@ -196,7 +194,11 @@ function main() {
   console.error("BPM:    " + result.bpm + (opts.bpm ? "  (it sounds like " + result.bpmGuess + ")" : "  (guessed)"));
   console.error("offset: " + result.offset + " s" + (opts.offset !== undefined ? "  (it sounds like " + result.offsetGuess + ")" : "  (guessed)"));
   console.error("length: " + result.duration + " s, " + bar + " bars");
-  console.error("notes:  " + result.notes.length + " on " + result.difficulty);
+  console.error("notes:  " + ChartMaker.ORDER.map((d) => {
+    const c = result.charts[d];
+    const holds = c.filter((n) => n.length > 2).length;
+    return d + " " + c.length + (holds ? " (" + holds + " holds)" : "");
+  }).join(", "));
   console.error("drops:  " + (drops.join(", ") || "none found"));
   if (opts.bpm && result.bpmGuess && Math.abs(result.bpmGuess - Number(opts.bpm)) > 0.1) {
     console.error("\nHeads up: the BPM you gave and the one it hears are different. Check the tempo in the session.");

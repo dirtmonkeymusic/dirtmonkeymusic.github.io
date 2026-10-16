@@ -3,7 +3,7 @@
 // Three things use this file:
 //   tools/beatmap/          the beatmap maker page (runs in the browser)
 //   tools/make-beatmap.js   the same thing from a terminal
-//   js/rhythm.js            the game, when js/beatmap.js has a track but no notes
+//   js/rhythm.js            the game, when js/beatmap.js has a track but no charts
 //
 // How it works: find the hits (onsets) in each stem, or in the low, mid,
 // and high bands of the full track, snap them to the beat grid from the
@@ -18,20 +18,26 @@
 
   var LANES = 4;
 
-  // Where each kind of hit lands, and which one wins when there are too many at once.
+  // Lanes are 0 left, 1 down, 2 up, 3 right. Where each kind of hit lands,
+  // and which one wins when there are too many at once.
   var VOICES = {
-    kick: { lanes: [0, 1], rank: 0 },
-    snare: { lanes: [3, 2], rank: 1 },
-    bass: { lanes: [1, 2], rank: 2 },
-    hats: { lanes: [2, 1, 3, 0], rank: 3 }
+    kick: { lanes: [0, 3], rank: 0 },
+    snare: { lanes: [2, 1], rank: 1 },
+    bass: { lanes: [1, 2, 3, 0], rank: 2 },
+    hats: { lanes: [3, 0, 2, 1], rank: 3 }
   };
 
-  // grid: smallest gap between notes, in beats. chord: most notes at once.
+  // voices: which hits become arrows, and the smallest gap between them in beats
+  //   (1 is quarter notes, 0.5 is 8ths, 0.25 is 16ths).
+  // jumps: two arrows at once ("some" means only on kick plus snare, or on beat 1).
+  // holds: long kick and bass notes become hold arrows.
   var LEVELS = {
-    easy: { grid: 1, chord: 1, voices: ["kick", "snare"] },
-    normal: { grid: 0.5, chord: 2, voices: ["kick", "snare", "bass"] },
-    hard: { grid: 0.25, chord: 2, voices: ["kick", "snare", "bass", "hats"] }
+    easy: { voices: { kick: 1, snare: 1 }, jumps: "none", holds: false },
+    normal: { voices: { kick: 0.5, snare: 0.5, bass: 1 }, jumps: "some", holds: false },
+    hard: { voices: { kick: 0.25, snare: 0.25, bass: 0.5 }, jumps: "some", holds: true },
+    skwished: { voices: { kick: 0.25, snare: 0.25, bass: 0.25, hats: 0.5 }, jumps: "all", holds: true }
   };
+  var ORDER = ["easy", "normal", "hard", "skwished"];
 
   var FRAME_RATE = 200;
   var ANALYSIS_RATE = 22050;
@@ -99,6 +105,10 @@
     return y;
   }
 
+  function aboveSub(x, sr) {
+    return biquad(biquad(x, sr, "highpass", 150, 0.71), sr, "highpass", 150, 0.71);
+  }
+
   function percentile(arr, p) {
     if (!arr.length) return 0;
     var step = Math.max(1, Math.floor(arr.length / 20000));
@@ -158,7 +168,12 @@
       var hi = Math.min(n, f + W + 1);
       var mean = (sum[hi] - sum[lo]) / (hi - lo);
       if (v < mean * 1.5) continue;
-      out.push({ t: f * en.hop, w: v * Math.sqrt(e[f] / ref) });
+      // How long the hit rings before it falls to a quarter of its loudest.
+      var top = 0;
+      for (var p = f; p < Math.min(n, f + R); p++) top = Math.max(top, e[p]);
+      var end = f + R;
+      while (end < n && e[end] >= top * 0.25) end++;
+      out.push({ t: f * en.hop, w: v * Math.sqrt(e[f] / ref), sus: (end - f) * en.hop });
     }
     return { list: out, frames: en };
   }
@@ -252,46 +267,68 @@
 
   function makeNotes(voices, bpm, offset, level) {
     var spb = 60 / bpm;
-    var grid = level.grid;
-    var tol = Math.min(0.05, grid * spb * 0.35);
+    var grid = 1;
     var byBeat = {};
-    level.voices.forEach(function (name) {
+    Object.keys(level.voices).forEach(function (name) {
       var list = voices[name];
       if (!list) return;
+      var vg = level.voices[name];
+      var tol = Math.min(0.05, vg * spb * 0.35);
+      grid = Math.min(grid, vg);
       strongEnough(list).forEach(function (o) {
         var bf = (o.t - offset) / spb;
-        var q = Math.round(bf / grid) * grid;
+        var q = Math.round(bf / vg) * vg;
         if (q < 0 || Math.abs(bf - q) * spb > tol) return;
         var key = q.toFixed(3);
         var slot = byBeat[key] || (byBeat[key] = { beat: q, hits: {} });
-        if (!slot.hits[name] || slot.hits[name] < o.w) slot.hits[name] = o.w;
+        if (!slot.hits[name] || slot.hits[name].w < o.w) slot.hits[name] = o;
       });
     });
 
     var turn = {};
+    var busy = [-1, -1, -1, -1];
+    var last = { lane: -1, beat: -9 };
+    var holding = -1;
     var notes = [];
     Object.keys(byBeat)
       .map(function (k) { return byBeat[k]; })
       .sort(function (a, b) { return a.beat - b.beat; })
       .forEach(function (slot) {
         var names = Object.keys(slot.hits).sort(function (a, b) { return VOICES[a].rank - VOICES[b].rank; });
+        var jump = level.jumps === "all" ||
+          (level.jumps === "some" && ((slot.hits.kick && slot.hits.snare) || (slot.beat % 4 === 0 && names.length > 1)));
         var used = {};
-        names.slice(0, level.chord).forEach(function (name) {
+        names.slice(0, jump ? 2 : 1).forEach(function (name) {
           var lanes = VOICES[name].lanes;
           var t = turn[name] || 0;
           var lane = -1;
-          for (var i = 0; i < lanes.length; i++) {
-            var pick = lanes[(t + i) % lanes.length];
-            if (!used[pick]) {
+          for (var pass = 0; pass < 2 && lane < 0; pass++) {
+            for (var i = 0; i < lanes.length; i++) {
+              var pick = lanes[(t + i) % lanes.length];
+              if (used[pick] || busy[pick] > slot.beat) continue;
+              // No repeated arrow in a row on the lighter levels, when there is another choice.
+              if (pass === 0 && level.jumps !== "all" && pick === last.lane && slot.beat - last.beat < 1) continue;
               lane = pick;
               turn[name] = t + i + 1;
               break;
             }
           }
-          for (var l = 0; lane < 0 && l < LANES; l++) if (!used[l]) lane = l;
+          for (var l = 0; lane < 0 && l < LANES; l++) if (!used[l] && busy[l] <= slot.beat) lane = l;
           if (lane < 0) return;
           used[lane] = true;
-          notes.push([Math.round(slot.beat * 1000) / 1000, lane]);
+          var hit = slot.hits[name];
+          var len = hit.sus / spb;
+          var beat = Math.round(slot.beat * 1000) / 1000;
+          if (level.holds && (name === "kick" || name === "bass") && len >= 1 && holding < slot.beat) {
+            len = Math.min(4, Math.floor(len * 2) / 2);
+            notes.push([beat, lane, len]);
+            busy[lane] = slot.beat + len + 0.5;
+            holding = slot.beat + len;
+          } else {
+            notes.push([beat, lane]);
+            busy[lane] = slot.beat + grid * 0.99;
+          }
+          last = { lane: lane, beat: slot.beat };
         });
       });
     return notes;
@@ -299,7 +336,10 @@
 
   // ---------- drops and sections
 
-  function makeSections(frames, bpm, offset, duration, notes) {
+  // A bar scores by how loud it is above the sub (a long sub note alone is not a drop)
+  // plus how many kick, bass, and hat hits it has. Snares are left out because
+  // builds are mostly snare rolls.
+  function makeSections(frames, voices, bpm, offset, duration, notes) {
     var spb = 60 / bpm;
     var bar = spb * 4;
     var bars = Math.max(1, Math.ceil((duration - Math.max(0, offset)) / bar));
@@ -312,8 +352,19 @@
       for (var i = from; i < to; i++) s += e[i];
       db.push(10 * Math.log10(s / Math.max(1, to - from) + 1e-12));
     }
-    var loud = percentile(db.slice().sort(function (a, b) { return a - b; }), 0.9);
-    var isDrop = db.map(function (v) { return v >= loud - 3; });
+    var busy = [];
+    for (var z = 0; z < bars; z++) busy.push(0);
+    Object.keys(voices).forEach(function (name) {
+      if (name === "snare") return;
+      strongEnough(voices[name]).forEach(function (o) {
+        var at = Math.floor((o.t - offset) / bar);
+        if (at >= 0 && at < bars) busy[at] += Math.sqrt(o.w);
+      });
+    });
+    var most = percentile(busy.slice(), 0.95) || 1;
+    var score = db.map(function (v, k) { return v + 6 * Math.min(1, busy[k] / most); });
+    var loud = percentile(score.slice(), 0.9);
+    var isDrop = score.map(function (v) { return v >= loud - 3; });
     for (var g = 1; g < bars - 1; g++) {
       if (!isDrop[g] && isDrop[g - 1] && isDrop[g + 1]) isDrop[g] = true;
     }
@@ -358,11 +409,9 @@
   //   stems        { kick, snare, bass, hats }, mono Float32Arrays, all lined up with the mix
   //   bpm          the tempo. Leave out to guess it.
   //   offset       seconds to the first downbeat. Leave out (or "auto") to guess it.
-  //   difficulty   "easy", "normal" (the default), or "hard"
   //   bpmRange     [low, high] for guessing, one octave. Default [95, 190].
   function analyze(options) {
     var sr = options.sampleRate;
-    var level = LEVELS[options.difficulty] || LEVELS.normal;
     var stems = options.stems || {};
     var voices = {};
     var frames = null;
@@ -375,14 +424,15 @@
       duration = Math.max(duration, ds.x.length / ds.sr);
       var res = onsets(ds.x, ds.sr);
       voices[name] = res.list;
-      if (!frames) frames = res.frames;
-      else addFrames(frames, res.frames);
+      var above = energy(aboveSub(ds.x, ds.sr), ds.sr);
+      if (!frames) frames = above;
+      else addFrames(frames, above);
     });
 
     if (options.mix && options.mix.length) {
       var m = downsample(options.mix, sr);
       duration = Math.max(duration, m.x.length / m.sr);
-      frames = energy(m.x, m.sr);
+      frames = energy(aboveSub(m.x, m.sr), m.sr);
       if (!voices.kick) voices.kick = onsets(biquad(biquad(m.x, m.sr, "lowpass", 120, 0.71), m.sr, "lowpass", 120, 0.71), m.sr).list;
       if (!voices.snare) voices.snare = onsets(biquad(m.x, m.sr, "bandpass", 1800, 0.9), m.sr).list;
       if (!voices.hats) voices.hats = onsets(biquad(biquad(m.x, m.sr, "highpass", 7000, 0.71), m.sr, "highpass", 7000, 0.71), m.sr).list;
@@ -401,8 +451,9 @@
     var hasOffset = options.offset !== undefined && options.offset !== null && options.offset !== "" && options.offset !== "auto" && isFinite(Number(options.offset));
     var offset = hasOffset ? Number(options.offset) : offsetGuess;
 
-    var notes = makeNotes(voices, bpm, offset, level);
-    var sections = makeSections(frames, bpm, offset, duration, notes);
+    var charts = {};
+    ORDER.forEach(function (name) { charts[name] = makeNotes(voices, bpm, offset, LEVELS[name]); });
+    var sections = makeSections(frames, voices, bpm, offset, duration, charts.easy.concat(charts.skwished).sort(function (a, b) { return a[0] - b[0]; }));
     var counts = {};
     Object.keys(voices).forEach(function (k) { counts[k] = voices[k].length; });
     return {
@@ -411,10 +462,9 @@
       bpmGuess: bpmGuess,
       offsetGuess: offsetGuess,
       duration: Math.round(duration * 100) / 100,
-      difficulty: options.difficulty && LEVELS[options.difficulty] ? options.difficulty : "normal",
       source: source,
       hits: counts,
-      notes: notes,
+      charts: charts,
       sections: sections
     };
   }
@@ -434,6 +484,23 @@
     return JSON.stringify(String(str));
   }
 
+  // A chart as lines of JavaScript, one line per bar.
+  function chartLines(notes, indent) {
+    var bars = [];
+    notes.forEach(function (n) {
+      var b = Math.floor(n[0] / 4);
+      var last = bars[bars.length - 1];
+      if (!last || last.bar !== b) bars.push(last = { bar: b, notes: [] });
+      last.notes.push("[" + n.join(", ") + "]");
+    });
+    var lines = [];
+    bars.forEach(function (b, i) {
+      lines.push(indent + "// bar " + (b.bar + 1));
+      lines.push(indent + b.notes.join(", ") + (i < bars.length - 1 ? "," : ""));
+    });
+    return lines;
+  }
+
   // The track block, ready to paste between the TRACK lines in js/beatmap.js.
   function trackBlock(result, info) {
     info = info || {};
@@ -444,26 +511,19 @@
     lines.push("    bpm: " + result.bpm + ",");
     lines.push("    offset: " + result.offset + ",");
     lines.push("    credit: " + q(info.credit || "Music by Dirt Monkey") + ",");
-    lines.push("    difficulty: " + q(result.difficulty) + ",");
     lines.push("");
     lines.push("    // Made by the beatmap maker from " + result.source + (info.from ? " (" + info.from + ")" : "") + ".");
-    lines.push("    // Delete sections and notes to have the game make them from the audio instead.");
+    lines.push("    // Delete sections or any chart to have the game make it from the audio instead.");
     lines.push("    sections: [");
     lines.push(result.sections.map(function (s) { return "      { type: " + q(s.type) + ", bars: " + s.bars + " }"; }).join(",\n"));
     lines.push("    ],");
-    lines.push("    notes: [");
-    var bars = [];
-    result.notes.forEach(function (n) {
-      var b = Math.floor(n[0] / 4);
-      var last = bars[bars.length - 1];
-      if (!last || last.bar !== b) bars.push(last = { bar: b, notes: [] });
-      last.notes.push("[" + n[0] + ", " + n[1] + "]");
+    lines.push("    charts: {");
+    ORDER.forEach(function (name, i) {
+      lines.push("      " + name + ": [");
+      lines.push.apply(lines, chartLines(result.charts[name], "        "));
+      lines.push("      ]" + (i < ORDER.length - 1 ? "," : ""));
     });
-    bars.forEach(function (b, i) {
-      lines.push("      // bar " + (b.bar + 1));
-      lines.push("      " + b.notes.join(", ") + (i < bars.length - 1 ? "," : ""));
-    });
-    lines.push("    ]");
+    lines.push("    }");
     lines.push("  },");
     lines.push("  // <<< TRACK");
     return lines.join("\n");
@@ -483,6 +543,8 @@
     analyze: analyze,
     toMono: toMono,
     trackBlock: trackBlock,
+    chartLines: chartLines,
+    ORDER: ORDER,
     spliceBeatmap: spliceBeatmap,
     LEVELS: LEVELS
   };

@@ -32,7 +32,7 @@
       <div class="section-heading">
         <p class="eyebrow">For Skwish Drop</p>
         <h1 class="page-title">Beatmap maker</h1>
-        <p class="lede">Turn a finished track into the notes for the game. Add the kick, snare, and bass stems for a cleaner chart. Everything happens in this browser. Nothing gets uploaded.</p>
+        <p class="lede">Turn a finished track into the arrows for the game, all four difficulties at once. Add the kick, snare, and bass stems for cleaner charts. Everything happens in this browser. Nothing gets uploaded.</p>
       </div>
 
       <form class="tool-card" data-form novalidate>
@@ -46,22 +46,22 @@
           <div class="file-row">
             <label for="f-kick">Kick stem</label>
             <input id="f-kick" type="file" accept="audio/*,.wav,.mp3" data-role="kick">
-            <p class="file-note" data-note="kick">Optional. Kicks land on the left lanes.</p>
+            <p class="file-note" data-note="kick">Optional. Kicks land on the left and right arrows, and long kicks become holds.</p>
           </div>
           <div class="file-row">
             <label for="f-snare">Snare stem</label>
             <input id="f-snare" type="file" accept="audio/*,.wav,.mp3" data-role="snare">
-            <p class="file-note" data-note="snare">Optional. Snares land on the right lanes.</p>
+            <p class="file-note" data-note="snare">Optional. Snares land on the up and down arrows.</p>
           </div>
           <div class="file-row">
             <label for="f-bass">Bass stem</label>
             <input id="f-bass" type="file" accept="audio/*,.wav,.mp3" data-role="bass">
-            <p class="file-note" data-note="bass">Optional. Bass hits fill the middle lanes.</p>
+            <p class="file-note" data-note="bass">Optional. Bass hits fill in on Normal and up, and long bass notes become holds.</p>
           </div>
           <div class="file-row">
             <label for="f-hats">Hats stem</label>
             <input id="f-hats" type="file" accept="audio/*,.wav,.mp3" data-role="hats">
-            <p class="file-note" data-note="hats">Optional, and only used on hard.</p>
+            <p class="file-note" data-note="hats">Optional, and only used on Skwished.</p>
           </div>
           <p class="tool-hint">Export the stems from the same session as the full track, all starting at the same moment, so they line up.</p>
         </fieldset>
@@ -75,14 +75,6 @@
           <div class="field">
             <label for="f-offset">Offset (seconds)</label>
             <input id="f-offset" type="number" inputmode="decimal" step="0.001" placeholder="Guess it" data-offset>
-          </div>
-          <div class="field">
-            <label for="f-level">Difficulty</label>
-            <select id="f-level" data-level>
-              <option value="easy">Easy: quarter notes, one at a time</option>
-              <option value="normal" selected>Normal: 8th notes, up to two at once</option>
-              <option value="hard">Hard: 16th notes, hats too</option>
-            </select>
           </div>
           <p class="tool-hint">Offset is the time from the very start of the file to beat 1 of bar 1. Leave either box empty to have it guessed from the audio.</p>
         </fieldset>
@@ -106,21 +98,30 @@
       <section class="tool-card tool-result" aria-labelledby="result-title" data-result hidden>
         <h2 id="result-title" class="tool-result-title">The beatmap</h2>
         <dl class="tool-stats" data-stats></dl>
+        <div class="field tool-level">
+          <label for="f-level">Preview and clicks for</label>
+          <select id="f-level" data-level>
+            <option value="easy">Easy: quarter notes, one arrow at a time</option>
+            <option value="normal" selected>Normal: 8th notes and some jumps</option>
+            <option value="hard">Hard: 16th notes and holds</option>
+            <option value="skwished">Skwished: everything, hats too</option>
+          </select>
+        </div>
         <div class="tool-preview">
-          <canvas data-preview role="img" aria-label="The notes laid out across the whole song, one row per lane, with the drops shaded pink"></canvas>
+          <canvas data-preview role="img" aria-label="The arrows laid out across the whole song, one row per lane (left, down, up, right), with holds as long bars and the drops shaded pink"></canvas>
         </div>
         <div class="tool-actions">
           <button type="button" class="btn btn-demo" data-listen aria-pressed="false">Play with clicks</button>
           <button type="button" class="btn btn-demo" data-copy>Copy the track block</button>
           <button type="button" class="btn btn-buy" data-download>Download beatmap.js</button>
         </div>
-        <p class="tool-hint">Play with clicks plays the track with a tick on every note. If the ticks sit on the hits, the BPM and offset are right.</p>
+        <p class="tool-hint">Play with clicks plays the track with a tick on every arrow of the difficulty above. If the ticks sit on the hits, the BPM and offset are right.</p>
         <label class="tool-block-label" for="f-block">The track block, for the TRACK part of js/beatmap.js</label>
         <textarea id="f-block" class="tool-block" rows="14" readonly spellcheck="false" data-block></textarea>
         <ol class="tool-steps">
           <li>Put the track in the site at <code data-where>/assets/audio/</code>.</li>
           <li>Swap in the downloaded <code>beatmap.js</code> at <code>js/beatmap.js</code>, or paste the track block over the lines between <code>&gt;&gt;&gt; TRACK</code> and <code>&lt;&lt;&lt; TRACK</code>.</li>
-          <li>Open <a class="text-link" href="/play/">the game</a> and play it. Tweak any note by hand in <code>js/beatmap.js</code> if you want.</li>
+          <li>Open <a class="text-link" href="/play/">the game</a> and play it. Tweak any arrow by hand in <code>js/beatmap.js</code> if you want.</li>
         </ol>
       </section>
     </div>
