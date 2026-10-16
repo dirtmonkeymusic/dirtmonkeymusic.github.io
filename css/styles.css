@@ -1274,7 +1274,6 @@ h2,
 }
 
 .show-row {
-  --accent: var(--cyan);
   display: grid;
   grid-template-columns: 120px 1fr auto;
   align-items: center;
