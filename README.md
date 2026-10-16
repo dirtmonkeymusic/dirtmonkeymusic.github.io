@@ -45,16 +45,20 @@ To move a portal, change its `--x` and `--y` in `css/styles.css` (look for `.por
 
 ## Skwish Drop, the game at /play/
 
-A rhythm game in the browser. Notes fall down four lanes toward a glowing line, in time with a bass beat. `js/rhythm.js` runs it (plain JavaScript, a canvas, and the Web Audio API, with no outside code). `js/beatmap.js` holds the song and every note.
+An arrow rhythm game in the browser, in the style of a dance-pad game. Arrows rise up four lanes (left, down, up, right) to target arrows at the top, in time with a bass beat. `js/rhythm.js` runs it (plain JavaScript, a canvas, and the Web Audio API, with no outside code). `js/beatmap.js` holds the song and the charts.
 
 **How to play**
 
-- Press **Start**. A short count-in plays, then the notes start falling.
-- Hit each note as it touches the glowing line. On a computer the lanes are **D F J K** from left to right (the arrow keys work too). On a phone or tablet, tap the lane. Two thumbs work best.
-- Right on time is **Perfect** (300 points). A little early or late is **Good** (120). Too far off, or no press at all, is a **Miss**. Tapping an empty lane costs nothing.
-- Every 10 hits in a row raises the multiplier, up to four times the points. A miss resets it and Skwish winces.
-- When **DROP!** shows up, the notes get busy, the screen pulses with the bass, and Skwish goes wild.
-- At the end you get a grade (S, A, B, C, or D), your score, accuracy, best combo, and a **Play again** button. Your best score is saved in the browser on that device.
+- Pick a difficulty (**Easy**, **Normal**, **Hard**, or **Skwished**), then press **Start**. A short count-in plays, then the arrows start rising.
+- Press the matching arrow the moment it lands on its target. On a computer use the **arrow keys** or **A S W D** (A left, S down, W up, D right). On a phone or tablet, tap the four big pads at the bottom. Two arrows at once is a jump: hit both.
+- Timing is judged **Marvelous**, **Perfect**, **Great**, or **Good**, from dead on to a bit off. Great and Good also say if you were early or late. An arrow that goes by is a **Miss**. Pressing with no arrow there costs nothing.
+- **Holds** (Hard and Skwished): an arrow with a tail. Press on the head and keep holding until the tail runs out for an **OK**. Let go too soon and it is **NG**.
+- The **life bar** fills with good hits and drains with misses. Empty means the stage fails. Easy is the most forgiving.
+- The **combo** counts hits in a row. At 25 the lanes pulse with the beat, at 50 Skwish dances harder and the targets glow, at 100 the edges light up, and at 200 the combo goes rainbow. The drops turn it all up.
+- At the end you get a score out of 1,000,000, a grade (S, A, B, C, or D), and a full combo badge if nothing was missed (Marvelous, Perfect, Great, or plain full combo, by your worst hit). Each difficulty keeps its own best score in the browser on that device.
+- **Retry** starts the song over at once: the button in the corner while playing, on the pause screen, on the results screen, or the **R** key when paused or on results.
+- **Speed** (1x to 4x) sets how fast the arrows scroll. It does not change the music.
+- **Offset and Calibrate:** if hits feel late or early on a device, press **Calibrate** and tap along with 16 clicks. The game measures the delay and saves it. The **-5** and **+5** buttons fine-tune it, and the results screen offers a **Nudge offset** button when your hits were on average 15 ms or more off.
 - **Esc** or **P** pauses (so does switching tabs). **M** or the **Sound** button turns the sound on and off.
 - If a visitor's device asks for reduced motion, the screen does not shake or flash and Skwish bounces without spinning. The game plays the same.
 
@@ -66,30 +70,30 @@ A rhythm game in the browser. Notes fall down four lanes toward a glowing line, 
 
 1. Put the file in the site, for example `assets/audio/skwish-drop.mp3`. MP3 or WAV both work. One steady tempo, start to finish.
 2. In `track`, set `audio: "/assets/audio/skwish-drop.mp3"`, `bpm` to the tempo (for example `145`), and `offset` to the seconds from the very start of the file to beat 1 of bar 1 (`0` if the file starts right on it).
-3. Open `/play/`. With no notes listed, the game listens to the track when Start is pressed (well under a second) and makes the notes and the drops itself.
+3. Open `/play/`. With no charts listed, the game listens to the track when Start is pressed (well under a second) and makes all four charts and the drops itself.
 
 Not sure of the BPM or offset? Set either one to `"auto"` (or leave it out) and the game, or the beatmap maker below, works it out from the audio.
 
-**Try a track without editing anything:** open `/play/?audio=/assets/audio/skwish-drop.mp3&bpm=145&offset=0`. Leave out `bpm` or `offset` to have them guessed. Each track keeps its own best score. If the file is missing or will not play, the game says so under the Start button and plays the placeholder beat instead.
+**Try a track without editing anything:** open `/play/?audio=/assets/audio/skwish-drop.mp3&bpm=145&offset=0`. Leave out `bpm` or `offset` to have them guessed. Each track keeps its own best scores. If the file is missing or will not play, the game says so under the Start button and plays the placeholder beat instead.
 
-### Make a cleaner chart from the stems
+### Make cleaner charts from the stems
 
-The notes the game makes from the full track are good. Notes made from the stems are better, because a kick stem has nothing but kicks in it. The beatmap maker does this, and it can also guess the BPM and offset (it was right to the hundredth of a BPM and within a few milliseconds on test tracks from 141 to 150 BPM).
+The charts the game makes from the full track are good. Charts made from the stems are better, because a kick stem has nothing but kicks in it. The beatmap maker does this, and it can also guess the BPM and offset (it was right to the hundredth of a BPM and within a few milliseconds on test tracks from 141 to 150 BPM).
 
-- **In a browser, no install:** run the site on your computer (see below) and open `http://127.0.0.1:8741/tools/beatmap/`. Pick the full track and any stems (kick, snare, bass, hats), press **Make the beatmap**, then **Play with clicks** to hear a tick on every note. If the ticks sit on the hits, it is right. **Download beatmap.js** gives you the whole file with the new track in it. Put it at `js/beatmap.js`.
+- **In a browser, no install:** run the site on your computer (see below) and open `http://127.0.0.1:8741/tools/beatmap/`. Pick the full track and any stems (kick, snare, bass, hats), press **Make the beatmap**, then **Play with clicks** to hear a tick on every arrow (pick which difficulty to hear and see). If the ticks sit on the hits, it is right. **Download beatmap.js** gives you the whole file with the new track in it. Put it at `js/beatmap.js`.
 - **In a terminal:** needs Node. WAV works as is. MP3 needs [ffmpeg](https://ffmpeg.org).
 
 ```
 node tools/make-beatmap.js --mix skwish-drop.wav --kick kick.wav --snare snare.wav --bass bass.wav --bpm 145 --write
 ```
 
-`--write` puts the result straight into `js/beatmap.js`. Leave it off to print the track block instead. Leave out `--bpm` or add `--offset 0.12` as needed, and add `--difficulty easy` or `--difficulty hard` for a lighter or busier chart. `--audio` sets the address the game loads (it defaults to `/assets/audio/` plus the mix's file name).
+`--write` puts the result straight into `js/beatmap.js`. Leave it off to print the track block instead. Leave out `--bpm` or add `--offset 0.12` as needed. It always makes all four difficulties. `--audio` sets the address the game loads (it defaults to `/assets/audio/` plus the mix's file name).
 
-Export the stems from the same session as the full track, all starting at the same moment, so they line up. Each kind of hit gets its own lanes: kicks on the left (D, F), snares on the right (K, J), bass in the middle, hats anywhere (hard only). The loudest long stretches become the drops, where Skwish goes wild.
+Export the stems from the same session as the full track, all starting at the same moment, so they line up. Each difficulty uses more of the music: Easy follows the kick and snare on quarter notes, Normal adds the bass and 8th notes, Hard goes to 16th notes, and Skwished adds the hats and more jumps. Kicks land on the left and right arrows, snares on up and down. On Hard and Skwished, long kick and bass notes become holds. The loudest, busiest long stretches become the drops, where Skwish goes wild.
 
-The chart it writes is plain lines in `js/beatmap.js`, so any note can be moved or deleted by hand. Each note is `[beat, lane]`: beat 0 is beat 1 of bar 1, `4.5` is the "and" right after beat 4, and lanes are 0 to 3 from left to right. If every hit feels a little late or early, nudge `inputOffsetMs`: raise it (try 30) if hits feel late, lower it if they feel early.
+The charts it writes are plain lines in `js/beatmap.js` (`charts: { easy: [...], normal: [...], hard: [...], skwished: [...] }`), so any arrow can be moved or deleted by hand. A tap arrow is `[beat, lane]` and a hold is `[beat, lane, beats]`: beat 0 is beat 1 of bar 1, `4.5` is the "and" right after beat 4, and lanes are 0 left, 1 down, 2 up, 3 right. Delete a chart and the game makes that one from the audio. Players set their own offset in the game. `inputOffsetMs` adds to it for everyone, so only change it if every hit feels late (raise it, try 30) or early (lower it) on most devices.
 
-The listening code is `js/chart-maker.js`. The game, the page, and the terminal tool all share it, so they give the same notes.
+The listening code is `js/chart-maker.js`. The game, the page, and the terminal tool all share it, so they give the same charts.
 
 ## Look at the site on your computer
 
@@ -261,7 +265,7 @@ A square picture fits the card best.
 
 Each page is the `index.html` inside its folder. Look for comments that say `EDIT`.
 
-- **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The track, tempo, offset, and notes are in `js/beatmap.js`. The line under the Start button is `credit` in the track.
+- **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The track, tempo, offset, and charts are in `js/beatmap.js`. The line under the Start button is `credit` in the track.
 - **Home (`index.html`):** the logo, the play area (one portal per section, each a normal link), and the email signup. The words under the play area are the steering hints.
 - **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
 - **Music (`music/index.html`):** when SKWISH is out, replace the two "link coming November 13" placeholders with real links. The comment above them shows the line to paste.
