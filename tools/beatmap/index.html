@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beatmap maker for Skwish Drop</title>
+  <meta name="description" content="Turn a track and its stems into the note chart for Skwish Drop.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#07060a">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/tools/beatmap/tool.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="logo-mark logo-mark-small">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264">
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="/play/" class="nav-play">Back to the game</a>
+    </nav>
+  </header>
+
+  <main id="main" class="section section-first">
+    <div class="wrap wrap-narrow">
+      <div class="section-heading">
+        <p class="eyebrow">For Skwish Drop</p>
+        <h1 class="page-title">Beatmap maker</h1>
+        <p class="lede">Turn a finished track into the notes for the game. Add the kick, snare, and bass stems for a cleaner chart. Everything happens in this browser. Nothing gets uploaded.</p>
+      </div>
+
+      <form class="tool-card" data-form novalidate>
+        <fieldset class="tool-files">
+          <legend>Audio (MP3 or WAV)</legend>
+          <div class="file-row">
+            <label for="f-mix">Full track</label>
+            <input id="f-mix" type="file" accept="audio/*,.wav,.mp3" data-role="mix">
+            <p class="file-note" data-note="mix">Gives the length and the drops. This is the file the game plays.</p>
+          </div>
+          <div class="file-row">
+            <label for="f-kick">Kick stem</label>
+            <input id="f-kick" type="file" accept="audio/*,.wav,.mp3" data-role="kick">
+            <p class="file-note" data-note="kick">Optional. Kicks land on the left lanes.</p>
+          </div>
+          <div class="file-row">
+            <label for="f-snare">Snare stem</label>
+            <input id="f-snare" type="file" accept="audio/*,.wav,.mp3" data-role="snare">
+            <p class="file-note" data-note="snare">Optional. Snares land on the right lanes.</p>
+          </div>
+          <div class="file-row">
+            <label for="f-bass">Bass stem</label>
+            <input id="f-bass" type="file" accept="audio/*,.wav,.mp3" data-role="bass">
+            <p class="file-note" data-note="bass">Optional. Bass hits fill the middle lanes.</p>
+          </div>
+          <div class="file-row">
+            <label for="f-hats">Hats stem</label>
+            <input id="f-hats" type="file" accept="audio/*,.wav,.mp3" data-role="hats">
+            <p class="file-note" data-note="hats">Optional, and only used on hard.</p>
+          </div>
+          <p class="tool-hint">Export the stems from the same session as the full track, all starting at the same moment, so they line up.</p>
+        </fieldset>
+
+        <fieldset class="tool-fields">
+          <legend>Timing</legend>
+          <div class="field">
+            <label for="f-bpm">BPM</label>
+            <input id="f-bpm" type="number" inputmode="decimal" min="60" max="250" step="0.01" placeholder="Guess it" data-bpm>
+          </div>
+          <div class="field">
+            <label for="f-offset">Offset (seconds)</label>
+            <input id="f-offset" type="number" inputmode="decimal" step="0.001" placeholder="Guess it" data-offset>
+          </div>
+          <div class="field">
+            <label for="f-level">Difficulty</label>
+            <select id="f-level" data-level>
+              <option value="easy">Easy: quarter notes, one at a time</option>
+              <option value="normal" selected>Normal: 8th notes, up to two at once</option>
+              <option value="hard">Hard: 16th notes, hats too</option>
+            </select>
+          </div>
+          <p class="tool-hint">Offset is the time from the very start of the file to beat 1 of bar 1. Leave either box empty to have it guessed from the audio.</p>
+        </fieldset>
+
+        <fieldset class="tool-fields">
+          <legend>In the game</legend>
+          <div class="field">
+            <label for="f-audio">Track address</label>
+            <input id="f-audio" type="text" spellcheck="false" placeholder="/assets/audio/skwish-drop.mp3" data-audio>
+          </div>
+          <div class="field">
+            <label for="f-credit">Credit line</label>
+            <input id="f-credit" type="text" value="Music by Dirt Monkey" data-credit>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-buy btn-wide tool-go" data-go>Make the beatmap</button>
+        <p class="tool-status" role="status" aria-live="polite" data-status>Pick the full track, the stems, or both.</p>
+      </form>
+
+      <section class="tool-card tool-result" aria-labelledby="result-title" data-result hidden>
+        <h2 id="result-title" class="tool-result-title">The beatmap</h2>
+        <dl class="tool-stats" data-stats></dl>
+        <div class="tool-preview">
+          <canvas data-preview role="img" aria-label="The notes laid out across the whole song, one row per lane, with the drops shaded pink"></canvas>
+        </div>
+        <div class="tool-actions">
+          <button type="button" class="btn btn-demo" data-listen aria-pressed="false">Play with clicks</button>
+          <button type="button" class="btn btn-demo" data-copy>Copy the track block</button>
+          <button type="button" class="btn btn-buy" data-download>Download beatmap.js</button>
+        </div>
+        <p class="tool-hint">Play with clicks plays the track with a tick on every note. If the ticks sit on the hits, the BPM and offset are right.</p>
+        <label class="tool-block-label" for="f-block">The track block, for the TRACK part of js/beatmap.js</label>
+        <textarea id="f-block" class="tool-block" rows="14" readonly spellcheck="false" data-block></textarea>
+        <ol class="tool-steps">
+          <li>Put the track in the site at <code data-where>/assets/audio/</code>.</li>
+          <li>Swap in the downloaded <code>beatmap.js</code> at <code>js/beatmap.js</code>, or paste the track block over the lines between <code>&gt;&gt;&gt; TRACK</code> and <code>&lt;&lt;&lt; TRACK</code>.</li>
+          <li>Open <a class="text-link" href="/play/">the game</a> and play it. Tweak any note by hand in <code>js/beatmap.js</code> if you want.</li>
+        </ol>
+      </section>
+    </div>
+  </main>
+
+  <script src="/js/chart-maker.js" defer></script>
+  <script src="/tools/beatmap/maker.js" defer></script>
+</body>
+</html>
