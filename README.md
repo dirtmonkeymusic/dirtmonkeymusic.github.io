@@ -8,8 +8,8 @@ This is the Dirt Monkey website, made for the address **https://dirtmonkey.music
 | --- | --- | --- |
 | `/` | `index.html` | The bubble logo, a neon button for each section, Skwish Pong, then the email signup |
 | `/plugins/` | `plugins/index.html` | The whole plugin shop: plugins, The Everything Suite, the Founders Suite, sample packs, how demos work, and the FAQ |
-| `/music/` | `music/index.html` | SKWISH, the new album on 19K, out November 13, 2026. Listen links are placeholders until release day. |
-| `/shows/` | `shows/index.html` | Fall 2026 dates: Richmond, VA (Oct 31), Sacramento (Nov 7), Orlando (Nov 8), Port Charlotte, FL (Nov 21). Ticket links are placeholders. |
+| `/music/` | `music/index.html` | Like the app's Music tab: the SKWISH card with a countdown, the released songs with 30-second previews, and Connect links |
+| `/shows/` | `shows/index.html` | Like the app's Shows tab: tour dates live from Bandsintown, with saved dates as a fallback |
 | `/merch/` | `merch/index.html` | Merch cards from the Bass Threads store, plus a Shop all merch button |
 | `/app/` | `app/index.html` | The Dirt Monkey iPhone app, coming November 2 |
 | `/play/` | `play/index.html` | Skwish Drop, a bass-drop rhythm game starring Skwish |
@@ -266,8 +266,8 @@ Each page is the `index.html` inside its folder. Look for comments that say `EDI
 - **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The track, tempo, offset, and charts are in `js/beatmap.js`. The line under the Start button is `credit` in the track.
 - **Home (`index.html`):** the logo, the section buttons, Skwish Pong, and the email signup.
 - **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
-- **Music (`music/index.html`):** when SKWISH is out, replace the two "link coming November 13" placeholders with real links. The comment above them shows the line to paste.
-- **Shows (`shows/index.html`):** one block per show. Swap "Tickets coming soon" for a ticket link and "Venue to be announced" for the venue. Each block has `data-show-date` (the show day) and `data-show-tz` (the city's time zone). A show drops off the list at 6 AM local time the next morning. When none are left, the page says "New dates coming soon".
+- **Music (`music/index.html`, `js/music.js`):** the same songs as the app's `ReleasedTracks.swift`, newest first. To add a song, copy a `<li class="track">` block, set `data-song-id` (the Apple Music "?i=" number), the links, and a cover in `assets/music/` (240 px WebP). The play button finds the preview through the iTunes Lookup API. The Pre-save button is a placeholder (the Spotify artist page); swap in the real link in the page, and the release-day Listen link (`LISTEN_URL`) in `js/music.js`. On November 13 the card says "Out now" and the button says Listen. Try `?now=2026-11-13T09:00:00` to see it.
+- **Shows (`shows/index.html`, `js/shows.js`):** the list loads live from Bandsintown with the app's `app_id`, so new dates show up on their own. The last good answer is saved in the browser for 5 minutes (and used for up to a week if Bandsintown is down). The blocks written in the page are only the fallback, shown if Bandsintown can't be reached. Each has `data-show-date` (the show day) and `data-show-tz` (the city's time zone), and drops off at 6 AM local time the next morning.
 - **App (`app/index.html`):** when the app is live, replace the App Store placeholder with the real link. The comment above it shows the line to paste.
 - **Privacy (`privacy/index.html`):** this is the policy file exactly as it was supplied. It keeps its own simple style and has no site header. Replace the whole file when a final version is ready.
 - **Header and footer:** copied on every page. If you change a nav link or a footer link, change it on every page.

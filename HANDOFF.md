@@ -60,6 +60,12 @@ These ran on this machine with puppeteer against Chrome.
 - Mobile at 390x844 with real touch events: pads score hits, and the toolbar buttons are 44 px tall.
 - No console errors in any of the runs.
 
+## Shows and Music: copied from the app
+
+- Done on 2026-10-16 (committed locally, not pushed). /shows/ loads live from Bandsintown (`js/shows.js`, 5-minute localStorage cache, 15 s timeout, the page's own dates as the fallback). /music/ has the SKWISH countdown card, the six released songs with iTunes 30-second previews (`js/music.js`), and the Connect links.
+- Both Bandsintown and iTunes Lookup allow browser requests (CORS `*`), so both work live.
+- Test: `node dev/appcopy-shots.js` (29 checks, needs internet). Lighthouse mobile: Shows 99, Music 97.
+
 ## What's left
 
 Done on 2026-10-16 (committed locally, not pushed):
