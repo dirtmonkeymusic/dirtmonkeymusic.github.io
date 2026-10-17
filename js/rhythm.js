@@ -51,6 +51,8 @@
   var DIFF_NAMES = { easy: "Easy", normal: "Normal", hard: "Hard", skwished: "Skwished" };
   var SPEEDS = [1, 1.5, 2, 2.5, 3, 4];
   var MISS_LIFE = { easy: 6, normal: 8, hard: 10, skwished: 12 };
+  // Easy and Normal fail after this many misses in a row instead of when the life bar empties.
+  var MISS_STREAK_FAIL = { easy: 15, normal: 10 };
   var JUDGE = {
     marvelous: { text: "MARVELOUS", color: "#ffffff" },
     perfect: { text: "PERFECT", color: "#d6ff4a" },
@@ -1072,6 +1074,7 @@
       offsets: [],
       life: 50,
       lifeShown: 50,
+      missStreak: 0,
       failing: 0,
       judge: null,
       lanePop: [null, null, null, null],
@@ -1326,7 +1329,7 @@
 
   function changeLife(delta) {
     run.life = Math.max(0, Math.min(100, run.life + delta));
-    if (run.life <= 0 && !run.failing) fail();
+    if (run.life <= 0 && !run.failing && !MISS_STREAK_FAIL[run.diff]) fail();
   }
 
   function addCombo() {
@@ -1355,6 +1358,7 @@
     run.counts[kind]++;
     run.points += pointsFor(kind);
     run.offsets.push(dt);
+    run.missStreak = 0;
     addCombo();
     var gain = kind === "marvelous" || kind === "perfect" ? (run.diff === "easy" ? 2 : 1.2) : kind === "great" ? 0.6 : 0;
     changeLife(gain);
@@ -1383,6 +1387,9 @@
       run.counts.ng++;
     }
     changeLife(-MISS_LIFE[run.diff]);
+    run.missStreak++;
+    var limit = MISS_STREAK_FAIL[run.diff];
+    if (limit && run.missStreak >= limit && !run.failing) fail();
   }
 
   function holdOk(n) {
@@ -2396,6 +2403,7 @@
       combo: function () { return run ? run.combo : 0; },
       score: function () { return run ? Math.floor(run.points / 10 + 1e-6) * 10 : 0; },
       life: function () { return run ? run.life : 0; },
+      missStreak: function () { return run ? run.missStreak : 0; },
       counts: function () { return run ? JSON.parse(JSON.stringify(run.counts)) : null; },
       settings: function () { return JSON.parse(JSON.stringify(settings)); },
       theme: function () {

@@ -173,6 +173,41 @@ async function fps(p, ms) {
     await p.close();
   }
 
+  if (only === "all" || only === "fail" || only === "streak") {
+    // Easy and Normal fail on misses in a row, not on an empty life bar.
+    for (const [diff, limit] of [["easy", 15], ["normal", 10]]) {
+      const p = await fresh(b);
+      await pick(p, diff);
+      await p.click("[data-start]");
+      await untilState(p, "playing", 5000);
+      const times = (await p.evaluate(() => window.skwishDrop.notes())).map((n) => n[0]);
+      // Just after the miss before the limit: life is empty but the stage plays on.
+      await untilSong(p, times[limit - 2] + 0.25);
+      const before = await p.evaluate(() => ({ s: window.skwishDrop.state(), life: window.skwishDrop.life(), streak: window.skwishDrop.missStreak() }));
+      ok(`${diff}: empty life does not fail`, before.s === "playing" && before.life === 0 && before.streak === limit - 1, before);
+      await untilState(p, "results", 20000);
+      const r = await readResults(p);
+      const counts = await p.evaluate(() => window.skwishDrop.counts());
+      ok(`${diff}: fails after ${limit} misses in a row`, r.status === "Stage failed" && counts.miss === limit, { r, counts });
+      ok(`no console errors (${diff} streak)`, p.errors.length === 0, p.errors);
+      await p.close();
+    }
+    // A hit resets the count: miss 9 on Normal, hit one, miss 9 more, and it still plays.
+    const p = await fresh(b);
+    await pick(p, "normal");
+    await p.click("[data-start]");
+    await untilState(p, "playing", 5000);
+    const times = (await p.evaluate(() => window.skwishDrop.notes())).map((n) => n[0]);
+    const skip = [...Array(times.length).keys()].filter((i) => i !== 9);
+    await autoplay(p, { skip });
+    await untilSong(p, times[18] + 0.25);
+    const mid = await p.evaluate(() => ({ s: window.skwishDrop.state(), streak: window.skwishDrop.missStreak(), counts: window.skwishDrop.counts() }));
+    ok("normal: a hit resets the miss streak", mid.s === "playing" && mid.streak === 9 && mid.counts.miss === 18, mid);
+    await untilState(p, "results", 20000);
+    ok("normal: fails on the 10th miss after the hit", (await p.evaluate(() => window.skwishDrop.counts().miss)) === 19);
+    await p.close();
+  }
+
   if (only === "all" || only === "fail" || only === "retry") {
     // Easy, with nobody playing, lasts long enough to try the other ways to retry.
     const p = await fresh(b);

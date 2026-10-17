@@ -49,7 +49,7 @@ An arrow rhythm game in the browser, in the style of a dance-pad game. Arrows ri
 - Press the matching arrow the moment it lands on its target. On a computer use the **arrow keys** or **A S W D** (A left, S down, W up, D right). On a phone or tablet, tap the four big pads at the bottom. Two arrows at once is a jump: hit both.
 - Timing is judged **Marvelous**, **Perfect**, **Great**, or **Good**, from dead on to a bit off. Great and Good also say if you were early or late. An arrow that goes by is a **Miss**. Pressing with no arrow there costs nothing.
 - **Holds** (Hard and Skwished): an arrow with a tail. Press on the head and keep holding until the tail runs out for an **OK**. Let go too soon and it is **NG**.
-- The **life bar** fills with good hits and drains with misses. Empty means the stage fails. Easy is the most forgiving.
+- The **life bar** fills with good hits and drains with misses. On Hard and Skwished, empty means the stage fails. Easy fails after 15 misses in a row and Normal after 10.
 - The **combo** counts hits in a row. At 25 the lanes pulse with the beat, at 50 Skwish dances harder and the targets glow, at 100 the edges light up, and at 200 the combo goes rainbow. The drops turn it all up.
 - At the end you get a score out of 1,000,000, a grade (S, A, B, C, or D), and a full combo badge if nothing was missed (Marvelous, Perfect, Great, or plain full combo, by your worst hit). Each difficulty keeps its own best score in the browser on that device.
 - **Retry** starts the song over at once: the button in the corner while playing, on the pause screen, on the results screen, or the **R** key when paused or on results.

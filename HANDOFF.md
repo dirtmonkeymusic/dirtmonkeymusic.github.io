@@ -30,7 +30,7 @@ All of this is committed and pushed to main.
   - at 200 the combo number goes rainbow;
   - drops amplify all of it, with a bigger glow;
   - milestone shouts appear at 50, 100, 200, and so on.
-- Life bar: starts at 50. Misses cost more on harder difficulties. When it empties, the music fades, FAILED shows, and the stage fails.
+- Life bar: starts at 50. Misses cost more on harder difficulties. On Hard and Skwished, when it empties, the music fades, FAILED shows, and the stage fails. Easy fails the same way after 15 misses in a row, and Normal after 10.
 - Difficulties: Easy, Normal, Hard, and Skwished, each with its own chart. The placeholder charts are in `js/beatmap.js` and were made by `dev/gen_charts.py`. Hold arrows appear on Hard and Skwished, with a 0.2 s re-press grace.
 - Scoring and results:
   - scores run to 1,000,000, with S/A/B/C/D grades;
