@@ -1,7 +1,7 @@
 // Skwish Pong on the home page.
 // Two neon paddles bounce Skwish back and forth on their own, like a
 // screensaver. Click or tap Skwish (or Play Pong) to take the left paddle:
-// mouse, a finger, the arrow keys, or W and S. First to 5. Esc or X stops it.
+// mouse, a finger, the arrow keys, or W and S. First to 3. Esc or X stops it.
 // With reduced motion, Skwish sits still until someone asks for a game.
 // Beat the computer and one dub plate, picked at random, plays once through the
 // mini player (Web Audio, no audio element). It is fetched only once a game
@@ -25,17 +25,24 @@
   var winEl = box.querySelector("[data-pong-win]");
   var still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  var WIN = 5;
+  var WIN = 3;
+  // EDIT: how hard the computer is in a real game (the screensaver is separate).
+  // speed: fastest the paddle moves, in court heights per second. react: seconds
+  // between looks at Skwish, so it is a beat late. wake: how far across Skwish
+  // must be before it starts to follow. miss: aim error, in paddle heights, with
+  // extra on steep shots (angleMiss). ball: serve speed, speed-up per hit, and
+  // top speed, in court widths per second.
+  var CPU = { speed: 0.55, react: 0.26, wake: 0.5, miss: 0.65, angleMiss: 0.9, ballStart: 0.36, ramp: 1.03, ballTop: 0.72 };
   var CYAN = "#3dfff2";
   var MAGENTA = "#ff2bd6";
 
   var W = 0, H = 0, dpr = 1;
   var padW, padH, inset, r;
-  var left = { y: 0, err: 0 };
-  var right = { y: 0, err: 0 };
+  var left = { y: 0, err: 0, look: 0, goal: 0 };
+  var right = { y: 0, err: 0, look: 0, goal: 0 };
   var ball = { x: 0, y: 0, vx: 0, vy: 0, speed: 0, spin: 0, squash: 0, wall: false };
   // attract: the paddles play each other. serve: a short wait before the ball
-  // goes. play: a game is on. over: someone reached 5.
+  // goes. play: a game is on. over: someone reached WIN.
   var mode = "attract";
   var wait = 0;
   var score = [0, 0];
@@ -269,7 +276,7 @@
   function serve(toLeft) {
     ball.x = W / 2;
     ball.y = H * (0.3 + Math.random() * 0.4);
-    ball.speed = W * (mode === "attract" ? 0.42 : 0.5);
+    ball.speed = W * (mode === "attract" ? 0.42 : CPU.ballStart);
     var angle = (Math.random() * 0.8 - 0.4);
     ball.vx = Math.cos(angle) * ball.speed * (toLeft ? -1 : 1);
     ball.vy = Math.sin(angle) * ball.speed;
@@ -278,8 +285,18 @@
   // A paddle that follows the ball, a little off center so the angles vary.
   // The computer in a real game is slower, so it can be beaten.
   function track(p, coming, dt) {
-    var target = coming ? ball.y + p.err : H / 2;
-    var max = H * (mode === "attract" ? 2.4 : 1.05) * dt;
+    var target;
+    if (mode === "attract") target = coming ? ball.y + p.err : H / 2;
+    else {
+      // In a game it only looks every so often, so it runs a little behind.
+      p.look -= dt;
+      if (p.look <= 0) {
+        p.look = CPU.react * (0.8 + Math.random() * 0.4);
+        p.goal = coming ? ball.y + p.err : H / 2;
+      }
+      target = p.goal;
+    }
+    var max = H * (mode === "attract" ? 2.4 : CPU.speed) * dt;
     var d = target - p.y;
     p.y += Math.max(-max, Math.min(max, d));
   }
@@ -291,13 +308,13 @@
   function hit(p, dir) {
     var off = Math.max(-1, Math.min(1, (ball.y - p.y) / (padH / 2)));
     var angle = off * 0.95;
-    ball.speed = Math.min(ball.speed * 1.06, W * (mode === "attract" ? 0.6 : 1.05));
+    ball.speed = Math.min(ball.speed * (mode === "attract" ? 1.06 : CPU.ramp), W * (mode === "attract" ? 0.6 : CPU.ballTop));
     ball.vx = Math.cos(angle) * ball.speed * dir;
     ball.vy = Math.sin(angle) * ball.speed;
     ball.squash = 1;
     ball.wall = false;
-    var miss = mode === "attract" ? 0.35 : 0.55;
-    left.err = (Math.random() * 2 - 1) * padH * miss;
+    var miss = mode === "attract" ? 0.35 : CPU.miss + CPU.angleMiss * Math.abs(Math.sin(angle));
+    left.err = (Math.random() * 2 - 1) * padH * (mode === "attract" ? 0.35 : 0.55);
     right.err = (Math.random() * 2 - 1) * padH * miss;
   }
 
@@ -328,7 +345,7 @@
     } else {
       left.y += ((keys.down ? 1 : 0) - (keys.up ? 1 : 0)) * H * 1.5 * dt;
     }
-    track(right, ball.vx > 0 && (mode === "attract" || ball.x > W * 0.35), dt);
+    track(right, ball.vx > 0 && (mode === "attract" || ball.x > W * CPU.wake), dt);
     clampPaddle(left);
     clampPaddle(right);
 
