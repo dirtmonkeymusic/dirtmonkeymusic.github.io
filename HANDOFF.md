@@ -16,6 +16,14 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 - The Play pill in every nav, plus /play/ in the sitemap.
 - Lighthouse mobile on home: 99 performance, 100 for everything else (three runs).
 
+## Launch page: done
+
+- 2026-10-17: the home page is the launch page: the bubble logo, the Nov 2 noon ET countdown, Merch and Shows buttons, Skwish Pong, and the Laylo signup embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent`, not minimal).
+- Every nav is just Merch and Shows. Sign up left the nav and the home buttons since the signup is on the home page; its links wait in the `NAV3` comments with Plugins, Music, App, and Play.
+- `/signup/` is a page of its own with the same embed. It works but nothing links to it, and it is not in the sitemap. `/privacy/` stays linked in every footer.
+- `site-check.js` checks that every nav is only Merch and Shows, that home, Merch, Shows, and Privacy show no link to a hidden page (Plugins, Music, App, Play, Sign up, tools) on desktop and phone, the launch order on home, and that /signup/ still works.
+- `dev/launch-shots.js` saves full-page `launch-desktop.png` and `launch-mobile.png`. It grows the viewport to the page height itself because puppeteer's fullPage leaves Laylo's frame blank.
+
 ## Home countdown: done
 
 - Added 2026-10-17: big neon days, hours, minutes, seconds between the logo and the buttons, counting down to 2026-11-02 12:00 PM US Eastern (EST). `js/countdown.js` runs it; `COUNTDOWN_LABEL` (empty for now) and `COUNTDOWN_TARGET` are at the top of that file. It hides itself when the time passes. Preview with `/?now=2026-11-02T11:59:50-05:00`. Reduced motion turns off the glow pulse. `site-check.js` covers it; `dev/countdown-shots.js` takes the screenshots.

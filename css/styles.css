@@ -1399,7 +1399,7 @@ h2,
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 112px;
+  min-width: 150px;
   min-height: 48px;
   padding: 10px 20px;
   border: 1.5px solid var(--accent);
@@ -1844,9 +1844,17 @@ h2,
 
   .home-links { gap: 10px; margin-bottom: 20px; }
 
-  .home-links li { flex: 1 1 calc(25% - 10px); }
+  .home-links li { flex: 1 1 calc(50% - 10px); max-width: 190px; }
 
-  .home-link { width: 100%; min-width: 0; padding: 10px 4px; font-size: 0.74rem; letter-spacing: 0.03em; }
+  .home-link { width: 100%; min-width: 0; padding: 10px 4px; font-size: 0.8rem; letter-spacing: 0.05em; }
+
+  .section-signup { padding-bottom: 56px; }
+
+  .signup-card { padding: 24px 12px 20px; }
+
+  .signup-card .section-heading { margin-bottom: 18px; }
+
+  .laylo-embed { padding: 4px; }
 
   .pong { aspect-ratio: 1 / 1; border-radius: 24px; }
 

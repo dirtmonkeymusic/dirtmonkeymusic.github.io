@@ -1,6 +1,7 @@
 // Site checks: every page loads on desktop and phone with no errors, no broken
 // local links or files, no sideways scroll, JetBrains Mono, and no em dashes.
-// Then the home page: the countdown, the section links, and Skwish Pong (attract mode, a game, Esc, reduced motion).
+// Then the launch: only Merch and Shows linked, no visible link to a hidden page, /signup/ still works.
+// Then the home page: the countdown, the section links, the Laylo embed, and Skwish Pong (attract mode, a game, Esc, reduced motion).
 // node site-check.js [all|pages|home]
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
@@ -18,7 +19,10 @@ const ok = (name, cond, extra) => {
 const PAGES = fs.readFileSync(path.join(ROOT, "sitemap.xml"), "utf8")
   .match(/<loc>[^<]+<\/loc>/g)
   .map((l) => new URL(l.slice(5, -6)).pathname)
-  .concat(["/404.html", "/tools/beatmap/"]);
+  .concat(["/404.html", "/tools/beatmap/", "/signup/"]);
+// Live but not linked for now. The launch pages must not show a link to any of them.
+const HIDDEN = ["/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/"];
+const LAUNCH_PAGES = ["/", "/merch/", "/shows/", "/privacy/"];
 const DESKTOP = { width: 1440, height: 900, deviceScaleFactor: 1 };
 const PHONE = { width: 390, height: 844, deviceScaleFactor: 3, isMobile: true, hasTouch: true };
 
@@ -78,6 +82,36 @@ async function open(b, url, viewport) {
       if (!r.ok) broken.push(r.status + " " + l.replace(BASE, ""));
     }
     ok(`local links resolve (${links.size})`, broken.length === 0, broken.length ? broken : undefined);
+    // Launch: every nav is just Merch and Shows, and the launch pages show no link to a hidden page.
+    for (const url of PAGES.filter((u) => u !== "/404.html" && u !== "/privacy/" && u !== "/tools/beatmap/")) {
+      const p = await open(b, url, DESKTOP);
+      const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
+      ok(`${url}: nav is only Merch and Shows`, JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/"]), nav);
+      await p.close();
+    }
+    for (const url of LAUNCH_PAGES) {
+      for (const [name, vp] of [["desktop", DESKTOP], ["phone", PHONE]]) {
+        const p = await open(b, url, vp);
+        const seen = await p.evaluate(() => [...document.querySelectorAll("a[href]")]
+          .filter((a) => a.getClientRects().length && getComputedStyle(a).visibility !== "hidden")
+          .map((a) => new URL(a.href, location.href))
+          .filter((u) => u.origin === location.origin)
+          .map((u) => u.pathname));
+        const hits = seen.filter((path) => HIDDEN.some((h) => path.startsWith(h)));
+        ok(`${url} ${name}: no visible link to a hidden page`, hits.length === 0, hits.length ? hits : undefined);
+        await p.close();
+      }
+    }
+    const home = await open(b, "/", PHONE);
+    const priv = await home.$$eval('.site-footer a[href="/privacy/"]', (as) => as.filter((a) => a.getClientRects().length).length);
+    await home.close();
+    ok("home: footer links to Privacy", priv === 1, priv);
+    const su = await open(b, "/signup/", PHONE);
+    const suEmbed = await su.$$eval("iframe[data-laylo-embed]", (fs) => fs.map((f) => f.src));
+    await su.close();
+    ok("/signup/: still works, with the same Laylo embed", suEmbed.length === 1 && suEmbed[0] === "https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent", suEmbed);
+    const sitemap = fs.readFileSync(path.join(ROOT, "sitemap.xml"), "utf8");
+    ok("/signup/ is not in the sitemap", !/\/signup\//.test(sitemap));
     const files = execList(ROOT);
     const dashFiles = files.filter((f) => fs.readFileSync(f, "utf8").includes("\u2014")).map((f) => path.relative(ROOT, f));
     ok("no em dashes in source files", dashFiles.length === 0, dashFiles.length ? dashFiles : undefined);
@@ -90,9 +124,12 @@ async function open(b, url, viewport) {
     await wait(1200);
     await p.screenshot({ path: path.join(ART, "home2-desktop.png") });
     const links = await p.$$eval(".home-links a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("home: only Merch, Shows, and Sign up", JSON.stringify(links) === JSON.stringify(["/merch/", "/shows/", "#signup"]), links);
+    ok("home: buttons are only Merch and Shows", JSON.stringify(links) === JSON.stringify(["/merch/", "/shows/"]), links);
     const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("home: nav is Merch, Shows, Sign up", JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/", "/#signup"]), nav);
+    ok("home: nav is only Merch and Shows", JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/"]), nav);
+    // Launch order: logo, countdown, buttons, Pong, then the signup embed.
+    const order = await p.evaluate(() => [".home-logo", "[data-home-countdown]", ".home-links", ".pong", "#signup iframe"].map((q) => document.querySelector(q).getBoundingClientRect().top + scrollY));
+    ok("home: logo, countdown, buttons, Pong, then signup", order.every((y, i) => i === 0 || y > order[i - 1]), order);
     const laylo = await p.$$eval("#signup a[data-laylo]", (as) => as.map((a) => [a.href, a.target, a.rel]));
     const kitLeft = await p.$$eval("#signup form", (fs) => fs.length);
     const embed = await p.$$eval("#signup iframe[data-laylo-embed]", (fs) => fs.map((f) => [f.src, f.getAttribute("loading"), f.getAttribute("height")]));
