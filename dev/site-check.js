@@ -224,6 +224,8 @@ async function open(b, url, viewport) {
     await p.mouse.click(rect.x + s.ball.x, rect.y + s.ball.y);
     await wait(100);
     ok("home: clicking Skwish starts Pong", (await st(p)).mode !== "attract");
+    const first = await p.evaluate(() => ({ msg: document.querySelector("[data-pong-msg]").textContent, help: document.querySelector(".help-keys").textContent }));
+    ok("home: Pong is first to 3", first.msg === "First to 3" && /First to 3\./.test(first.help), first);
     // Keys move the left paddle.
     const before = (await st(p)).left;
     await p.keyboard.down("ArrowDown");
@@ -233,7 +235,7 @@ async function open(b, url, viewport) {
     // Mouse follows: aim the paddle at Skwish (missing now and then) until a few points are in, then take the shot mid game.
     for (let i = 0; i < 400; i++) {
       const g = await st(p);
-      if (g.score[0] + g.score[1] >= 3 && g.mode === "play" && g.ball.x > g.W * 0.3) break;
+      if (g.score[0] + g.score[1] >= 2 && g.mode === "play" && g.ball.x > g.W * 0.3) break;
       await p.mouse.move(rect.x + 200, rect.y + g.ball.y + (i % 60 < 12 ? g.H * 0.3 : 0));
       await wait(50);
     }
@@ -344,6 +346,12 @@ async function open(b, url, viewport) {
       ok("dub: Esc stops the music", pre && !esc.playing && !esc.connected && !esc.win, esc);
       ok("dub: no console errors", w.errors.length === 0, w.errors.length ? w.errors : undefined);
       await w.close();
+    }
+
+    // Easier computer: a casual bot player should win most games (dev/pong-sim.js plays 60 quick games headless).
+    {
+      const sim = JSON.parse(require("child_process").execFileSync(process.execPath, [path.join(__dirname, "pong-sim.js"), "60", path.join(ROOT, "js", "pong.js"), "casual"]).toString());
+      ok("pong: a casual player wins most games", sim.wins / sim.games >= 0.5 && sim.avgPoints[1] > 0.5, sim);
     }
 
     // Reduced motion: Skwish stays still until someone asks for a game.
