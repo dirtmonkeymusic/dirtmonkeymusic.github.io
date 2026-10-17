@@ -19,10 +19,11 @@ const ok = (name, cond, extra) => {
 const PAGES = fs.readFileSync(path.join(ROOT, "sitemap.xml"), "utf8")
   .match(/<loc>[^<]+<\/loc>/g)
   .map((l) => new URL(l.slice(5, -6)).pathname)
-  .concat(["/404.html", "/tools/beatmap/", "/signup/"]);
-// Live but not linked for now. The launch pages must not show a link to any of them.
-const HIDDEN = ["/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/"];
-const LAUNCH_PAGES = ["/", "/merch/", "/shows/", "/privacy/"];
+  .concat(["/404.html", "/tools/beatmap/", "/signup/", "/merch/"]);
+// Live but not linked for now (Merch links open the Bass Threads store instead of /merch/). The launch pages must not show a link to any of them.
+const HIDDEN = ["/merch/", "/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/"];
+const STORE = "https://dirtmonkey.bassthreadsmerch.com/";
+const LAUNCH_PAGES = ["/", "/shows/", "/privacy/"];
 const DESKTOP = { width: 1440, height: 900, deviceScaleFactor: 1 };
 const PHONE = { width: 390, height: 844, deviceScaleFactor: 3, isMobile: true, hasTouch: true };
 
@@ -86,7 +87,9 @@ async function open(b, url, viewport) {
     for (const url of PAGES.filter((u) => u !== "/404.html" && u !== "/privacy/" && u !== "/tools/beatmap/")) {
       const p = await open(b, url, DESKTOP);
       const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
-      ok(`${url}: nav is only Merch and Shows`, JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/"]), nav);
+      ok(`${url}: nav is only Merch and Shows`, JSON.stringify(nav) === JSON.stringify([STORE, "/shows/"]), nav);
+      const merch = await p.$$eval(".site-nav a", (as) => as.filter((a) => a.textContent.trim() === "Merch").map((a) => [a.target, a.rel]));
+      ok(`${url}: nav Merch opens the store in a new tab`, JSON.stringify(merch) === JSON.stringify([["_blank", "noopener"]]), merch);
       await p.close();
     }
     for (const url of LAUNCH_PAGES) {
@@ -124,9 +127,11 @@ async function open(b, url, viewport) {
     await wait(1200);
     await p.screenshot({ path: path.join(ART, "home2-desktop.png") });
     const links = await p.$$eval(".home-links a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("home: buttons are only Merch and Shows", JSON.stringify(links) === JSON.stringify(["/merch/", "/shows/"]), links);
+    ok("home: buttons are only Merch and Shows", JSON.stringify(links) === JSON.stringify([STORE, "/shows/"]), links);
+    const merchBtn = await p.$$eval(".home-links a", (as) => as.filter((a) => a.textContent.trim() === "Merch").map((a) => [a.target, a.rel]));
+    ok("home: Merch button opens the store in a new tab", JSON.stringify(merchBtn) === JSON.stringify([["_blank", "noopener"]]), merchBtn);
     const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("home: nav is only Merch and Shows", JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/"]), nav);
+    ok("home: nav is only Merch and Shows", JSON.stringify(nav) === JSON.stringify([STORE, "/shows/"]), nav);
     // Launch order: logo, countdown, buttons, Pong, then the signup embed.
     const order = await p.evaluate(() => [".home-logo", "[data-home-countdown]", ".home-links", ".pong", "#signup iframe"].map((q) => document.querySelector(q).getBoundingClientRect().top + scrollY));
     ok("home: logo, countdown, buttons, Pong, then signup", order.every((y, i) => i === 0 || y > order[i - 1]), order);
@@ -227,8 +232,8 @@ async function open(b, url, viewport) {
     ok("home: dragging moves the paddle (phone)", (await st(m)).left > ms.H * 0.6, await st(m));
     await m.tap(".pong-close");
     await m.evaluate(() => scrollTo(0, 0));
-    await Promise.all([m.waitForNavigation({ timeout: 4000 }).catch(() => {}), m.tap('.home-links a[href="/merch/"]')]);
-    ok("home: tapping a link goes there (phone)", new URL(m.url()).pathname === "/merch/", m.url());
+    await Promise.all([m.waitForNavigation({ timeout: 4000 }).catch(() => {}), m.tap('.home-links a[href="/shows/"]')]);
+    ok("home: tapping a link goes there (phone)", new URL(m.url()).pathname === "/shows/", m.url());
     ok("home: no console errors (phone)", m.errors.length === 0, m.errors.length ? m.errors : undefined);
     await m.close();
 

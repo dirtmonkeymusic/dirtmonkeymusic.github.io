@@ -21,7 +21,8 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 - 2026-10-17: the home page is the launch page: the bubble logo, the Nov 2 noon ET countdown, Merch and Shows buttons, Skwish Pong, and the Laylo signup embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent`, not minimal).
 - Every nav is just Merch and Shows. Sign up left the nav and the home buttons since the signup is on the home page; its links wait in the `NAV3` comments with Plugins, Music, App, and Play.
 - `/signup/` is a page of its own with the same embed. It works but nothing links to it, and it is not in the sitemap. `/privacy/` stays linked in every footer.
-- `site-check.js` checks that every nav is only Merch and Shows, that home, Merch, Shows, and Privacy show no link to a hidden page (Plugins, Music, App, Play, Sign up, tools) on desktop and phone, the launch order on home, and that /signup/ still works.
+- Added 2026-10-17: every Merch link (home button and every nav) opens https://dirtmonkey.bassthreadsmerch.com/ in a new tab. /merch/ still works but is unlinked and out of the sitemap; to bring it back, point the Merch links at `/merch/` again and re-add its sitemap entry.
+- `site-check.js` checks that every nav is only Merch (the store, new tab) and Shows, that home, Shows, and Privacy show no link to a hidden page (Merch page, Plugins, Music, App, Play, Sign up, tools) on desktop and phone, the launch order on home, and that /signup/ still works.
 - `dev/launch-shots.js` saves full-page `launch-desktop.png` and `launch-mobile.png`. It grows the viewport to the page height itself because puppeteer's fullPage leaves Laylo's frame blank.
 
 ## Home countdown: done
