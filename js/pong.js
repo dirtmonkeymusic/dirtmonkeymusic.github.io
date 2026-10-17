@@ -32,7 +32,7 @@
   // must be before it starts to follow. miss: aim error, in paddle heights, with
   // extra on steep shots (angleMiss). ball: serve speed, speed-up per hit, and
   // top speed, in court widths per second.
-  var CPU = { speed: 0.55, react: 0.26, wake: 0.5, miss: 0.65, angleMiss: 0.9, ballStart: 0.36, ramp: 1.03, ballTop: 0.72 };
+  var CPU = { speed: 0.55, react: 0.26, wake: 0.5, miss: 0.72, angleMiss: 0.9, ballStart: 0.44, ramp: 1.045, ballTop: 0.85 };
   var CYAN = "#3dfff2";
   var MAGENTA = "#ff2bd6";
 
