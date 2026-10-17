@@ -28,4 +28,9 @@ const LAUNCH = {
   args: ["--no-sandbox", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required"]
 };
 
-module.exports = { ROOT, CHROME, SHOT, ART, AUDIO, LAUNCH };
+// The game looks for an optional background video when Start is pressed.
+// When there is none, the 404s from that look are expected, not errors.
+const OPTIONAL = /\/assets\/play\/genre-snob-bg/;
+const expected404 = (m) => OPTIONAL.test((m.location() && m.location().url) || "");
+
+module.exports = { ROOT, CHROME, SHOT, ART, AUDIO, LAUNCH, expected404 };

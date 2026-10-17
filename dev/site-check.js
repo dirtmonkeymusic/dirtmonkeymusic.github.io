@@ -5,7 +5,7 @@
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
 const path = require("path");
-const { ROOT, ART, LAUNCH } = require("./env");
+const { ROOT, ART, LAUNCH, expected404 } = require("./env");
 const BASE = process.env.BASE || "http://127.0.0.1:47321";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const only = process.argv[2] || "all";
@@ -26,7 +26,7 @@ async function open(b, url, viewport) {
   const p = await b.newPage();
   p.errors = [];
   p.bad = [];
-  p.on("console", (m) => { if (m.type() === "error") p.errors.push(m.text()); });
+  p.on("console", (m) => { if (m.type() === "error" && !expected404(m)) p.errors.push(m.text()); });
   p.on("pageerror", (e) => p.errors.push("PAGEERROR " + e.message));
   p.on("response", (r) => { if (r.url().startsWith(BASE) && r.status() >= 400) p.bad.push(r.status() + " " + r.url().replace(BASE, "")); });
   p.on("requestfailed", (r) => { if (r.url().startsWith(BASE)) p.bad.push("failed " + r.url().replace(BASE, "")); });

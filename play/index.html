@@ -54,7 +54,7 @@
       To use a real Dirt Monkey track, follow the note at the top of js/beatmap.js.
     -->
     <section class="play-stage" aria-labelledby="play-title">
-      <div id="game" class="game">
+      <div id="game" class="game" data-theme="genre-snob">
         <canvas class="game-canvas" tabindex="-1" role="img" aria-label="Skwish Drop: arrows rise up four lanes toward the target arrows at the top while Skwish dances to the beat"></canvas>
 
         <div class="game-tools">
@@ -67,7 +67,18 @@
           <div class="game-panel">
             <p class="eyebrow">A Dirt Monkey rhythm game</p>
             <h1 id="play-title" class="game-title">Skwish Drop</h1>
-            <p class="game-song" data-song>Now playing <span class="game-song-name" data-song-name>Genre Snob</span> <span data-song-by>by Dirt Monkey</span></p>
+            <!-- The song card. The cover, title, and logo art show while the Genre Snob theme is on (see "theme" in js/beatmap.js). -->
+            <div class="game-song-card">
+              <picture class="game-cover">
+                <source type="image/webp" srcset="/assets/play/genre-snob/cover-280.webp 280w, /assets/play/genre-snob/cover-560.webp 560w" sizes="(max-width: 720px) 112px, 168px">
+                <img src="/assets/play/genre-snob/cover-280.jpg" alt="Genre Snob cover art: Skwish as a gold skull monkey in shades, with gold coins" width="280" height="280" fetchpriority="low" draggable="false">
+              </picture>
+              <div class="game-song-info">
+                <p class="game-song" data-song><span class="game-song-now">Now playing</span> <span class="game-song-name" data-song-name>Genre Snob</span> <span class="game-song-by" data-song-by>by Dirt Monkey</span></p>
+                <img class="game-song-title" src="/assets/play/genre-snob/title-560.webp" alt="" width="560" height="81" fetchpriority="low" draggable="false">
+                <img class="game-song-logo" src="/assets/play/genre-snob/logo-320.webp" alt="" width="320" height="60" fetchpriority="low" draggable="false">
+              </div>
+            </div>
             <picture class="game-skwish">
               <source type="image/webp" srcset="/assets/skwish-cyan.webp">
               <img src="/assets/skwish-cyan.png" alt="" width="512" height="512" loading="lazy" draggable="false">

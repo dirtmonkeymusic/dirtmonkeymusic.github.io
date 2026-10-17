@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer-core");
 const BASE = process.env.BASE || "http://127.0.0.1:47321/play/?debug";
-const { SHOT, ART, LAUNCH } = require("./env");
+const { SHOT, ART, LAUNCH, expected404 } = require("./env");
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const only = process.argv[2] || "all";
 const results = {};
@@ -12,7 +12,7 @@ const ok = (name, cond, extra) => {
 async function fresh(b, opts = {}) {
   const p = await b.newPage();
   const errors = [];
-  p.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+  p.on("console", (m) => { if (m.type() === "error" && !expected404(m)) errors.push(m.text()); });
   p.on("pageerror", (e) => errors.push("PAGEERROR " + e.message));
   p.errors = errors;
   await p.setViewport(opts.viewport || { width: 1440, height: 900, deviceScaleFactor: 2 });

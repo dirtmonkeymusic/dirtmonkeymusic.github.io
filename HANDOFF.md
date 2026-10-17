@@ -94,6 +94,8 @@ python3 make_test_track.py                 # needs numpy; writes tmp-audio/ (the
 - Screenshots worth keeping go to `~/DMBuilds/DMSite-shots/` (set `ART` to change it). Scratch files go to the system temp folder (`SHOT`).
 - `make_test_track.py` uses ffmpeg from your PATH, or the one `npm install` puts in `dev/node_modules`.
 - `genre_snob_charts.js` remakes the Genre Snob charts from `~/DMBuilds/DMSite-shots/genre-snob.wav` (or a path you give it). `song-shots.js` takes the song-*.png screenshots.
+- `make_play_art.js` makes the web-size Genre Snob art in `assets/play/genre-snob/` from DIRT's full-res layers in `~/DMBuilds/DMSite-shots/art/` (it only scales, crops, and re-encodes). `art-shots.js` takes the art-*.png screenshots and checks the theme.
+- The Genre Snob look (cover, dancer, coins, gold palette, optional background video) is the `theme` block in `js/beatmap.js`. It only applies while that song is the track.
 - `gen_charts.py` rewrites the placeholder charts in `js/beatmap.js` in place. Run as is, it writes the same charts that are there now.
 
 Do not commit `uploads/`, `tmp-audio/`, or `node_modules/` (all three are in `.gitignore`).

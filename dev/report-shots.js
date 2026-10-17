@@ -3,7 +3,7 @@
 // node report-shots.js   (saves PNGs into ART, see env.js)
 const puppeteer = require("puppeteer-core");
 const path = require("path");
-const { ART, LAUNCH } = require("./env");
+const { ART, LAUNCH, expected404 } = require("./env");
 const BASE = process.env.BASE || "http://127.0.0.1:47321/play/?debug";
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const DESKTOP = { width: 1440, height: 900, deviceScaleFactor: 2 };
@@ -14,7 +14,7 @@ const MID = (36 + 20.6) * 60 / 140;
 async function fresh(b, viewport) {
   const p = await b.newPage();
   p.errors = [];
-  p.on("console", (m) => { if (m.type() === "error") p.errors.push(m.text()); });
+  p.on("console", (m) => { if (m.type() === "error" && !expected404(m)) p.errors.push(m.text()); });
   p.on("pageerror", (e) => p.errors.push("PAGEERROR " + e.message));
   await p.setViewport(viewport);
   await p.goto(BASE, { waitUntil: "networkidle0" });

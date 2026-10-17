@@ -80,6 +80,36 @@
   var useTrack = !!track.audio;
   var trackReady = false;
 
+  // Colors for the light show. A song's theme in js/beatmap.js can swap any of them.
+  var NEON = {
+    lanes: ["#ff2bd6", "#3dfff2", "#3dfff2", "#ff2bd6"],
+    base: "#07060a",
+    glow: "255,43,214",
+    pulse: "255,43,214",
+    dropPulse: "255,43,214",
+    laneTint: ["61,255,242", "255,43,214"],
+    life: ["#3dfff2", "#ff2bd6"],
+    progress: "#3dfff2",
+    combo50: "#3dfff2",
+    combo100: "#d6ff4a",
+    shout: "#d6ff4a",
+    drop: "#ff2bd6",
+    flash: "255,255,255",
+    edgeHues: null
+  };
+  // The theme (cover art, dancer, coins, palette) only goes with the song it was made for.
+  var theme = map.theme && useTrack && track.audio === map.theme.audio ? map.theme : null;
+  var C = palette();
+
+  function palette() {
+    var c = {};
+    Object.keys(NEON).forEach(function (k) { c[k] = theme && theme.colors && theme.colors[k] != null ? theme.colors[k] : NEON[k]; });
+    return c;
+  }
+
+  if (theme) root.setAttribute("data-theme", theme.name);
+  else root.removeAttribute("data-theme");
+
   function calm() {
     return !!(motionQuery && motionQuery.matches);
   }
@@ -541,7 +571,7 @@
   var bg = null;
   // Arrows point left, down, up, right. The art is drawn pointing up.
   var ROT = [-Math.PI / 2, Math.PI, 0, Math.PI / 2];
-  var LANE_GLOW = ["#ff2bd6", "#3dfff2", "#3dfff2", "#ff2bd6"];
+  var LANE_GLOW = C.lanes;
 
   function rr(c, x, y, w, h, r) {
     r = Math.min(r, w / 2, h / 2);
@@ -663,21 +693,46 @@
     receptorSprites = [0, 1, 2, 3].map(function (lane) { return makeArrow(lane, "#ffffff", "receptor"); });
     litSprites = [0, 1, 2, 3].map(function (lane) { return makeArrow(lane, LANE_GLOW[lane], "lit"); });
 
+    buildBg();
+    if (state !== "playing") draw(0);
+  }
+
+  // The backdrop: dark, a glow behind the dancer, and the four lanes. With a
+  // theme, its spotlight art sits behind the dancer. With a background video,
+  // the dark is see-through so the video shows.
+  function buildBg() {
     bg = document.createElement("canvas");
     bg.width = W;
     bg.height = H;
     var b = bg.getContext("2d");
-    b.fillStyle = "#07060a";
+    b.fillStyle = video.on ? hexA(C.base, 0.6) : C.base;
     b.fillRect(0, 0, W, H);
+    if (backdropImg && !video.on) {
+      var bs = Math.max(W, H) * 1.1;
+      b.globalAlpha = 0.5;
+      b.drawImage(backdropImg, L.sk.x - bs / 2, L.sk.y - bs / 2, bs, bs);
+      b.globalAlpha = 1;
+      var shade = b.createLinearGradient(L.x, 0, L.right, 0);
+      shade.addColorStop(0, "rgba(11,8,5,0.55)");
+      shade.addColorStop(0.5, "rgba(11,8,5,0.7)");
+      shade.addColorStop(1, "rgba(11,8,5,0.55)");
+      b.fillStyle = shade;
+      b.fillRect(L.x, 0, L.right - L.x, L.bottom);
+    }
+    if (video.on) {
+      // Extra dark under the lanes, so the arrows read over any video.
+      b.fillStyle = hexA(C.base, 0.45);
+      b.fillRect(L.x, 0, L.right - L.x, L.bottom);
+    }
     var glow = b.createRadialGradient(L.sk.x, L.sk.y, 0, L.sk.x, L.sk.y, Math.max(W, H) * 0.6);
-    glow.addColorStop(0, "rgba(255,43,214,0.14)");
-    glow.addColorStop(1, "rgba(255,43,214,0)");
+    glow.addColorStop(0, "rgba(" + C.glow + ",0.14)");
+    glow.addColorStop(1, "rgba(" + C.glow + ",0)");
     b.fillStyle = glow;
     b.fillRect(0, 0, W, H);
     for (var i = 0; i < LANES; i++) {
       var lx = L.x + i * L.laneW;
       var lg = b.createLinearGradient(0, 0, 0, L.bottom);
-      lg.addColorStop(0, i % 3 ? "rgba(61,255,242,0.07)" : "rgba(255,43,214,0.07)");
+      lg.addColorStop(0, "rgba(" + C.laneTint[i % 3 ? 0 : 1] + ",0.07)");
       lg.addColorStop(1, "rgba(255,255,255,0.01)");
       b.fillStyle = lg;
       b.fillRect(lx + 2 * dpr, 0, L.laneW - 4 * dpr, L.bottom);
@@ -691,33 +746,90 @@
       b.lineTo(x0, L.bottom);
       b.stroke();
     }
-    if (state !== "playing") draw(0);
   }
 
   // ---------- Skwish (existing art, recolored for the light show)
+  // With a theme, its dancer art is used as is: no recoloring.
 
   var skwishArt = [];
-  (function () {
+  var skwishAspect = 1;
+  var backdropImg = null;
+  var coinImg = null;
+  var titleImg = null;
+  var logoImg = null;
+
+  function picture(src, done) {
     var img = new Image();
     img.decoding = "async";
-    img.onload = function () {
-      [null, "#ff4fe0", "#e4ff70"].forEach(function (color) {
+    img.onload = function () { done(img); };
+    img.src = src;
+  }
+
+  function loadDancer() {
+    var want = theme && theme.dancer;
+    picture(want ? want.src : "/assets/skwish-cyan.webp", function (img) {
+      if (!!want !== !!(theme && theme.dancer)) return;
+      skwishArt = [];
+      skwishAspect = img.naturalHeight / img.naturalWidth || 1;
+      var w = Math.min(640, img.naturalWidth || 512);
+      var h = Math.round(w * skwishAspect);
+      (want ? [null] : [null, "#ff4fe0", "#e4ff70"]).forEach(function (color) {
         var c = document.createElement("canvas");
-        c.width = c.height = 512;
+        c.width = w;
+        c.height = h;
         var x = c.getContext("2d");
-        x.drawImage(img, 0, 0, 512, 512);
+        x.drawImage(img, 0, 0, w, h);
         if (color) {
           x.globalCompositeOperation = "source-atop";
           x.globalAlpha = 0.82;
           x.fillStyle = color;
-          x.fillRect(0, 0, 512, 512);
+          x.fillRect(0, 0, w, h);
         }
         skwishArt.push(c);
       });
       if (state !== "playing") draw(0);
+    });
+  }
+
+  // The backdrop shows on the start screen, so it loads now. The coins, title,
+  // and logo are only drawn in play, so they wait until the page is idle.
+  function loadThemeArt() {
+    if (!theme) return;
+    if (theme.backdrop) {
+      picture(theme.backdrop, function (img) {
+        if (!theme) return;
+        backdropImg = img;
+        buildBg();
+        if (state !== "playing") draw(0);
+      });
+    }
+    var later = window.requestIdleCallback || function (fn) { window.setTimeout(fn, 1200); };
+    var go = function () {
+      later(function () {
+        if (!theme) return;
+        if (theme.coins) picture(theme.coins.src, function (img) { coinImg = img; });
+        if (theme.title) picture(theme.title.src, function (img) { titleImg = img; });
+        if (theme.logo) picture(theme.logo.src, function (img) { logoImg = img; });
+      });
     };
-    img.src = "/assets/skwish-cyan.webp";
-  })();
+    if (document.readyState === "complete") go();
+    else window.addEventListener("load", go);
+  }
+
+  // Back to the plain neon look, when the track cannot play.
+  function dropTheme() {
+    if (!theme) return;
+    theme = null;
+    C = palette();
+    LANE_GLOW = C.lanes;
+    backdropImg = coinImg = titleImg = logoImg = null;
+    root.removeAttribute("data-theme");
+    if (video.el) video.el.remove();
+    video.on = false;
+    video.el = null;
+    loadDancer();
+    resize();
+  }
 
   // ---------- game state
 
@@ -902,6 +1014,7 @@
     if (window.console) console.warn("Skwish Drop: could not use " + track.audio + " (" + (err && err.message) + "). Playing the placeholder beat.");
     useTrack = false;
     trackBuf = null;
+    dropTheme();
     setSong(map.placeholder);
     if (creditEl) creditEl.textContent = "The track did not load, so this is the placeholder beat.";
     showSong();
@@ -966,6 +1079,8 @@
       hitFx: [0, 0, 0, 0],
       rings: [],
       particles: [],
+      coins: [],
+      cheer: 0,
       squash: 0,
       wince: 0,
       shake: 0,
@@ -981,6 +1096,7 @@
     run.end = Math.max(run.end, lastEnd + 0.6);
     pointerLanes = {};
     keyLanes = {};
+    findVideo();
     if (useTrack) {
       trackSource = ctx.createBufferSource();
       trackSource.buffer = trackBuf;
@@ -1050,6 +1166,7 @@
     if (state !== "playing") return;
     state = "paused";
     letGoOfEverything();
+    stopVideo();
     ctx.suspend();
     window.clearInterval(scheduler);
     show("pause");
@@ -1081,6 +1198,7 @@
     if (ctx && ctx.state === "suspended") ctx.resume();
     stopAudio();
     stopCalibration();
+    stopVideo(true);
     run = null;
     state = "start";
     cancelAnimationFrame(raf);
@@ -1093,6 +1211,7 @@
   function finish(failed) {
     state = "results";
     cancelAnimationFrame(raf);
+    stopVideo();
     stopAudio();
     letGoOfEverything();
     var c = run.counts;
@@ -1214,7 +1333,12 @@
     run.maxCombo = Math.max(run.maxCombo, run.combo);
     if (run.combo === 50 || run.combo % 100 === 0) {
       run.shout = { text: run.combo + " COMBO!", at: songTime(), combo: true };
-      burst(L.sk.x, L.sk.y, "#d6ff4a", 26);
+      burst(L.sk.x, L.sk.y, C.shout, 26);
+      run.cheer = 1;
+      rainCoins(run.combo === 50 ? 14 : 22, run.combo % 100 === 0);
+    } else if (run.combo === 25) {
+      run.cheer = 0.6;
+      rainCoins(8);
     }
   }
 
@@ -1298,6 +1422,175 @@
     if (run.particles.length > 300) run.particles.splice(0, run.particles.length - 300);
   }
 
+  // ---------- coins: the theme's coin art rains on combos and the drop
+
+  var MAX_COINS = 70;
+
+  // Coins fall from the top, spinning. With reduced motion they fade in and out in place.
+  function rainCoins(count, big) {
+    if (!run || !theme || !theme.coins) return;
+    var still = calm();
+    if (still) count = Math.min(count, 4);
+    var cells = theme.coins.count || 1;
+    for (var i = 0; i < count; i++) {
+      var hero = big && i === 0;
+      var size = (hero ? 120 : 40 + Math.random() * 40) * dpr;
+      run.coins.push({
+        x: hero ? L.sk.x : Math.random() * W,
+        y: still ? L.recY + Math.random() * (L.bottom - L.recY) : -size - Math.random() * H * (hero ? 0 : 0.4),
+        vx: (Math.random() - 0.5) * 60 * dpr,
+        vy: (60 + Math.random() * 140) * dpr,
+        rot: (Math.random() - 0.5) * 0.8,
+        vr: (Math.random() - 0.5) * 2,
+        spin: Math.random() * Math.PI * 2,
+        vs: (4 + Math.random() * 6) * (Math.random() < 0.5 ? -1 : 1),
+        // The last cell is the 19K coin: the big one, and now and then a small one.
+        cell: hero || Math.random() < 0.08 ? cells - 1 : Math.floor(Math.random() * Math.max(1, cells - 1)),
+        size: size,
+        age: 0,
+        still: still
+      });
+    }
+    if (run.coins.length > MAX_COINS) run.coins.splice(0, run.coins.length - MAX_COINS);
+  }
+
+  function moveCoins(dt) {
+    for (var i = run.coins.length - 1; i >= 0; i--) {
+      var co = run.coins[i];
+      co.age += dt;
+      if (co.still) {
+        if (co.age > 1.6) run.coins.splice(i, 1);
+        continue;
+      }
+      co.vy = Math.min(co.vy + 520 * dpr * dt, 560 * dpr);
+      co.x += co.vx * dt;
+      co.y += co.vy * dt;
+      co.rot += co.vr * dt;
+      co.spin += co.vs * dt;
+      if (co.y - co.size > H) run.coins.splice(i, 1);
+    }
+  }
+
+  function drawCoins(r) {
+    if (!coinImg || !r.coins.length) return;
+    var cell = theme.coins.cell;
+    var base = g.getTransform();
+    for (var i = 0; i < r.coins.length; i++) {
+      var co = r.coins[i];
+      var a = co.still ? Math.min(1, co.age / 0.3, (1.6 - co.age) / 0.4) : 1;
+      if (a <= 0 || co.y < -co.size) continue;
+      // Spinning is the coin turning edge-on and back: a squeeze, the art itself is untouched.
+      var sq = co.still ? 1 : Math.max(0.12, Math.abs(Math.cos(co.spin)));
+      var cos = Math.cos(co.rot);
+      var sin = Math.sin(co.rot);
+      g.setTransform(cos * sq, sin * sq, -sin, cos, co.x + base.e, co.y + base.f);
+      g.globalAlpha = a * 0.92;
+      g.drawImage(coinImg, co.cell * cell, 0, cell, cell, -co.size / 2, -co.size / 2, co.size, co.size);
+    }
+    g.setTransform(base);
+    g.globalAlpha = 1;
+  }
+
+  // ---------- the optional background video (see "video" in the theme, js/beatmap.js)
+
+  var video = { on: false, el: null, checked: false, seekAt: 0 };
+
+  // Looks for the video files once, when Start is first pressed, so the page
+  // itself never waits on them. Phones in portrait try the vertical one first.
+  function findVideo() {
+    var want = theme && theme.video;
+    if (video.checked || !want || calm() || !window.fetch) return;
+    if (navigator.connection && navigator.connection.saveData) return;
+    video.checked = true;
+    var vertical = canvas.clientHeight > canvas.clientWidth;
+    var bases = [].concat(vertical ? [want.vertical, want.landscape] : [want.landscape, want.vertical]);
+    bases = [].concat.apply([], bases).filter(Boolean);
+    var webm = !!document.createElement("video").canPlayType("video/webm");
+    function exists(url) {
+      return fetch(url, { method: "HEAD" }).then(function (res) { return res.ok ? url : null; }, function () { return null; });
+    }
+    // The MP4 plays everywhere, so it is looked for first; a WebM next to it is
+    // smaller and goes first where it plays. So with no video, one request per name.
+    (function next(i) {
+      if (i >= bases.length || !theme) return;
+      exists(bases[i] + ".mp4").then(function (mp4) {
+        if (!mp4) return next(i + 1);
+        (webm ? exists(bases[i] + ".webm") : Promise.resolve(null)).then(function (w) {
+          useVideo(w ? [w, mp4] : [mp4]);
+        });
+      });
+    })(0);
+  }
+
+  function useVideo(srcs) {
+    var v = document.createElement("video");
+    v.className = "game-video";
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    v.setAttribute("playsinline", "");
+    v.setAttribute("muted", "");
+    v.setAttribute("aria-hidden", "true");
+    v.disablePictureInPicture = true;
+    v.preload = "auto";
+    v.tabIndex = -1;
+    srcs.forEach(function (src) {
+      var el = document.createElement("source");
+      el.src = src;
+      el.type = "video/" + src.split(".").pop();
+      v.appendChild(el);
+    });
+    v.addEventListener("loadeddata", function () {
+      if (!theme) return;
+      video.on = true;
+      v.classList.add("is-on");
+      buildBg();
+      if (state !== "playing") draw(0);
+    });
+    root.insertBefore(v, canvas);
+    video.el = v;
+  }
+
+  // Keeps the video on the song as heard (the player's offset does not move it).
+  // Small drift is eased out with the playback rate, big drift is a seek.
+  function syncVideo() {
+    var v = video.el;
+    if (!video.on || !v || !run) return;
+    var t = heard() - run.start;
+    var end = v.duration || Infinity;
+    if (state !== "playing" || run.failing || t < 0 || t >= end) {
+      if (!v.paused) v.pause();
+      if (t < 0 && v.currentTime > 0.05 && !v.seeking) v.currentTime = 0;
+      return;
+    }
+    if (v.paused) {
+      seekVideo(v, t);
+      var go = v.play();
+      if (go && go.catch) go.catch(function () {});
+      return;
+    }
+    var drift = v.currentTime - t;
+    if (Math.abs(drift) > 0.3) {
+      seekVideo(v, t + 0.1);
+    } else {
+      v.playbackRate = drift > 0.04 ? 0.96 : drift < -0.04 ? 1.04 : 1;
+    }
+  }
+
+  // One seek at a time: a new one waits until the last has landed (or half a second).
+  function seekVideo(v, t) {
+    var at = performance.now();
+    if (v.seeking && at - video.seekAt < 500) return;
+    video.seekAt = at;
+    v.currentTime = Math.max(0, t);
+  }
+
+  function stopVideo(rewind) {
+    if (!video.el) return;
+    video.el.pause();
+    if (rewind && video.on) video.el.currentTime = 0;
+  }
+
   // ---------- frame loop
 
   var lastFrame = 0;
@@ -1309,6 +1602,7 @@
     var now = songTime();
     update(now, dt);
     draw(now);
+    syncVideo();
     if (run.failing && now - run.failing > 1.8) {
       finish(true);
       return;
@@ -1349,6 +1643,7 @@
       run.hitFx[l] *= Math.exp(-dt * 7);
     }
     run.squash *= Math.exp(-dt * 10);
+    run.cheer *= Math.exp(-dt * 4);
     run.wince *= Math.exp(-dt * 5);
     run.shake *= Math.exp(-dt * 12);
     run.white *= Math.exp(-dt * 6);
@@ -1363,10 +1658,17 @@
       var drop = inDrop(beat);
       if (drop && beat === drop.from) {
         run.shout = { text: "DROP!", at: now, big: true };
+        run.cheer = 1;
+        rainCoins(30, true);
         if (!calm()) {
           run.white = 0.5;
           burst(L.sk.x, L.sk.y, "#ff2bd6", 30);
         }
+      } else if (!calm()) {
+        // A steady coin rain on the drop and on a big combo.
+        var tier = run.combo >= 100 ? 2 : run.combo >= 50 ? 1 : 0;
+        if (drop) rainCoins(2 + tier);
+        else if (tier === 2 || (tier === 1 && beat % 2 === 0)) rainCoins(1);
       }
       if (!calm()) {
         if (drop) run.shake = Math.max(run.shake, beat === drop.from ? 1 : 0.25 + 0.35 * heat());
@@ -1379,6 +1681,7 @@
       }
     }
 
+    moveCoins(dt);
     for (var p = run.particles.length - 1; p >= 0; p--) {
       var q = run.particles[p];
       q.life -= dt * 1.6;
@@ -1422,6 +1725,7 @@
     var pulse = r && beatPos >= 0 && !r.failing ? Math.pow(1 - phase, 3) : 0;
 
     g.setTransform(1, 0, 0, 1, 0, 0);
+    if (video.on) g.clearRect(0, 0, W, H);
     g.drawImage(bg, 0, 0);
     if (r && r.shake > 0.01 && !still) {
       g.translate((Math.random() - 0.5) * 12 * dpr * r.shake, (Math.random() - 0.5) * 12 * dpr * r.shake);
@@ -1430,12 +1734,13 @@
     // The screen breathes with the beat, harder with a big combo and on the drop.
     if (r && !still && pulse > 0.01) {
       var amt = pulse * (0.03 + 0.07 * h) * (drop ? 2 : 1);
-      g.fillStyle = "rgba(255,43,214," + amt.toFixed(3) + ")";
+      g.fillStyle = "rgba(" + (drop && Math.floor(beatPos) % 2 ? C.dropPulse : C.pulse) + "," + amt.toFixed(3) + ")";
       g.fillRect(-20, -20, W + 40, H + 40);
     }
     if (r && r.combo >= 100) drawEdgeGlow(beatPos, pulse, still);
 
     drawSkwish(now, beatPos, phase, drop, still);
+    if (r) drawCoins(r);
 
     if (r && r.combo >= 25 && !r.failing) {
       for (var lp = 0; lp < LANES; lp++) {
@@ -1486,13 +1791,18 @@
 
     if (r && r.white > 0.02) {
       g.setTransform(1, 0, 0, 1, 0, 0);
-      g.fillStyle = "rgba(255,255,255," + r.white.toFixed(3) + ")";
+      g.fillStyle = "rgba(" + C.flash + "," + r.white.toFixed(3) + ")";
       g.fillRect(0, 0, W, H);
     }
   }
 
   function drawEdgeGlow(beatPos, pulse, still) {
     var hue = still ? 300 : (beatPos * 45) % 360;
+    if (C.edgeHues) {
+      // Swing between two hues (for Genre Snob, gold and pink) instead of the whole rainbow.
+      var swing = still ? 0.5 : 0.5 + 0.5 * Math.sin(beatPos * Math.PI / 4);
+      hue = (C.edgeHues[0] + (C.edgeHues[1] - C.edgeHues[0]) * swing + 360) % 360;
+    }
     var size = (40 + (still ? 0 : 40 * pulse)) * dpr;
     var c0 = "hsla(" + Math.round(hue) + ",100%,60%,0.32)";
     var c1 = "hsla(" + Math.round(hue) + ",100%,60%,0)";
@@ -1637,14 +1947,20 @@
       art = Math.floor(beatPos / 4) % 3;
     }
     if (!r && !still) hop = Math.sin(performance.now() / 600) * 6 * dpr;
+    // A jump for combo milestones and the drop.
+    if (r && !still && r.cheer > 0.01) {
+      hop -= Math.sin(Math.min(1, r.cheer) * Math.PI) * 0.14 * size;
+      scale *= 1 + 0.08 * r.cheer;
+    }
 
     var cx = L.sk.x + dx;
     var cy = L.sk.y + hop;
     var dim = L.sk.dim + (L.sk.dim < 1 && drop ? 0.12 : 0);
     var haloSize = size * (0.62 + pulse * ((drop ? 0.3 : 0.08) + 0.12 * heat()));
     var halo = g.createRadialGradient(cx, cy, 0, cx, cy, haloSize);
-    halo.addColorStop(0, "rgba(255,43,214," + ((drop ? 0.6 : 0.36) * Math.min(1, dim * 2)).toFixed(3) + ")");
-    halo.addColorStop(1, "rgba(255,43,214,0)");
+    var haloRgb = drop && Math.floor(beatPos) % 2 ? C.dropPulse : C.glow;
+    halo.addColorStop(0, "rgba(" + haloRgb + "," + ((drop ? 0.6 : 0.36) * Math.min(1, dim * 2)).toFixed(3) + ")");
+    halo.addColorStop(1, "rgba(" + haloRgb + ",0)");
     g.fillStyle = halo;
     g.fillRect(cx - haloSize, cy - haloSize, haloSize * 2, haloSize * 2);
 
@@ -1653,7 +1969,16 @@
     g.rotate(rot);
     g.scale(scale * sx, scale * sy);
     g.globalAlpha = dim * (r ? 1 - r.wince * 0.35 : 1);
-    g.drawImage(skwishArt[art] || skwishArt[0], -size / 2, -size / 2, size, size);
+    var sh = size * skwishAspect;
+    var sprite = skwishArt[art] || skwishArt[0];
+    g.drawImage(sprite, -size / 2, -sh / 2, size, sh);
+    // On the drop the dancer lights up on each beat (the same art, added on top).
+    if (theme && drop && !still && pulse > 0.05) {
+      g.globalCompositeOperation = "lighter";
+      g.globalAlpha = pulse * 0.32 * dim;
+      g.drawImage(sprite, -size / 2, -sh / 2, size, sh);
+      g.globalCompositeOperation = "source-over";
+    }
     g.restore();
     g.globalAlpha = 1;
   }
@@ -1675,11 +2000,11 @@
     if (shown > 0.005) {
       var solid = lifeColor(r.life);
       var lg = g.createLinearGradient(lb.x, 0, lb.x + lb.w, 0);
-      lg.addColorStop(0, solid || "#3dfff2");
-      lg.addColorStop(1, solid || "#ff2bd6");
+      lg.addColorStop(0, solid || C.life[0]);
+      lg.addColorStop(1, solid || C.life[1]);
       var danger = r.life < 25 && !still ? 0.55 + 0.45 * Math.abs(Math.sin(now * 8)) : 1;
       g.globalAlpha = danger;
-      g.shadowColor = solid || "#ff2bd6";
+      g.shadowColor = solid || C.life[1];
       g.shadowBlur = 10 * dpr;
       rr(g, lb.x + 2 * dpr, lb.y + 2 * dpr, Math.max(lb.h - 4 * dpr, (lb.w - 4 * dpr) * shown), lb.h - 4 * dpr, (lb.h - 4 * dpr) / 2);
       g.fillStyle = lg;
@@ -1690,11 +2015,12 @@
     var prog = Math.max(0, Math.min(1, now / r.end));
     g.fillStyle = "rgba(255,255,255,0.08)";
     g.fillRect(lb.x, lb.y + lb.h + 5 * dpr, lb.w, 2 * dpr);
-    g.fillStyle = drop ? "#ff2bd6" : "#3dfff2";
+    g.fillStyle = drop ? "#ff2bd6" : C.progress;
     g.fillRect(lb.x, lb.y + lb.h + 5 * dpr, lb.w * prog, 2 * dpr);
 
     var scoreStr = fmt(Math.floor(r.points / 10 + 1e-6) * 10);
     if (L.hud) {
+      drawSongArt();
       text("LIFE", lb.x - 10 * dpr, lb.y + lb.h / 2, 11 * dpr, "rgba(196,184,210,0.9)", "right");
       text("SCORE", L.hud.x, L.hud.y - 40 * dpr, 12 * dpr, "rgba(196,184,210,0.9)");
       text(scoreStr, L.hud.x, L.hud.y, 32 * dpr, "#f4f0f8", "center", 10 * dpr);
@@ -1734,6 +2060,21 @@
     }
 
     if (!r.failing) drawShout(r, now, still);
+  }
+
+  // The song's title and logo art in the side column, on wide screens.
+  function drawSongArt() {
+    if (!theme) return;
+    if (titleImg) {
+      var tw = Math.min(L.x * 0.72, 300 * dpr);
+      var th = tw * titleImg.naturalHeight / titleImg.naturalWidth;
+      g.drawImage(titleImg, L.hud.x - tw / 2, L.hud.y - 66 * dpr - th, tw, th);
+    }
+    if (logoImg) {
+      var lw = Math.min(L.x * 0.5, 190 * dpr);
+      var lh = lw * logoImg.naturalHeight / logoImg.naturalWidth;
+      g.drawImage(logoImg, L.hud.x - lw / 2, L.hud.y + 128 * dpr, lw, lh);
+    }
   }
 
   function diffColor(d) {
@@ -1780,7 +2121,7 @@
       var bump = still ? 0 : r.comboBump * 0.18;
       var cs = size * 1.15 * (1 + bump) * (r.combo >= 100 ? 1.15 : 1);
       var cy = L.judgeY + size * 1.25;
-      var color = r.combo >= 200 ? "hsl(" + Math.round((now * 240) % 360) + ",100%,65%)" : r.combo >= 100 ? "#d6ff4a" : r.combo >= 50 ? "#3dfff2" : "#f4f0f8";
+      var color = r.combo >= 200 ? "hsl(" + Math.round((now * 240) % 360) + ",100%,65%)" : r.combo >= 100 ? C.combo100 : r.combo >= 50 ? C.combo50 : "#f4f0f8";
       text(String(r.combo), (L.x + L.right) / 2, cy, cs, color, "center", (r.combo >= 50 ? 18 : 8) * dpr);
       text("COMBO", (L.x + L.right) / 2, cy + cs * 0.72, 11 * dpr, "rgba(196,184,210,0.95)", "center");
     }
@@ -1797,7 +2138,7 @@
     var y = big ? L.recY + (L.bottom - L.recY) * 0.62 : L.side ? L.sk.y + L.sk.size * 0.62 : L.recY + (L.bottom - L.recY) * 0.62;
     var x = big || !L.side ? mid : L.sk.x;
     var size = (big ? Math.min(58 * dpr, (L.right - L.x) * 0.2) : 22 * dpr) * (!still && sAge < 0.12 ? 1.25 : 1);
-    text(r.shout.text, x, y, size, r.shout.bad ? "#ff4d6d" : big ? "#ff2bd6" : "#d6ff4a", "center", 22 * dpr);
+    text(r.shout.text, x, y, size, r.shout.bad ? "#ff4d6d" : big ? C.drop : C.shout, "center", 22 * dpr);
     g.globalAlpha = 1;
   }
 
@@ -2043,6 +2384,15 @@
       life: function () { return run ? run.life : 0; },
       counts: function () { return run ? JSON.parse(JSON.stringify(run.counts)) : null; },
       settings: function () { return JSON.parse(JSON.stringify(settings)); },
+      theme: function () {
+        var v = video.el;
+        return {
+          name: theme ? theme.name : null,
+          art: { dancer: skwishArt.length, coins: !!coinImg, title: !!titleImg, logo: !!logoImg, backdrop: !!backdropImg },
+          coins: run ? run.coins.length : 0,
+          video: v ? { on: video.on, src: v.currentSrc, time: v.currentTime, paused: v.paused, song: run ? heard() - run.start : 0 } : null
+        };
+      },
       calibration: function () { return cal ? { t0: cal.t0, taps: cal.taps.slice(), done: !!cal.done } : null; },
       song: function () {
         var counts = {};
@@ -2054,6 +2404,8 @@
 
   updatePicker();
   show("start");
+  loadDancer();
+  loadThemeArt();
   resize();
   root.classList.add("is-ready");
 })();
