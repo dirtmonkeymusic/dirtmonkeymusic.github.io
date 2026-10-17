@@ -90,6 +90,13 @@ async function open(b, url, viewport) {
     ok("home: only Merch, Shows, and Sign up", JSON.stringify(links) === JSON.stringify(["/merch/", "/shows/", "#signup"]), links);
     const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
     ok("home: nav is Merch, Shows, Sign up", JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/", "/#signup"]), nav);
+    const laylo = await p.$$eval("#signup a[data-laylo]", (as) => as.map((a) => [a.href, a.target, a.rel]));
+    const kitLeft = await p.$$eval("#signup form", (fs) => fs.length);
+    ok("home: signup is the Laylo button, new tab", laylo.length === 1 && laylo[0][0] === "https://laylo.com/dirtmonkey" && laylo[0][1] === "_blank" && /noopener/.test(laylo[0][2]) && kitLeft === 0, { laylo, kitLeft });
+    const music = await open(b, "/music/", DESKTOP);
+    const albumLinks = await music.$$eval(".upcoming-actions a", (as) => as.map((a) => [a.textContent.trim(), a.href, a.target]));
+    await music.close();
+    ok("music: Pre-save and Notify me go to Laylo", albumLinks.length === 2 && albumLinks.every((l) => l[1] === "https://laylo.com/dirtmonkey" && l[2] === "_blank"), albumLinks);
     const a1 = await st(p);
     await wait(400);
     const a2 = await st(p);

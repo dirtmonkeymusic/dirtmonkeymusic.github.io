@@ -14,7 +14,7 @@ This is the Dirt Monkey website, made for the address **https://dirtmonkey.music
 | `/app/` | `app/index.html` | The Dirt Monkey iPhone app, coming November 2 |
 | `/play/` | `play/index.html` | Skwish Drop, a bass-drop rhythm game starring Skwish |
 | `/privacy/` | `privacy/index.html` | The app privacy policy, exactly as written |
-| `/#signup` | `index.html` | The email signup (a Kit placeholder form) |
+| `/#signup` | `index.html` | The signup: a big neon button to the Laylo page (laylo.com/dirtmonkey) |
 
 The header on every page links to Plugins, Music, Shows, Merch, App, Play (a glowing pill), and Sign up. The footer links to Instagram, YouTube, Bandcamp, 19K, and the privacy policy.
 
@@ -271,7 +271,7 @@ Each page is the `index.html` inside its folder. Look for comments that say `EDI
 - **App (`app/index.html`):** when the app is live, replace the App Store placeholder with the real link. The comment above it shows the line to paste.
 - **Privacy (`privacy/index.html`):** this is the policy file exactly as it was supplied. It keeps its own simple style and has no site header. Replace the whole file when a final version is ready.
 - **Header and footer:** copied on every page. If you change a nav link or a footer link, change it on every page.
-- **Email signup:** the form on the home page is a Kit placeholder tagged `newsletter` and `source-website`. Replace the whole form with the Kit inline embed. It does not send anywhere yet.
+- **Signup:** the home page signup is a big neon button to https://laylo.com/dirtmonkey that opens in a new tab. Laylo's embed widget needs a drop ID from the Laylo dashboard; once there is one, the embed can replace the button in `index.html`. The Music page SKWISH Pre-save and Notify me buttons also go to the Laylo page.
 
 Do not rename the folders `assets`, `css`, `js`, `downloads`, or `tools`. The pages look for those names.
 
