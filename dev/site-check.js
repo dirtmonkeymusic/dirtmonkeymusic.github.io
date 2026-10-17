@@ -111,6 +111,14 @@ async function open(b, url, viewport) {
         await p.close();
       }
     }
+    // Link previews say just "Dirt Monkey", with the wordless share card, and no old tagline anywhere.
+    for (const url of LAUNCH_PAGES) {
+      const html = await (await fetch(BASE + url)).text();
+      const meta = (k) => { const m = html.match(new RegExp('<meta (?:property|name)="?' + k.replace(/:/g, ":") + '"? content="([^"]*)"')); return m ? m[1] : null; };
+      const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1];
+      const good = (url === "/privacy/" ? /^Dirt Monkey/.test(title) : title === "Dirt Monkey") && meta("og:title") === "Dirt Monkey" && meta("twitter:title") === "Dirt Monkey" && meta("og:site_name") === "Dirt Monkey" && meta("og:image:alt") === "Dirt Monkey" && /share-card-2\.jpg$/.test(meta("og:image") || "") && !/name="?description|og:description|twitter:description/.test(html) && !/Sounds of|Sample Packs|Plugins &amp;/i.test(html);
+      ok(`${url}: preview is just Dirt Monkey`, good, { title, og: meta("og:title"), img: meta("og:image") });
+    }
     const home = await open(b, "/", PHONE);
     const priv = await home.$$eval('.site-footer a[href="/privacy/"]', (as) => as.filter((a) => a.getClientRects().length).length);
     await home.close();
@@ -303,11 +311,7 @@ async function open(b, url, viewport) {
       ok("dub: a win plays the track through the gain node", win.win && win.playing && win.connected && win.sources === 1 && win.length > 60, win);
       ok("dub: win headline and credit", ui.title === "You won. Now enjoy this top secret Dirt Monkey dub plate." && ui.credit === "Now playing: " + win.title + " - Dirt Monkey (unreleased)" && win.plates.includes(win.title) && /JetBrains Mono/.test(ui.font) && ui.audio === 0, { ui, title: win.title });
       ok("dub: the pool is the five tracks", JSON.stringify(win.plates) === JSON.stringify(["FREAK", "RAVE TIME", "FABRICATION FLIP", "AGE OF LOVE FLIP", "6 FT DEEP"]), win.plates);
-      // The knob: arrow keys turn it and the level is remembered.
-      await w.focus("[data-dub-knob]");
-      for (let i = 0; i < 6; i++) await w.keyboard.press("ArrowDown");
-      const knob = await w.evaluate(() => ({ now: document.querySelector("[data-dub-knob]").getAttribute("aria-valuenow"), saved: localStorage.getItem("dm-pong-volume") }));
-      ok("dub: the knob turns and remembers", knob.now === "50" && knob.saved === "0.5" && (await st(w)).dub.vol === 0.5, knob);
+      ok("dub: plays at full volume, with no volume knob", win.gain === 1 && (await w.$$("[data-dub-knob], .dub-knob")).length === 0 && !/dm-pong-volume/.test(await w.evaluate(() => Object.keys(localStorage).join(","))), win.gain);
       await wait(1500);
       await w.screenshot({ path: path.join(ART, "pong-win.png") });
       // Pause and resume pick up where it was.
@@ -325,8 +329,9 @@ async function open(b, url, viewport) {
       await wait(3000);
       const after = (await st(w)).dub;
       const again = await w.$eval("[data-dub-again]", (e) => !e.hidden && e.textContent.trim());
+      const glow = await w.$eval(".pong-start", (e) => !e.hidden && e.textContent.trim() === "Play again" && e.classList.contains("is-glowing") && getComputedStyle(e).animationName !== "none");
       ok("dub: when it ends, nothing else starts", after.ended && !after.playing && !after.connected && after.sources === before, { before, after });
-      ok("dub: after the end it says win again", again === "Beat Skwish again for another dub plate", again);
+      ok("dub: after the end it says play again, with Play again glowing", again === "Play again to hear another one." && glow, again);
       // Esc stops it and a new game drops it.
       await w.click(".pong-start");
       await wait(200);

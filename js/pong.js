@@ -58,17 +58,12 @@
     { file: "/assets/pong/fx5.bin", title: "6 FT DEEP" }
   ];
   var KP = ["Sk", "wi5h", "-P0ng", ":dub", "pl4te", "#DM"];
-  var VOL_KEY = "dm-pong-volume";
   var player = winEl && winEl.querySelector("[data-dub-player]");
   var dub = {
     ctx: null, gain: null, src: null, buf: null, plate: null, fetching: null,
     startedAt: 0, offset: 0, playing: false, ended: false, connected: false,
-    sources: 0, tick: 0, vol: 0.8
+    sources: 0, tick: 0
   };
-  try {
-    var savedVol = parseFloat(localStorage.getItem(VOL_KEY));
-    if (savedVol >= 0 && savedVol <= 1) dub.vol = savedVol;
-  } catch (err) {}
 
   function unscramble(ab) {
     var k = KP.join(""), key = new Uint8Array(k.length);
@@ -87,7 +82,7 @@
     if (!dub.ctx) {
       dub.ctx = new AC();
       dub.gain = dub.ctx.createGain();
-      dub.gain.gain.value = dub.vol;
+      dub.gain.gain.value = 1;
       dub.gain.connect(dub.ctx.destination);
     }
     if (dub.ctx.state === "suspended") dub.ctx.resume();
@@ -159,6 +154,7 @@
       dub.ended = true;
       dub.offset = dub.buf.duration;
       dubShow();
+      if (mode === "over" && !startBtn.hidden) startBtn.classList.add("is-glowing");
     };
     dub.src = src;
     dub.sources++;
@@ -206,24 +202,12 @@
 
   function hideWin() {
     dubStop();
+    startBtn.classList.remove("is-glowing");
     if (winEl) winEl.hidden = true;
-  }
-
-  function setVol(v) {
-    dub.vol = Math.max(0, Math.min(1, Math.round(v * 100) / 100));
-    if (dub.gain) dub.gain.gain.setTargetAtTime(dub.vol, dub.ctx.currentTime, 0.02);
-    try { localStorage.setItem(VOL_KEY, String(dub.vol)); } catch (err) {}
-    var knob = player.querySelector("[data-dub-knob]");
-    var pct = Math.round(dub.vol * 100);
-    knob.style.setProperty("--turn", (-135 + dub.vol * 270) + "deg");
-    knob.setAttribute("aria-valuenow", pct);
-    knob.setAttribute("aria-valuetext", pct + "%");
   }
 
   function bindPlayer() {
     if (!player) return;
-    var knob = player.querySelector("[data-dub-knob]");
-    setVol(dub.vol);
     player.addEventListener("contextmenu", function (e) { e.preventDefault(); });
     player.querySelector("[data-dub-play]").addEventListener("click", function () {
       if (dub.playing) dubPause();
@@ -232,34 +216,6 @@
     player.querySelector("[data-dub-close]").addEventListener("click", function () {
       dubKill();
       player.hidden = true;
-    });
-    // The knob: drag up or right to turn it up, scroll, or use the arrow keys.
-    var drag = null;
-    knob.addEventListener("pointerdown", function (e) {
-      e.preventDefault();
-      drag = { x: e.clientX, y: e.clientY, v: dub.vol };
-      if (knob.setPointerCapture) knob.setPointerCapture(e.pointerId);
-      knob.focus({ preventScroll: true });
-    });
-    knob.addEventListener("pointermove", function (e) {
-      if (!drag) return;
-      setVol(drag.v + ((e.clientX - drag.x) - (e.clientY - drag.y)) / 160);
-    });
-    var endDrag = function () { drag = null; };
-    knob.addEventListener("pointerup", endDrag);
-    knob.addEventListener("pointercancel", endDrag);
-    knob.addEventListener("wheel", function (e) {
-      e.preventDefault();
-      setVol(dub.vol - Math.sign(e.deltaY || -e.deltaX) * 0.05);
-    }, { passive: false });
-    knob.addEventListener("keydown", function (e) {
-      var k = e.key, step = { ArrowUp: 0.05, ArrowRight: 0.05, ArrowDown: -0.05, ArrowLeft: -0.05, PageUp: 0.2, PageDown: -0.2 }[k];
-      if (step !== undefined) setVol(dub.vol + step);
-      else if (k === "Home") setVol(0);
-      else if (k === "End") setVol(1);
-      else return;
-      e.preventDefault();
-      e.stopPropagation();
     });
   }
   bindPlayer();
@@ -571,7 +527,6 @@
   document.addEventListener("keydown", function (e) {
     if (mode === "attract") return;
     if (e.target.closest && e.target.closest("input, textarea, select")) return;
-    if (e.target.closest && e.target.closest("[data-dub-knob]") && e.key !== "Escape") return;
     if (e.key === "Escape") { stop(); return; }
     var k = keyName(e);
     if (!k) return;
@@ -620,7 +575,7 @@
     state: function () {
       return {
         mode: mode, score: score.slice(), ball: { x: ball.x, y: ball.y }, left: left.y, right: right.y, running: running, W: W, H: H,
-        dub: { win: !!winEl && !winEl.hidden, ready: !!dub.buf, playing: dub.playing, connected: dub.connected, ended: dub.ended, sources: dub.sources, vol: dub.vol, at: dubPos(), length: dub.buf ? dub.buf.duration : 0, title: dub.plate ? dub.plate.title : "", plates: PLATES.map(function (p) { return p.title; }) }
+        dub: { win: !!winEl && !winEl.hidden, ready: !!dub.buf, playing: dub.playing, connected: dub.connected, ended: dub.ended, sources: dub.sources, gain: dub.gain ? dub.gain.gain.value : 0, at: dubPos(), length: dub.buf ? dub.buf.duration : 0, title: dub.plate ? dub.plate.title : "", plates: PLATES.map(function (p) { return p.title; }) }
       };
     },
     // Ends a game on the spot: finish(true) is a win, finish(false) a loss.

@@ -1658,6 +1658,22 @@ h2,
   box-shadow: 0 0 22px var(--magenta);
 }
 
+/* After a dub plate ends, Play again pulses so the next round is one tap away. */
+.pong-start.is-glowing {
+  border-color: var(--cyan);
+  background: rgba(61, 255, 242, 0.14);
+  animation: play-again-glow 1.4s ease-in-out infinite;
+}
+
+@keyframes play-again-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(61, 255, 242, 0.45), 0 0 22px rgba(255, 43, 214, 0.25); }
+  50% { box-shadow: 0 0 26px var(--cyan), 0 0 44px rgba(255, 43, 214, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pong-start.is-glowing { animation: none; box-shadow: 0 0 24px var(--cyan); }
+}
+
 .pong-start {
   left: 50%;
   bottom: 14px;
@@ -1837,38 +1853,6 @@ h2,
   font-variant-numeric: tabular-nums;
   text-align: left;
 }
-
-/* The volume knob: --turn is set by js/pong.js, -135deg (silent) to 135deg (full). */
-.dub-knob {
-  --turn: 81deg;
-  flex: none;
-  position: relative;
-  width: 38px;
-  height: 38px;
-  border: 1.5px solid var(--mint);
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #2a2133, #0b0910 70%);
-  box-shadow: 0 0 12px rgba(214, 255, 74, 0.35);
-  cursor: ns-resize;
-  touch-action: none;
-  transform: rotate(var(--turn));
-}
-
-.dub-knob-dot {
-  position: absolute;
-  left: 50%;
-  top: 4px;
-  width: 4px;
-  height: 10px;
-  margin-left: -2px;
-  border-radius: 2px;
-  background: var(--mint);
-  box-shadow: 0 0 8px var(--mint);
-}
-
-.dub-knob:focus { outline: none; }
-
-.dub-knob:focus-visible { box-shadow: 0 0 0 2px var(--cyan), 0 0 16px var(--mint); }
 
 .dub-play:focus-visible,
 .dub-close:focus-visible { box-shadow: 0 0 0 2px var(--cyan), 0 0 16px var(--cyan); outline: none; }

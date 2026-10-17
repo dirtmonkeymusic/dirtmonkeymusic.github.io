@@ -293,7 +293,7 @@ To refresh the saved list, open the address above in a browser, copy everything 
 
 ## Search and share previews
 
-Every page has its own title, search description, and share preview (used by Instagram, Discord, iMessage, Slack, and X) at the top of its `index.html`. The share picture is `assets/share-card.jpg` (1200 by 630, made from the real logo and Skwish).
+Every page has its own title, search description, and share preview (used by Instagram, Discord, iMessage, Slack, and X) at the top of its `index.html`. The share picture is `assets/share-card-2.jpg` (1200 by 630, made from the real logo and Skwish).
 
 Share previews and search need the site's full address. It is `https://dirtmonkey.music/` in these places:
 
@@ -312,7 +312,7 @@ If the address ever changes, change it in all of those. `404.html` is the page G
 - `assets/dirt-monkey-logo.png`: the full-size original of that wordmark. The page does not load it. Keep it for making new sizes.
 - `assets/skwish-cyan.webp` and `assets/skwish-cyan.png`: Skwish, the neon monkey in home page Pong and on the App page. Browsers that cannot show WebP get the PNG.
 - `assets/favicon-32.png` and `assets/apple-touch-icon.png`: the browser-tab icon and the iPhone home-screen icon. `favicon.ico` at the top is the same icon, for pages (like the privacy policy) that do not name one.
-- `assets/share-card.jpg`: the share preview picture.
+- `assets/share-card-2.jpg`: the share preview picture.
 - `assets/fonts/jetbrains-mono-latin.woff2`: JetBrains Mono, the only font on the site. It is served from this folder, so the page does not wait on Google Fonts. Its license is `assets/fonts/OFL.txt`.
 
 There is also a file named `.nojekyll`. It looks empty. Leave it in the folder. It tells GitHub Pages not to rearrange your files. On a Mac or Windows computer it may be hidden. That is fine.
