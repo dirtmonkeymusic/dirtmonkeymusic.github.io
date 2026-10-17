@@ -26,7 +26,10 @@ async function open(b, url, viewport) {
   const p = await b.newPage();
   p.errors = [];
   p.bad = [];
-  p.on("console", (m) => { if (m.type() === "error" && !expected404(m)) p.errors.push(m.text()); });
+  // Console messages from inside the Laylo embed (and its Cloudflare Turnstile check) are theirs, not ours.
+  // The site sends no CSP, so a report-only CSP notice always comes from a third-party frame.
+  const fromLaylo = (m) => /^https:\/\/([^/]+\.)?(laylo\.com|challenges\.cloudflare\.com)\//.test((m.location() && m.location().url) || "") || /report-only Content Security Policy/.test(m.text());
+  p.on("console", (m) => { if (m.type() === "error" && !expected404(m) && !fromLaylo(m)) p.errors.push(m.text()); });
   p.on("pageerror", (e) => p.errors.push("PAGEERROR " + e.message));
   p.on("response", (r) => { if (r.url().startsWith(BASE) && r.status() >= 400) p.bad.push(r.status() + " " + r.url().replace(BASE, "")); });
   p.on("requestfailed", (r) => { if (r.url().startsWith(BASE)) p.bad.push("failed " + r.url().replace(BASE, "")); });
@@ -92,7 +95,8 @@ async function open(b, url, viewport) {
     ok("home: nav is Merch, Shows, Sign up", JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/", "/#signup"]), nav);
     const laylo = await p.$$eval("#signup a[data-laylo]", (as) => as.map((a) => [a.href, a.target, a.rel]));
     const kitLeft = await p.$$eval("#signup form", (fs) => fs.length);
-    ok("home: signup is the Laylo button, new tab", laylo.length === 1 && laylo[0][0] === "https://laylo.com/dirtmonkey" && laylo[0][1] === "_blank" && /noopener/.test(laylo[0][2]) && kitLeft === 0, { laylo, kitLeft });
+    const embed = await p.$$eval("#signup iframe[data-laylo-embed]", (fs) => fs.map((f) => [f.src, f.getAttribute("loading"), f.getAttribute("height")]));
+    ok("home: signup is the Laylo embed (not minimal) with a fallback link", embed.length === 1 && embed[0][0] === "https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent" && embed[0][1] === "lazy" && !/minimal/.test(embed[0][0]) && laylo.length === 1 && laylo[0][0] === "https://laylo.com/dirtmonkey" && laylo[0][1] === "_blank" && /noopener/.test(laylo[0][2]) && kitLeft === 0, { embed, laylo, kitLeft });
     const music = await open(b, "/music/", DESKTOP);
     const albumLinks = await music.$$eval(".upcoming-actions a", (as) => as.map((a) => [a.textContent.trim(), a.href, a.target]));
     await music.close();

@@ -138,11 +138,12 @@
             <h2 id="signup-title">Get the news first</h2>
             <p class="lede">One list for everything Dirt Monkey, on Laylo.</p>
           </div>
-          <!-- Laylo: the signup lives on the Laylo page. Laylo's embed widget needs a drop ID from the
-               Laylo dashboard, so this is a link for now. Swap in the embed here once there is a drop ID. -->
+          <!-- Laylo: the official profile embed. Do not add minimal=true, Laylo needs its opt-in text shown. -->
           <div class="laylo-signup">
-            <a class="btn btn-laylo" href="https://laylo.com/dirtmonkey" target="_blank" rel="noopener noreferrer" data-laylo>Sign up on Laylo</a>
-            <p class="laylo-note">Drops, shows, and new music. Opens Laylo in a new tab.</p>
+            <div class="laylo-embed">
+              <iframe src="https://laylo.com/dirtmonkey/profile/embed?theme=dark&amp;background=transparent" title="Sign up for Dirt Monkey on Laylo" width="100%" height="580" frameborder="0" scrolling="no" allowtransparency="true" loading="lazy" data-laylo-embed></iframe>
+            </div>
+            <p class="laylo-note">Not loading? <a href="https://laylo.com/dirtmonkey" target="_blank" rel="noopener noreferrer" data-laylo>Sign up on Laylo</a> instead.</p>
           </div>
         </div>
       </div>
