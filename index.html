@@ -55,8 +55,8 @@
 
     SITE MAP: each page is a folder with an index.html inside.
       /            This page, the launch page. The logo, the countdown
-                   (js/countdown.js), Merch and Shows buttons, Skwish Pong
-                   (js/pong.js), and the Laylo signup embed.
+                   (js/countdown.js), the Laylo signup, Skwish Pong
+                   (js/pong.js), then the Merch and Shows buttons.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
       /music/      Albums and releases.
       /shows/      Tour dates.
@@ -65,7 +65,7 @@
       /app/        The Dirt Monkey iPhone app.
       /privacy/    The app's privacy policy (linked in the footer).
       /signup/     The Laylo signup on its own. Not linked anywhere for now,
-                   since the home page has the same embed.
+                   since the home page has a signup.
 
     Plugins, Music, App, Play, and Sign up are not linked for now. Their
     links wait in the NAV3 comments in each nav and in the home buttons.
@@ -115,17 +115,18 @@
         </div>
       </div>
 
-      <ul class="home-links" aria-label="Sections">
-        <li><a class="home-link accent-cyan" href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener">Merch</a></li>
-        <li><a class="home-link accent-magenta" href="/shows/">Shows</a></li>
-        <!-- NAV3: hidden for now. To restore, put these back (old order: Plugins, Music, Shows, Merch, App, Play, Sign up).
-        <li><a class="home-link accent-cyan" href="/plugins/">Plugins</a></li>
-        <li><a class="home-link accent-magenta" href="/music/">Music</a></li>
-        <li><a class="home-link accent-magenta" href="/app/">App</a></li>
-        <li><a class="home-link home-link-play accent-mint" href="/play/">Play</a></li>
-        <li><a class="home-link accent-mint" href="#signup">Sign up</a></li>
-        -->
-      </ul>
+      <!--
+        SIGNUP: Laylo's minimal embed, just the number field and the RSVP button.
+        The frame is clipped to the field (.home-signup in css/styles.css), so
+        Laylo's own fine print is cut off. Laylo requires the line under it
+        when minimal=true is on: keep it.
+      -->
+      <div id="signup" class="home-signup">
+        <div class="home-signup-frame">
+          <iframe src="https://laylo.com/dirtmonkey/profile/embed?theme=dark&amp;background=transparent&amp;minimal=true&amp;customColor=3dfff2" title="Sign up for Dirt Monkey on Laylo" width="100%" height="300" frameborder="0" scrolling="no" allowtransparency="true" data-laylo-embed></iframe>
+        </div>
+        <p class="home-signup-legal">By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy.</p>
+      </div>
 
       <!--
         SKWISH PONG. js/pong.js runs it.
@@ -147,25 +148,18 @@
         <button class="pong-start" type="button" data-pong-start>Play Pong</button>
         <button class="pong-close" type="button" aria-label="Stop Pong" data-pong-close hidden>&times;</button>
       </div>
-    </section>
 
-    <section id="signup" class="section section-signup" aria-labelledby="signup-title">
-      <div class="wrap wrap-narrow">
-        <div class="suite-card signup-card">
-          <div class="section-heading">
-            <p class="eyebrow">Text or email</p>
-            <h2 id="signup-title">Get the news first</h2>
-            <p class="lede">One list for everything Dirt Monkey, on Laylo.</p>
-          </div>
-          <!-- Laylo: the official profile embed. Do not add minimal=true, Laylo needs its opt-in text shown. -->
-          <div class="laylo-signup">
-            <div class="laylo-embed">
-              <iframe src="https://laylo.com/dirtmonkey/profile/embed?theme=dark&amp;background=transparent" title="Sign up for Dirt Monkey on Laylo" width="100%" height="580" frameborder="0" scrolling="no" allowtransparency="true" loading="lazy" data-laylo-embed></iframe>
-            </div>
-            <p class="laylo-note">Not loading? <a href="https://laylo.com/dirtmonkey" target="_blank" rel="noopener noreferrer" data-laylo>Sign up on Laylo</a> instead.</p>
-          </div>
-        </div>
-      </div>
+      <ul class="home-links home-links-under" aria-label="Sections">
+        <li><a class="home-link accent-cyan" href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener">Merch</a></li>
+        <li><a class="home-link accent-magenta" href="/shows/">Shows</a></li>
+        <!-- NAV3: hidden for now. To restore, put these back (old order: Plugins, Music, Shows, Merch, App, Play, Sign up).
+        <li><a class="home-link accent-cyan" href="/plugins/">Plugins</a></li>
+        <li><a class="home-link accent-magenta" href="/music/">Music</a></li>
+        <li><a class="home-link accent-magenta" href="/app/">App</a></li>
+        <li><a class="home-link home-link-play accent-mint" href="/play/">Play</a></li>
+        <li><a class="home-link accent-mint" href="#signup">Sign up</a></li>
+        -->
+      </ul>
     </section>
   </main>
 

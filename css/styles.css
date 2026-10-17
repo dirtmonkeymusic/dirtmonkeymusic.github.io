@@ -1438,6 +1438,44 @@ h2,
   margin: 0 auto 24px;
 }
 
+/* Home signup: Laylo's minimal embed, clipped to just the field and button.
+   Laylo draws its pill about 24px to 65px down its frame (the focus ring
+   draws inside that), with its fine print from about 72px down, so the frame shows
+   16px to 72px and
+   our line stands in. Laylo's pill also sits 7px left of center, so it moves over. */
+.home-signup {
+  max-width: 520px;
+  margin: 0 auto 26px;
+}
+
+.home-signup-frame {
+  height: 56px;
+  overflow: hidden;
+}
+
+.home-signup-frame iframe {
+  display: block;
+  width: 100%;
+  height: 300px;
+  margin-top: -16px;
+  transform: translateX(7px);
+  border: 0;
+  background: transparent;
+  /* Same fix as .laylo-embed: Laylo's page is color-scheme normal. */
+  color-scheme: normal;
+}
+
+.home-signup-legal {
+  max-width: 440px;
+  margin: 6px auto 0;
+  color: var(--dim);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  opacity: 0.75;
+}
+
+.home-links-under { margin: 26px auto 0; }
+
 .home-countdown[hidden],
 .home-countdown-label[hidden] { display: none; }
 
@@ -1843,6 +1881,12 @@ h2,
   .home-countdown-unit span { font-size: 0.6rem; letter-spacing: 0.08em; }
 
   .home-links { gap: 10px; margin-bottom: 20px; }
+
+  .home-links-under { margin: 20px auto 0; }
+
+  .home-signup { margin-bottom: 20px; }
+
+  .home-signup-legal { max-width: 320px; font-size: 0.56rem; }
 
   .home-links li { flex: 1 1 calc(50% - 10px); max-width: 190px; }
 

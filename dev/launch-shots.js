@@ -1,4 +1,4 @@
-// Full-page desktop and phone screenshots of the launch home page (logo, countdown, Merch and Shows, Pong, Laylo signup).
+// Full-page desktop and phone screenshots of the launch home page (logo, countdown, Laylo signup, Pong, Merch and Shows).
 // node launch-shots.js
 const puppeteer = require("puppeteer-core");
 const path = require("path");

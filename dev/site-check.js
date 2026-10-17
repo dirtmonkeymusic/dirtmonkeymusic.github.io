@@ -1,7 +1,7 @@
 // Site checks: every page loads on desktop and phone with no errors, no broken
 // local links or files, no sideways scroll, JetBrains Mono, and no em dashes.
 // Then the launch: only Merch and Shows linked, no visible link to a hidden page, /signup/ still works.
-// Then the home page: the countdown, the section links, the Laylo embed, and Skwish Pong (attract mode, a game, Esc, reduced motion).
+// Then the home page: the countdown, the Laylo signup, the section links, and Skwish Pong (attract mode, a game, Esc, reduced motion).
 // node site-check.js [all|pages|home]
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
@@ -132,24 +132,32 @@ async function open(b, url, viewport) {
     ok("home: Merch button opens the store in a new tab", JSON.stringify(merchBtn) === JSON.stringify([["_blank", "noopener"]]), merchBtn);
     const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
     ok("home: nav is only Merch and Shows", JSON.stringify(nav) === JSON.stringify([STORE, "/shows/"]), nav);
-    // Launch order: logo, countdown, buttons, Pong, then the signup embed.
-    const order = await p.evaluate(() => [".home-logo", "[data-home-countdown]", ".home-links", ".pong", "#signup iframe"].map((q) => document.querySelector(q).getBoundingClientRect().top + scrollY));
-    ok("home: logo, countdown, buttons, Pong, then signup", order.every((y, i) => i === 0 || y > order[i - 1]), order);
-    const laylo = await p.$$eval("#signup a[data-laylo]", (as) => as.map((a) => [a.href, a.target, a.rel]));
-    const kitLeft = await p.$$eval("#signup form", (fs) => fs.length);
-    const embed = await p.$$eval("#signup iframe[data-laylo-embed]", (fs) => fs.map((f) => [f.src, f.getAttribute("loading"), f.getAttribute("height")]));
-    ok("home: signup is the Laylo embed (not minimal) with a fallback link", embed.length === 1 && embed[0][0] === "https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent" && embed[0][1] === "lazy" && !/minimal/.test(embed[0][0]) && laylo.length === 1 && laylo[0][0] === "https://laylo.com/dirtmonkey" && laylo[0][1] === "_blank" && /noopener/.test(laylo[0][2]) && kitLeft === 0, { embed, laylo, kitLeft });
-    // Countdown: four neon units between the logo and the buttons, ticking, above Pong.
+    // Launch order: logo, countdown, the signup, Pong, the buttons, then the footer.
+    const order = await p.evaluate(() => [".home-logo", "[data-home-countdown]", "#signup iframe", ".home-signup-legal", ".pong", ".home-links", ".site-footer"].map((q) => document.querySelector(q).getBoundingClientRect().top + scrollY));
+    ok("home: logo, countdown, signup, Pong, buttons, then footer", order.every((y, i) => i === 0 || y > order[i - 1]), order);
+    // Signup: Laylo's minimal embed clipped to the field and button, with Laylo's required line under it and nothing else.
+    const su2 = await p.evaluate(() => {
+      const box = document.querySelector("#signup");
+      return {
+        src: [...box.querySelectorAll("iframe[data-laylo-embed]")].map((f) => f.src),
+        clip: getComputedStyle(box.querySelector(".home-signup-frame")).overflow,
+        legal: box.querySelector(".home-signup-legal").textContent.trim(),
+        extra: box.querySelectorAll("h1, h2, h3, img, form, a").length,
+        font: getComputedStyle(box.querySelector(".home-signup-legal")).fontFamily
+      };
+    });
+    ok("home: signup is the minimal Laylo embed, clipped, with the required line", JSON.stringify(su2.src) === JSON.stringify(["https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent&minimal=true&customColor=3dfff2"]) && su2.clip === "hidden" && su2.legal === "By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy." && su2.extra === 0 && /JetBrains Mono/.test(su2.font), su2);
+    // Countdown: four neon units between the logo and the signup, ticking.
     const cd = await p.evaluate(() => {
       const el = document.querySelector("[data-home-countdown]");
       const r = el.getBoundingClientRect();
       const logo = document.querySelector(".home-logo").getBoundingClientRect();
-      const btns = document.querySelector(".home-links").getBoundingClientRect();
+      const btns = document.querySelector("#signup").getBoundingClientRect();
       return { st: window.homeCountdown.state(), top: r.top, bottom: r.bottom, logo: logo.bottom, btns: btns.top, font: getComputedStyle(el.querySelector("strong")).fontFamily };
     });
     await wait(1100);
     const cd2 = await p.evaluate(() => window.homeCountdown.state());
-    ok("home: countdown shows between the logo and the buttons", !cd.st.hidden && cd.top >= cd.logo && cd.bottom <= cd.btns && /JetBrains Mono/.test(cd.font) && cd.st.target === "2026-11-02T12:00:00-05:00", cd);
+    ok("home: countdown shows between the logo and the signup", !cd.st.hidden && cd.top >= cd.logo && cd.bottom <= cd.btns && /JetBrains Mono/.test(cd.font) && cd.st.target === "2026-11-02T12:00:00-05:00", cd);
     ok("home: countdown ticks", cd2.seconds !== cd.st.seconds || cd2.minutes !== cd.st.minutes, { cd: cd.st, cd2 });
     // ?now= previews another moment. Loading takes a few seconds, so allow for that.
     const secs = (st) => ((+st.days * 24 + +st.hours) * 60 + +st.minutes) * 60 + +st.seconds;
