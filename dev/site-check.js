@@ -146,7 +146,7 @@ async function open(b, url, viewport) {
         font: getComputedStyle(box.querySelector(".home-signup-legal")).fontFamily
       };
     });
-    ok("home: signup is the minimal Laylo embed, clipped, with the required line", JSON.stringify(su2.src) === JSON.stringify(["https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent&minimal=true&customColor=3dfff2"]) && su2.clip === "hidden" && su2.legal === "By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy." && su2.extra === 0 && /JetBrains Mono/.test(su2.font), su2);
+    ok("home: signup is the minimal Laylo embed, clipped, with the required line", JSON.stringify(su2.src) === JSON.stringify(["https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent&minimal=true&customColor=3dfff2"]) && su2.clip === "hidden" && su2.legal === "By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg & data rates may apply. Reply STOP to cancel." && su2.extra === 0 && /JetBrains Mono/.test(su2.font), su2);
     // Countdown: four neon units between the logo and the signup, ticking.
     const cd = await p.evaluate(() => {
       const el = document.querySelector("[data-home-countdown]");
