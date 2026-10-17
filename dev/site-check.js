@@ -1,7 +1,7 @@
 // Site checks: every page loads on desktop and phone with no errors, no broken
 // local links or files, no sideways scroll, JetBrains Mono, and no em dashes.
 // Then the launch: only Merch and Shows linked, no visible link to a hidden page, /signup/ still works.
-// Then the home page: the countdown, the Laylo signup, the section links, and Skwish Pong (attract mode, a game, Esc, reduced motion).
+// Then the home page: no top links, the countdown, the Laylo signup, the one-click buttons, Skwish Pong (attract mode, a game, Esc, reduced motion), and the dub plate win player.
 // node site-check.js [all|pages|home]
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
@@ -87,6 +87,12 @@ async function open(b, url, viewport) {
     for (const url of PAGES.filter((u) => u !== "/404.html" && u !== "/privacy/" && u !== "/tools/beatmap/")) {
       const p = await open(b, url, DESKTOP);
       const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
+      // Home has no top links (its Merch and Shows buttons sit under Pong).
+      if (url === "/") {
+        ok(`${url}: no top nav links`, nav.length === 0, nav);
+        await p.close();
+        continue;
+      }
       ok(`${url}: nav is only Merch and Shows`, JSON.stringify(nav) === JSON.stringify([STORE, "/shows/"]), nav);
       const merch = await p.$$eval(".site-nav a", (as) => as.filter((a) => a.textContent.trim() === "Merch").map((a) => [a.target, a.rel]));
       ok(`${url}: nav Merch opens the store in a new tab`, JSON.stringify(merch) === JSON.stringify([["_blank", "noopener"]]), merch);
@@ -130,8 +136,26 @@ async function open(b, url, viewport) {
     ok("home: buttons are only Merch and Shows", JSON.stringify(links) === JSON.stringify([STORE, "/shows/"]), links);
     const merchBtn = await p.$$eval(".home-links a", (as) => as.filter((a) => a.textContent.trim() === "Merch").map((a) => [a.target, a.rel]));
     ok("home: Merch button opens the store in a new tab", JSON.stringify(merchBtn) === JSON.stringify([["_blank", "noopener"]]), merchBtn);
-    const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("home: nav is only Merch and Shows", JSON.stringify(nav) === JSON.stringify([STORE, "/shows/"]), nav);
+    const nav = await p.$$eval(".site-header a", (as) => as.filter((a) => /merch|shows/i.test(a.textContent)).map((a) => a.getAttribute("href")));
+    ok("home: no Merch or Shows labels at the top", nav.length === 0 && (await p.$$(".site-nav")).length === 0, nav);
+    // The buttons are plain links: nothing on the page cancels a first click.
+    const plain = await p.$$eval(".home-links a", (as) => as.map((a) => {
+      let seen = null;
+      const stop = (e) => { seen = e.defaultPrevented; e.preventDefault(); };
+      window.addEventListener("click", stop, { once: true });
+      a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+      return { text: a.textContent.trim(), cancelled: seen };
+    }));
+    ok("home: no script cancels a click on Merch or Shows", plain.length === 2 && plain.every((x) => x.cancelled === false), plain);
+    // Merch: a single click opens the store in a new tab.
+    const tab = new Promise((res) => b.once("targetcreated", (t) => res(t)));
+    await p.click('.home-links a[href="' + STORE + '"]');
+    const t = await Promise.race([tab, wait(5000).then(() => null)]);
+    for (let i = 0; t && i < 40 && !t.url().startsWith("http"); i++) await wait(125);
+    ok("home: one click on Merch opens the store in a new tab", !!t && t.url().startsWith(STORE), t ? t.url() : "no tab");
+    if (t) { const tp = await t.page(); if (tp) await tp.close(); }
+    await p.bringToFront();
+    await wait(300);
     // Launch order: logo, countdown, the signup, Pong, the buttons, then the footer.
     const order = await p.evaluate(() => [".home-logo", "[data-home-countdown]", "#signup iframe", ".home-signup-legal", ".pong", ".home-links", ".site-footer"].map((q) => document.querySelector(q).getBoundingClientRect().top + scrollY));
     ok("home: logo, countdown, signup, Pong, buttons, then footer", order.every((y, i) => i === 0 || y > order[i - 1]), order);
@@ -244,6 +268,78 @@ async function open(b, url, viewport) {
     ok("home: tapping a link goes there (phone)", new URL(m.url()).pathname === "/shows/", m.url());
     ok("home: no console errors (phone)", m.errors.length === 0, m.errors.length ? m.errors : undefined);
     await m.close();
+
+    // Dub plates: nothing loads with the page; a win plays one random track once
+    // through Web Audio; a loss plays nothing; the page has no audio element or .mp3.
+    {
+      const fx = [];
+      const w = await open(b, "/", DESKTOP);
+      w.on("request", (r) => { if (/\/assets\/pong\//.test(r.url())) fx.push(r.url().replace(BASE, "")); });
+      const html = await (await fetch(BASE + "/")).text();
+      const js = await (await fetch(BASE + "/js/pong.js")).text();
+      ok("dub: no .mp3 or <audio> in the page", !/\.mp3/i.test(html) && !/<audio/i.test(html) && !/\.mp3/i.test(js) && !/createObjectURL|new Audio|mediaSession/.test(js) && (await w.$$("audio, video")).length === 0);
+      await wait(800);
+      ok("dub: nothing is fetched with the page", fx.length === 0, fx);
+      // A loss: nothing plays.
+      await w.click(".pong-start");
+      await wait(200);
+      await w.evaluate(() => window.skwishPong.finish(false));
+      await wait(3000);
+      const lose = (await st(w)).dub;
+      ok("dub: a loss plays nothing", !lose.win && !lose.playing && !lose.connected && lose.sources === 0, lose);
+      // A win: the track plays through the gain node.
+      await w.click(".pong-start");
+      await wait(200);
+      ok("dub: a game fetches one dub plate", fx.length >= 1 && fx.every((u) => /^\/assets\/pong\/fx\d\.bin$/.test(u)), fx);
+      await w.evaluate(() => window.skwishPong.finish(true));
+      for (let i = 0; i < 60 && !(await st(w)).dub.playing; i++) await wait(250);
+      const win = (await st(w)).dub;
+      const ui = await w.evaluate(() => ({
+        title: document.querySelector(".pong-win-title").textContent.trim(),
+        credit: document.querySelector("[data-dub-credit]").textContent.trim(),
+        font: getComputedStyle(document.querySelector("[data-dub-credit]")).fontFamily,
+        audio: document.querySelectorAll("audio, video, a[href*='fx'], a[download]").length
+      }));
+      ok("dub: a win plays the track through the gain node", win.win && win.playing && win.connected && win.sources === 1 && win.length > 60, win);
+      ok("dub: win headline and credit", ui.title === "You won. Now enjoy this top secret Dirt Monkey dub plate." && ui.credit === "Now playing: " + win.title + " - Dirt Monkey (unreleased)" && win.plates.includes(win.title) && /JetBrains Mono/.test(ui.font) && ui.audio === 0, { ui, title: win.title });
+      ok("dub: the pool is the five tracks", JSON.stringify(win.plates) === JSON.stringify(["FREAK", "RAVE TIME", "FABRICATION FLIP", "AGE OF LOVE FLIP", "6 FT DEEP"]), win.plates);
+      // The knob: arrow keys turn it and the level is remembered.
+      await w.focus("[data-dub-knob]");
+      for (let i = 0; i < 6; i++) await w.keyboard.press("ArrowDown");
+      const knob = await w.evaluate(() => ({ now: document.querySelector("[data-dub-knob]").getAttribute("aria-valuenow"), saved: localStorage.getItem("dm-pong-volume") }));
+      ok("dub: the knob turns and remembers", knob.now === "50" && knob.saved === "0.5" && (await st(w)).dub.vol === 0.5, knob);
+      await wait(1500);
+      await w.screenshot({ path: path.join(ART, "pong-win.png") });
+      // Pause and resume pick up where it was.
+      await w.click("[data-dub-play]");
+      const paused = (await st(w)).dub;
+      await wait(700);
+      const still2 = (await st(w)).dub;
+      await w.click("[data-dub-play]");
+      await wait(500);
+      const resumed = (await st(w)).dub;
+      ok("dub: pause and resume", !paused.playing && Math.abs(still2.at - paused.at) < 0.05 && resumed.playing && resumed.at >= paused.at && resumed.at < paused.at + 1.5, { paused: paused.at, resumed: resumed.at });
+      // At the end it stops: no loop and no new source.
+      await w.evaluate(() => window.skwishPong.nearEnd(1));
+      const before = (await st(w)).dub.sources;
+      await wait(3000);
+      const after = (await st(w)).dub;
+      const again = await w.$eval("[data-dub-again]", (e) => !e.hidden && e.textContent.trim());
+      ok("dub: when it ends, nothing else starts", after.ended && !after.playing && !after.connected && after.sources === before, { before, after });
+      ok("dub: after the end it says win again", again === "Beat Skwish again for another dub plate", again);
+      // Esc stops it and a new game drops it.
+      await w.click(".pong-start");
+      await wait(200);
+      await w.evaluate(() => window.skwishPong.finish(true));
+      for (let i = 0; i < 60 && !(await st(w)).dub.playing; i++) await wait(250);
+      const pre = (await st(w)).dub.playing;
+      await w.keyboard.press("Escape");
+      await wait(200);
+      const esc = (await st(w)).dub;
+      ok("dub: Esc stops the music", pre && !esc.playing && !esc.connected && !esc.win, esc);
+      ok("dub: no console errors", w.errors.length === 0, w.errors.length ? w.errors : undefined);
+      await w.close();
+    }
 
     // Reduced motion: Skwish stays still until someone asks for a game.
     const r = await b.newPage();

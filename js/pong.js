@@ -3,6 +3,10 @@
 // screensaver. Click or tap Skwish (or Play Pong) to take the left paddle:
 // mouse, a finger, the arrow keys, or W and S. First to 5. Esc or X stops it.
 // With reduced motion, Skwish sits still until someone asks for a game.
+// Beat the computer and one dub plate, picked at random, plays once through the
+// mini player (Web Audio, no audio element). It is fetched only once a game
+// starts, never plays on a loss, and stops on Esc, X, or a new game. When it
+// ends, nothing else plays: win again for another.
 (function () {
   "use strict";
 
@@ -18,6 +22,7 @@
   var cpuEl = box.querySelector("[data-pong-cpu]");
   var msgEl = box.querySelector("[data-pong-msg]");
   var helpEl = box.querySelector("[data-pong-help]");
+  var winEl = box.querySelector("[data-pong-win]");
   var still = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   var WIN = 5;
@@ -40,6 +45,224 @@
   var running = false;
   var onScreen = true;
   var last = 0;
+
+  // ---- DUB PLATES: the win music. ----
+  // EDIT: one line per track. Change a title here and the player shows it.
+  // Each file is scrambled so it is not a plain audio file (tools: scramble
+  // with the same key); it is put back together in memory and played through Web Audio.
+  var PLATES = [
+    { file: "/assets/pong/fx1.bin", title: "FREAK" },
+    { file: "/assets/pong/fx2.bin", title: "RAVE TIME" },
+    { file: "/assets/pong/fx3.bin", title: "FABRICATION FLIP" },
+    { file: "/assets/pong/fx4.bin", title: "AGE OF LOVE FLIP" },
+    { file: "/assets/pong/fx5.bin", title: "6 FT DEEP" }
+  ];
+  var KP = ["Sk", "wi5h", "-P0ng", ":dub", "pl4te", "#DM"];
+  var VOL_KEY = "dm-pong-volume";
+  var player = winEl && winEl.querySelector("[data-dub-player]");
+  var dub = {
+    ctx: null, gain: null, src: null, buf: null, plate: null, fetching: null,
+    startedAt: 0, offset: 0, playing: false, ended: false, connected: false,
+    sources: 0, tick: 0, vol: 0.8
+  };
+  try {
+    var savedVol = parseFloat(localStorage.getItem(VOL_KEY));
+    if (savedVol >= 0 && savedVol <= 1) dub.vol = savedVol;
+  } catch (err) {}
+
+  function unscramble(ab) {
+    var k = KP.join(""), key = new Uint8Array(k.length);
+    for (var i = 0; i < k.length; i++) key[i] = k.charCodeAt(i);
+    var d = new Uint8Array(ab);
+    for (var j = 0; j < d.length; j++) d[j] ^= key[j % key.length] ^ ((j >> 9) & 255);
+    return ab;
+  }
+
+  // Called from the click or tap that starts a game, so audio is allowed.
+  // Picks this game's dub plate and starts fetching it.
+  function dubPrepare() {
+    if (!player) return;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!dub.ctx) {
+      dub.ctx = new AC();
+      dub.gain = dub.ctx.createGain();
+      dub.gain.gain.value = dub.vol;
+      dub.gain.connect(dub.ctx.destination);
+    }
+    if (dub.ctx.state === "suspended") dub.ctx.resume();
+    var plate = dub.plate = PLATES[Math.floor(Math.random() * PLATES.length)];
+    player.querySelector("[data-dub-credit]").textContent = "Now playing: " + plate.title + " - Dirt Monkey (unreleased)";
+    var job = dub.fetching = fetch(plate.file)
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then(function (ab) {
+        return new Promise(function (res, rej) {
+          var pr = dub.ctx.decodeAudioData(unscramble(ab), res, rej);
+          if (pr && pr.then) pr.then(res, rej);
+        });
+      })
+      .then(function (buf) { if (dub.fetching === job) dub.buf = buf; return buf; })
+      .catch(function () { return null; });
+  }
+
+  function fmt(t) {
+    t = Math.max(0, Math.floor(t));
+    return Math.floor(t / 60) + ":" + (t % 60 < 10 ? "0" : "") + (t % 60);
+  }
+
+  function dubPos() {
+    if (!dub.buf) return 0;
+    var t = dub.playing ? dub.ctx.currentTime - dub.startedAt : dub.offset;
+    return Math.min(t, dub.buf.duration);
+  }
+
+  function dubShow() {
+    if (!player) return;
+    var btn = player.querySelector("[data-dub-play]");
+    var time = player.querySelector("[data-dub-time]");
+    var fill = player.querySelector("[data-dub-fill]");
+    btn.disabled = !dub.buf || dub.ended;
+    btn.classList.toggle("is-paused", !dub.playing);
+    btn.setAttribute("aria-label", dub.playing ? "Pause" : "Play");
+    if (!dub.buf) { time.textContent = "Loading..."; fill.style.width = "0%"; }
+    else {
+      var t = dub.ended ? dub.buf.duration : dubPos();
+      time.textContent = fmt(t) + " / " + fmt(dub.buf.duration);
+      fill.style.width = (t / dub.buf.duration * 100).toFixed(2) + "%";
+    }
+    player.querySelector("[data-dub-again]").hidden = !dub.ended;
+  }
+
+  function dubKill() {
+    if (dub.src) {
+      dub.src.onended = null;
+      try { dub.src.stop(); } catch (err) {}
+      dub.src.disconnect();
+      dub.src = null;
+    }
+    dub.connected = false;
+    dub.playing = false;
+    clearInterval(dub.tick);
+  }
+
+  // One track, once: no loop, and nothing starts after it ends.
+  function dubStart(from) {
+    if (!dub.buf || dub.ended || mode !== "over" || winEl.hidden || player.hidden) return;
+    dubKill();
+    var src = dub.ctx.createBufferSource();
+    src.buffer = dub.buf;
+    src.loop = false;
+    src.connect(dub.gain);
+    src.onended = function () {
+      if (dub.src !== src) return;
+      dubKill();
+      dub.ended = true;
+      dub.offset = dub.buf.duration;
+      dubShow();
+    };
+    dub.src = src;
+    dub.sources++;
+    dub.connected = true;
+    if (dub.ctx.state === "suspended") dub.ctx.resume();
+    dub.startedAt = dub.ctx.currentTime - from;
+    src.start(0, from);
+    dub.playing = true;
+    dub.tick = setInterval(dubShow, 250);
+    dubShow();
+  }
+
+  function dubPause() {
+    if (!dub.playing) return;
+    dub.offset = dubPos();
+    dubKill();
+    dubShow();
+  }
+
+  // The win: show the player and play this game's dub plate from the top, once.
+  function dubWin() {
+    if (!player || !dub.fetching) return;
+    dub.offset = 0;
+    dub.ended = false;
+    player.hidden = false;
+    dubShow();
+    var job = dub.fetching;
+    job.then(function () {
+      if (dub.fetching !== job) return;
+      dubShow();
+      if (!dub.src && !dub.ended && dub.offset === 0) dubStart(0);
+    });
+  }
+
+  // Stops the music and drops this game's pick, so the next game picks again.
+  function dubStop() {
+    dubKill();
+    dub.offset = 0;
+    dub.ended = false;
+    dub.buf = null;
+    dub.fetching = null;
+    dub.plate = null;
+    if (player) dubShow();
+  }
+
+  function hideWin() {
+    dubStop();
+    if (winEl) winEl.hidden = true;
+  }
+
+  function setVol(v) {
+    dub.vol = Math.max(0, Math.min(1, Math.round(v * 100) / 100));
+    if (dub.gain) dub.gain.gain.setTargetAtTime(dub.vol, dub.ctx.currentTime, 0.02);
+    try { localStorage.setItem(VOL_KEY, String(dub.vol)); } catch (err) {}
+    var knob = player.querySelector("[data-dub-knob]");
+    var pct = Math.round(dub.vol * 100);
+    knob.style.setProperty("--turn", (-135 + dub.vol * 270) + "deg");
+    knob.setAttribute("aria-valuenow", pct);
+    knob.setAttribute("aria-valuetext", pct + "%");
+  }
+
+  function bindPlayer() {
+    if (!player) return;
+    var knob = player.querySelector("[data-dub-knob]");
+    setVol(dub.vol);
+    player.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    player.querySelector("[data-dub-play]").addEventListener("click", function () {
+      if (dub.playing) dubPause();
+      else dubStart(dub.offset);
+    });
+    player.querySelector("[data-dub-close]").addEventListener("click", function () {
+      dubKill();
+      player.hidden = true;
+    });
+    // The knob: drag up or right to turn it up, scroll, or use the arrow keys.
+    var drag = null;
+    knob.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      drag = { x: e.clientX, y: e.clientY, v: dub.vol };
+      if (knob.setPointerCapture) knob.setPointerCapture(e.pointerId);
+      knob.focus({ preventScroll: true });
+    });
+    knob.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      setVol(drag.v + ((e.clientX - drag.x) - (e.clientY - drag.y)) / 160);
+    });
+    var endDrag = function () { drag = null; };
+    knob.addEventListener("pointerup", endDrag);
+    knob.addEventListener("pointercancel", endDrag);
+    knob.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      setVol(dub.vol - Math.sign(e.deltaY || -e.deltaX) * 0.05);
+    }, { passive: false });
+    knob.addEventListener("keydown", function (e) {
+      var k = e.key, step = { ArrowUp: 0.05, ArrowRight: 0.05, ArrowDown: -0.05, ArrowLeft: -0.05, PageUp: 0.2, PageDown: -0.2 }[k];
+      if (step !== undefined) setVol(dub.vol + step);
+      else if (k === "Home") setVol(0);
+      else if (k === "End") setVol(1);
+      else return;
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  }
+  bindPlayer();
 
   // Skwish with his glow baked in once, so each frame is one drawImage.
   function makeSprite() {
@@ -176,9 +399,15 @@
     ball.y = H / 2;
     if (score[0] >= WIN || score[1] >= WIN) {
       mode = "over";
-      msgEl.textContent = score[0] >= WIN ? "You win " + score[0] + " to " + score[1] + "!" : "The computer wins " + score[1] + " to " + score[0] + ".";
-      msgEl.hidden = false;
       helpEl.hidden = true;
+      if (score[0] >= WIN && winEl) {
+        msgEl.hidden = true;
+        winEl.hidden = false;
+        dubWin();
+      } else {
+        msgEl.textContent = score[0] >= WIN ? "You win " + score[0] + " to " + score[1] + "!" : "The computer wins " + score[1] + " to " + score[0] + ".";
+        msgEl.hidden = false;
+      }
       startBtn.textContent = "Play again";
       startBtn.hidden = false;
       return;
@@ -258,6 +487,8 @@
   }
 
   function start() {
+    hideWin();
+    dubPrepare();
     score = [0, 0];
     youEl.textContent = "0";
     cpuEl.textContent = "0";
@@ -280,6 +511,7 @@
 
   function stop() {
     var hadFocus = box.contains(document.activeElement);
+    hideWin();
     mode = "attract";
     aim = null;
     keys.up = keys.down = false;
@@ -339,6 +571,7 @@
   document.addEventListener("keydown", function (e) {
     if (mode === "attract") return;
     if (e.target.closest && e.target.closest("input, textarea, select")) return;
+    if (e.target.closest && e.target.closest("[data-dub-knob]") && e.key !== "Escape") return;
     if (e.key === "Escape") { stop(); return; }
     var k = keyName(e);
     if (!k) return;
@@ -385,7 +618,22 @@
   // For the tests.
   window.skwishPong = {
     state: function () {
-      return { mode: mode, score: score.slice(), ball: { x: ball.x, y: ball.y }, left: left.y, right: right.y, running: running, W: W, H: H };
+      return {
+        mode: mode, score: score.slice(), ball: { x: ball.x, y: ball.y }, left: left.y, right: right.y, running: running, W: W, H: H,
+        dub: { win: !!winEl && !winEl.hidden, ready: !!dub.buf, playing: dub.playing, connected: dub.connected, ended: dub.ended, sources: dub.sources, vol: dub.vol, at: dubPos(), length: dub.buf ? dub.buf.duration : 0, title: dub.plate ? dub.plate.title : "", plates: PLATES.map(function (p) { return p.title; }) }
+      };
+    },
+    // Ends a game on the spot: finish(true) is a win, finish(false) a loss.
+    finish: function (youWin) {
+      if (mode === "attract") return;
+      score = youWin ? [WIN - 1, 0] : [0, WIN - 1];
+      point(youWin);
+    },
+    // Jumps the dub plate to just before its end, to test what happens after it.
+    nearEnd: function (secs) {
+      if (!dub.buf || !dub.playing) return false;
+      dubStart(Math.max(0, dub.buf.duration - (secs || 1)));
+      return true;
     }
   };
 })();

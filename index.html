@@ -83,17 +83,15 @@
         <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey home" width="1360" height="264">
       </span>
     </a>
-    <nav class="site-nav" aria-label="Site">
-      <a href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener">Merch</a>
-      <a href="/shows/">Shows</a>
-      <!-- NAV3: hidden for now. To restore, move these back into the nav (old order: Plugins, Music, Shows, Merch, App, Play, Sign up).
-      <a href="/plugins/">Plugins</a>
-      <a href="/music/">Music</a>
-      <a href="/app/">App</a>
-      <a href="/play/" class="nav-play">Play</a>
-      <a href="/#signup">Sign up</a>
-      -->
-    </nav>
+    <!-- NAV: the home page has no top links for now (the Merch and Shows buttons sit under Pong).
+      To bring them back, put this nav back here, in the same place:
+      <nav class="site-nav" aria-label="Site">
+        <a href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener">Merch</a>
+        <a href="/shows/">Shows</a>
+      </nav>
+      NAV3 (hidden for now, old order: Plugins, Music, Shows, Merch, App, Play, Sign up):
+      /plugins/, /music/, /app/, /play/ (class nav-play), /#signup
+    -->
   </header>
 
   <main id="main" class="home">
@@ -132,6 +130,7 @@
         SKWISH PONG. js/pong.js runs it.
         Two paddles bounce Skwish back and forth on their own. Click or tap
         Skwish (or Play Pong) for a quick game, first to 5. Esc or X stops it.
+        Win and FREAK plays (only on a win).
       -->
       <div class="pong" data-pong tabindex="-1">
         <canvas class="pong-canvas" aria-hidden="true"></canvas>
@@ -141,6 +140,25 @@
         </picture>
         <p class="pong-score" aria-live="polite" data-pong-score hidden><span class="visually-hidden">You</span><span class="pong-you" data-pong-you>0</span><span class="visually-hidden">, computer</span><span class="pong-cpu" data-pong-cpu>0</span></p>
         <p class="pong-msg" role="status" data-pong-msg hidden></p>
+        <!-- WIN: shown when you beat the computer. js/pong.js picks one dub plate at random
+             (the list and titles are at the top of the DUB PLATES part of that file), fetches it
+             only once a game starts, and plays it once through this mini player. -->
+        <div class="pong-win" data-pong-win hidden>
+          <p class="pong-win-title" role="status">You won. Now enjoy this top secret Dirt Monkey dub plate.</p>
+          <div class="dub-player" data-dub-player role="group" aria-label="Dub plate player">
+            <p class="dub-credit" data-dub-credit>Now playing: Dirt Monkey (unreleased)</p>
+            <div class="dub-row">
+              <button class="dub-play" type="button" data-dub-play aria-label="Pause" disabled><span class="dub-icon" aria-hidden="true"></span></button>
+              <div class="dub-meter">
+                <div class="dub-bar" aria-hidden="true"><span data-dub-fill></span></div>
+                <p class="dub-time" data-dub-time>Loading...</p>
+              </div>
+              <div class="dub-knob" data-dub-knob role="slider" tabindex="0" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" aria-valuetext="80%"><span class="dub-knob-dot" aria-hidden="true"></span></div>
+              <button class="dub-close" type="button" data-dub-close aria-label="Stop and close the player">&times;</button>
+            </div>
+            <p class="dub-again" data-dub-again hidden>Beat Skwish again for another dub plate</p>
+          </div>
+        </div>
         <p class="pong-help" data-pong-help hidden>
           <span class="help-keys">Move with the mouse, the arrow keys, or W and S. First to 5. Esc to stop.</span>
           <span class="help-touch">Drag up and down to move. First to 5.</span>
