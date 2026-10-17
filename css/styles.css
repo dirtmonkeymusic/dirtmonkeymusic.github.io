@@ -1432,6 +1432,85 @@ h2,
   border-color: transparent transparent transparent var(--accent);
 }
 
+/* Home countdown (js/countdown.js): big neon digits between the logo and the buttons. */
+.home-countdown {
+  max-width: 620px;
+  margin: 0 auto 24px;
+}
+
+.home-countdown[hidden],
+.home-countdown-label[hidden] { display: none; }
+
+.home-countdown-label {
+  margin: 0 0 10px;
+  color: #d9fff8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(61, 255, 242, 0.6);
+}
+
+.home-countdown-units {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.home-countdown-unit {
+  margin: 0;
+  padding: 10px 4px 8px;
+  border-radius: 18px;
+  border: 1.5px solid var(--accent);
+  background: rgba(7, 6, 10, 0.6);
+  box-shadow: 0 0 12px var(--glow), inset 0 0 10px var(--glow);
+}
+
+.home-countdown-unit:nth-child(1),
+.home-countdown-unit:nth-child(4) { --accent: var(--cyan); --glow: rgba(61, 255, 242, 0.28); }
+
+.home-countdown-unit:nth-child(2) { --accent: var(--magenta); --glow: rgba(255, 43, 214, 0.28); }
+
+.home-countdown-unit:nth-child(3) { --accent: var(--mint); --glow: rgba(214, 255, 74, 0.24); }
+
+.home-countdown-unit strong {
+  display: block;
+  color: #fff;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  text-shadow: 0 0 6px var(--accent), 0 0 18px var(--accent), 0 0 36px var(--glow);
+}
+
+.home-countdown-unit span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-countdown-unit strong { animation: countdown-hum 3.2s ease-in-out infinite; }
+
+  .home-countdown-unit:nth-child(2) strong { animation-delay: -0.8s; }
+
+  .home-countdown-unit:nth-child(3) strong { animation-delay: -1.6s; }
+
+  .home-countdown-unit:nth-child(4) strong { animation-delay: -2.4s; }
+}
+
+@keyframes countdown-hum {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.82; }
+}
+
 .pong {
   position: relative;
   width: min(960px, 100%);
@@ -1752,6 +1831,16 @@ h2,
   .home-top { padding: 14px 12px 40px; }
 
   .home-logo { margin-bottom: 16px; }
+
+  .home-countdown { margin-bottom: 18px; }
+
+  .home-countdown-units { gap: 8px; }
+
+  .home-countdown-unit { padding: 8px 2px 6px; border-radius: 14px; }
+
+  .home-countdown-unit strong { font-size: clamp(1.7rem, 9vw, 2.3rem); }
+
+  .home-countdown-unit span { font-size: 0.6rem; letter-spacing: 0.08em; }
 
   .home-links { gap: 10px; margin-bottom: 20px; }
 

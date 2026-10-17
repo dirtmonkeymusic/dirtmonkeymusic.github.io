@@ -16,6 +16,10 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 - The Play pill in every nav, plus /play/ in the sitemap.
 - Lighthouse mobile on home: 99 performance, 100 for everything else (three runs).
 
+## Home countdown: done
+
+- Added 2026-10-17: big neon days, hours, minutes, seconds between the logo and the buttons, counting down to 2026-11-02 12:00 PM US Eastern (EST). `js/countdown.js` runs it; `COUNTDOWN_LABEL` (empty for now) and `COUNTDOWN_TARGET` are at the top of that file. It hides itself when the time passes. Preview with `/?now=2026-11-02T11:59:50-05:00`. Reduced motion turns off the glow pulse. `site-check.js` covers it; `dev/countdown-shots.js` takes the screenshots.
+
 ## Nav trimmed to three: done
 
 - On 2026-10-16 the home page buttons and every page's nav were cut to Merch, Shows, and Sign up. Plugins, Music, App, and Play are hidden, not removed: their links sit in a `NAV3` HTML comment right under the visible ones, in each page's nav and in the home page buttons. To restore, move them back out of the comment. The pages, files, and sitemap entries are unchanged. `site-check.js` now expects the three links.

@@ -1,6 +1,6 @@
 // Site checks: every page loads on desktop and phone with no errors, no broken
 // local links or files, no sideways scroll, JetBrains Mono, and no em dashes.
-// Then the home page: the section links, and Skwish Pong (attract mode, a game, Esc, reduced motion).
+// Then the home page: the countdown, the section links, and Skwish Pong (attract mode, a game, Esc, reduced motion).
 // node site-check.js [all|pages|home]
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
@@ -97,6 +97,32 @@ async function open(b, url, viewport) {
     const kitLeft = await p.$$eval("#signup form", (fs) => fs.length);
     const embed = await p.$$eval("#signup iframe[data-laylo-embed]", (fs) => fs.map((f) => [f.src, f.getAttribute("loading"), f.getAttribute("height")]));
     ok("home: signup is the Laylo embed (not minimal) with a fallback link", embed.length === 1 && embed[0][0] === "https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent" && embed[0][1] === "lazy" && !/minimal/.test(embed[0][0]) && laylo.length === 1 && laylo[0][0] === "https://laylo.com/dirtmonkey" && laylo[0][1] === "_blank" && /noopener/.test(laylo[0][2]) && kitLeft === 0, { embed, laylo, kitLeft });
+    // Countdown: four neon units between the logo and the buttons, ticking, above Pong.
+    const cd = await p.evaluate(() => {
+      const el = document.querySelector("[data-home-countdown]");
+      const r = el.getBoundingClientRect();
+      const logo = document.querySelector(".home-logo").getBoundingClientRect();
+      const btns = document.querySelector(".home-links").getBoundingClientRect();
+      return { st: window.homeCountdown.state(), top: r.top, bottom: r.bottom, logo: logo.bottom, btns: btns.top, font: getComputedStyle(el.querySelector("strong")).fontFamily };
+    });
+    await wait(1100);
+    const cd2 = await p.evaluate(() => window.homeCountdown.state());
+    ok("home: countdown shows between the logo and the buttons", !cd.st.hidden && cd.top >= cd.logo && cd.bottom <= cd.btns && /JetBrains Mono/.test(cd.font) && cd.st.target === "2026-11-02T12:00:00-05:00", cd);
+    ok("home: countdown ticks", cd2.seconds !== cd.st.seconds || cd2.minutes !== cd.st.minutes, { cd: cd.st, cd2 });
+    // ?now= previews another moment. Loading takes a few seconds, so allow for that.
+    const secs = (st) => ((+st.days * 24 + +st.hours) * 60 + +st.minutes) * 60 + +st.seconds;
+    for (const [at, want] of [["2026-11-01T12:00:00-05:00", 86400], ["2026-11-02T11:59:50-05:00", 10], ["2026-11-02T12:00:00-05:00", 0], ["2026-12-01T00:00:00-05:00", 0]]) {
+      const q = await open(b, "/?now=" + encodeURIComponent(at), PHONE);
+      const qs = await q.evaluate(() => ({ st: window.homeCountdown.state(), shown: document.querySelector("[data-home-countdown]").offsetHeight > 0, overflow: document.documentElement.scrollWidth - innerWidth }));
+      const left = secs(qs.st);
+      ok(`home: countdown at ${at} ${want ? "shows about " + want + "s left" : "is hidden"}`, want ? !qs.st.hidden && qs.shown && left <= want && left > want - 6 && qs.overflow <= 0 : qs.st.hidden && !qs.shown, qs);
+      await q.close();
+    }
+    const z = await open(b, "/?now=" + encodeURIComponent("2026-11-02T11:59:57-05:00"), DESKTOP);
+    await wait(3500);
+    const zs = await z.evaluate(() => ({ st: window.homeCountdown.state(), shown: document.querySelector("[data-home-countdown]").offsetHeight > 0 }));
+    ok("home: countdown hides itself when it reaches zero", zs.st.hidden && !zs.shown, zs);
+    await z.close();
     const music = await open(b, "/music/", DESKTOP);
     const albumLinks = await music.$$eval(".upcoming-actions a", (as) => as.map((a) => [a.textContent.trim(), a.href, a.target]));
     await music.close();
@@ -179,6 +205,8 @@ async function open(b, url, viewport) {
     await wait(400);
     const r2 = await st(r);
     ok("home: reduced motion keeps Skwish still", !r2.running && r1.ball.x === r2.ball.x && Math.abs(r2.ball.x - r2.W / 2) < 1, { r1, r2 });
+    const hum = await r.$eval(".home-countdown-unit strong", (e) => getComputedStyle(e).animationName);
+    ok("home: reduced motion stops the countdown glow pulse", hum === "none", hum);
     await r.click(".pong-start");
     await wait(1500);
     ok("home: reduced motion can still play on request", (await st(r)).running);

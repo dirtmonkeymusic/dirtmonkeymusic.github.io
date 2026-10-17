@@ -32,6 +32,7 @@
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/styles.css">
+  <noscript><style>.home-countdown { display: none; }</style></noscript>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -53,7 +54,8 @@
     This is a normal website made of files. Nothing to install.
 
     SITE MAP: each page is a folder with an index.html inside.
-      /            This page. The logo, a link to each section, Skwish Pong
+      /            This page. The logo, the countdown (js/countdown.js), a link
+                   to each section, Skwish Pong
                    (js/pong.js), and the email signup.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
       /music/      Albums and releases.
@@ -95,6 +97,17 @@
         <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="" width="1360" height="264">
         <span class="visually-hidden">Dirt Monkey</span>
       </h1>
+
+      <!-- COUNTDOWN: js/countdown.js runs it. The label and the target time are at the top of that file. -->
+      <div class="home-countdown" data-home-countdown role="timer" aria-live="off">
+        <p class="home-countdown-label" data-countdown-label hidden></p>
+        <div class="home-countdown-units" aria-hidden="true">
+          <p class="home-countdown-unit"><strong data-unit="days">00</strong><span>Days</span></p>
+          <p class="home-countdown-unit"><strong data-unit="hours">00</strong><span>Hours</span></p>
+          <p class="home-countdown-unit"><strong data-unit="minutes">00</strong><span>Min</span></p>
+          <p class="home-countdown-unit"><strong data-unit="seconds">00</strong><span>Sec</span></p>
+        </div>
+      </div>
 
       <ul class="home-links" aria-label="Sections">
         <li><a class="home-link accent-cyan" href="/merch/">Merch</a></li>
@@ -171,6 +184,7 @@
   </footer>
 
   <script src="/js/site.js" defer></script>
+  <script src="/js/countdown.js" defer></script>
   <script src="/js/pong.js" defer></script>
 </body>
 </html>
