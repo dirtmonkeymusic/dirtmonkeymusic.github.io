@@ -1407,9 +1407,9 @@ h2,
   font-size: 0.82rem;
 }
 
-/* Home: the play area */
+/* Home: the logo, the links, and Skwish Pong (js/pong.js) */
 
-.playground {
+.home-top {
   padding: 22px 18px 56px;
   text-align: center;
 }
@@ -1417,7 +1417,7 @@ h2,
 .home-logo {
   display: block;
   width: min(460px, 74vw);
-  margin: 6px auto 20px;
+  margin: 6px auto 22px;
 }
 
 .home-logo .logo-crisp {
@@ -1425,29 +1425,76 @@ h2,
   height: auto;
 }
 
-.arena {
-  --skw: clamp(118px, 15vw, 168px);
+.home-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 980px;
+  margin: 0 auto 26px;
+  padding: 0;
+  list-style: none;
+}
+
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 112px;
+  min-height: 48px;
+  padding: 10px 20px;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  background: rgba(7, 6, 10, 0.6);
+  box-shadow: 0 0 10px var(--glow), inset 0 0 8px var(--glow);
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-decoration: none;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.18s ease, background 0.18s ease, text-shadow 0.18s ease;
+}
+
+.home-link:hover,
+.home-link:focus-visible,
+.home-link:active {
+  background: var(--glow);
+  box-shadow: 0 0 24px var(--accent), inset 0 0 14px var(--glow);
+  text-shadow: 0 0 10px var(--accent);
+}
+
+.home-link-play::before {
+  content: "";
+  border-style: solid;
+  border-width: 5px 0 5px 8px;
+  border-color: transparent transparent transparent var(--accent);
+}
+
+.pong {
   position: relative;
-  width: min(1080px, 100%);
-  height: clamp(440px, 60vh, 560px);
+  width: min(960px, 100%);
+  aspect-ratio: 2 / 1;
   margin: 0 auto;
   overflow: hidden;
-  border-radius: 32px;
+  border-radius: 30px;
   border: 1px solid rgba(61, 255, 242, 0.45);
   background:
-    radial-gradient(ellipse 60% 50% at 50% 55%, rgba(255, 43, 214, 0.16), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 55%, rgba(255, 43, 214, 0.14), transparent 70%),
     radial-gradient(circle at 12% 0%, rgba(61, 255, 242, 0.1), transparent 40%),
     linear-gradient(180deg, #0f0915, #07060a);
   box-shadow:
     0 0 0 1px rgba(255, 43, 214, 0.2),
     0 0 40px rgba(61, 255, 242, 0.12);
-  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-user-select: none;
 }
 
-.arena::before {
+.pong::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -1456,205 +1503,130 @@ h2,
     radial-gradient(circle, rgba(61, 255, 242, 0.5) 0 1px, transparent 1.5px);
   background-size: 97px 89px, 151px 131px;
   background-position: 13px 7px, 61px 43px;
-  opacity: 0.5;
+  opacity: 0.4;
   pointer-events: none;
 }
 
-.arena:focus-visible { outline-offset: 4px; }
+.pong:focus { outline: none; }
 
-.arena-floor {
+.pong-canvas {
   position: absolute;
-  left: -50%;
-  right: -50%;
-  bottom: -8%;
-  height: 62%;
-  background-image:
-    linear-gradient(rgba(255, 43, 214, 0.38) 1.5px, transparent 1.5px),
-    linear-gradient(90deg, rgba(61, 255, 242, 0.3) 1.5px, transparent 1.5px);
-  background-size: 54px 54px;
-  transform: perspective(420px) rotateX(64deg);
-  transform-origin: 50% 100%;
-  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 95%);
-  mask-image: linear-gradient(to top, #000 25%, transparent 95%);
-  animation: floor-run 4s linear infinite;
-  pointer-events: none;
-}
-
-.portals {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.portal {
-  --size: 124px;
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: var(--size);
-  height: var(--size);
-  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
-  border-radius: 50%;
-  color: var(--ink);
-  text-decoration: none;
-  transition: transform 0.25s cubic-bezier(0.3, 1.6, 0.5, 1);
-}
-
-.portal::before,
-.portal::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.portal::before {
   inset: 0;
-  border: 2px solid var(--accent);
-  background:
-    conic-gradient(var(--accent) calc(var(--charge, 0) * 360deg), transparent 0),
-    radial-gradient(circle, rgba(11, 7, 16, 0.92) 52%, var(--glow) 100%);
-  box-shadow: 0 0 18px var(--glow), inset 0 0 18px var(--glow);
-  transition: box-shadow 0.2s ease;
+  width: 100%;
+  height: 100%;
 }
 
-.portal::after {
-  inset: -10px;
-  border: 2px dashed var(--accent);
-  opacity: 0.5;
-  animation: portal-turn 10s linear infinite;
-}
+.pong.is-playing .pong-canvas { touch-action: none; }
 
-.portal:nth-child(even)::after { animation-direction: reverse; }
-
-.portal-label {
-  position: relative;
-  z-index: 1;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(7, 6, 10, 0.88);
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  line-height: 1.3;
-  text-transform: uppercase;
-  text-shadow: 0 0 10px var(--glow);
-}
-
-.portal:hover,
-.portal:focus-visible {
-  transform: scale(1.08);
-  animation: portal-wobble 0.6s ease;
-}
-
-.portal:hover::before,
-.portal:focus-visible::before,
-.portal.is-charging::before {
-  box-shadow: 0 0 34px var(--accent), inset 0 0 26px var(--glow);
-}
-
-.portal.is-charging { animation: portal-buzz 0.16s linear infinite; }
-
-.portal.is-charging::after { animation-duration: 1.2s; opacity: 0.9; }
-
-.portal.is-entered { transform: scale(1.3); }
-
-.portal-plugins { --x: 12%; --y: 30%; }
-.portal-music { --x: 31%; --y: 16%; }
-.portal-shows { --x: 69%; --y: 16%; }
-.portal-merch { --x: 88%; --y: 30%; }
-.portal-app { --x: 25%; --y: 79%; }
-.portal-signup { --x: 75%; --y: 79%; }
-.portal-play { --x: 50%; --y: 16%; }
-
-.skwish {
+/* Before the script draws, and with no script, Skwish waits in the middle. */
+.pong-skwish {
   position: absolute;
-  left: calc(50% - var(--skw) / 2);
-  top: calc(54% - var(--skw) / 2);
-  z-index: 3;
-  width: var(--skw);
-  height: var(--skw);
-  cursor: grab;
-  touch-action: none;
-  will-change: transform;
-}
-
-.skwish:active { cursor: grabbing; }
-
-.skwish::before {
-  content: "";
-  position: absolute;
-  inset: 4%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 43, 214, 0.62) 0%, rgba(255, 43, 214, 0.2) 34%, transparent 70%);
-  filter: blur(12px);
+  left: 50%;
+  top: 50%;
+  width: 21%;
+  max-width: 200px;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
-.skwish-body { position: relative; transform-origin: 50% 62%; }
-
-.skwish-bob { animation: floaty 3.4s ease-in-out infinite; }
-
-.skwish.is-moving .skwish-bob { animation: waddle 0.34s ease-in-out infinite; }
-
-.skwish picture { display: block; }
-
-.skwish .skwish-front {
+.pong-skwish img {
   display: block;
   width: 100%;
   height: auto;
   filter: drop-shadow(0 0 12px rgba(61, 255, 242, 0.5));
-  pointer-events: none;
   -webkit-user-drag: none;
 }
 
-.skwish.is-poked picture { animation: squish 0.42s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.pong.is-live .pong-skwish { visibility: hidden; }
 
-.skwish.is-spinning picture { animation: secret-spin 1.3s cubic-bezier(0.3, 1.3, 0.5, 1); }
-
-.skwish.is-warping .skwish-bob { animation: warp-in 0.55s cubic-bezier(0.6, -0.3, 0.7, 1) forwards; }
-
-.sparks {
+.pong-start,
+.pong-close {
   position: absolute;
-  z-index: 4;
-  width: 0;
-  height: 0;
+  z-index: 2;
+  min-height: 44px;
+  border: 1.5px solid var(--magenta);
+  border-radius: 999px;
+  background: rgba(7, 6, 10, 0.9);
+  box-shadow: 0 0 12px rgba(255, 43, 214, 0.3);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.pong-start:hover,
+.pong-start:focus-visible,
+.pong-close:hover,
+.pong-close:focus-visible {
+  background: rgba(255, 43, 214, 0.2);
+  box-shadow: 0 0 22px var(--magenta);
+}
+
+.pong-start {
+  left: 50%;
+  bottom: 14px;
+  padding: 8px 18px;
+  transform: translateX(-50%);
+}
+
+.pong-close {
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  padding: 0;
+  font-size: 1.1rem;
+}
+
+.pong-score {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  z-index: 1;
+  display: flex;
+  gap: 18px;
+  transform: translateX(-50%);
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
   pointer-events: none;
 }
 
-.spark {
+.pong-you { color: var(--cyan); text-shadow: 0 0 14px rgba(61, 255, 242, 0.8); }
+
+.pong-cpu { color: var(--magenta); text-shadow: 0 0 14px rgba(255, 43, 214, 0.8); }
+
+.pong-msg {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 10px var(--cyan);
-  animation: spark 0.8s ease-out forwards;
+  left: 50%;
+  top: 34%;
+  z-index: 1;
+  width: 90%;
+  transform: translate(-50%, -50%);
+  color: var(--mint);
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-weight: 800;
+  text-shadow: 0 0 14px rgba(214, 255, 74, 0.6);
+  pointer-events: none;
 }
 
-.spark-1 { background: var(--magenta); box-shadow: 0 0 10px var(--magenta); }
-.spark-2 { background: var(--mint); box-shadow: 0 0 10px var(--mint); }
-
-.arena.is-offscreen *,
-.arena.is-offscreen *::after { animation-play-state: paused; }
-
-.arena-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 6px 18px;
-  width: min(1080px, 100%);
-  margin: 14px auto 0;
+.pong-help {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  z-index: 1;
+  padding: 0 64px;
   color: var(--muted);
-  font-size: 0.78rem;
-  line-height: 1.5;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  pointer-events: none;
 }
 
-.arena-secrets strong { color: var(--mint); }
+.pong [hidden] { display: none; }
 
 .help-touch { display: none; }
 
@@ -1679,104 +1651,6 @@ h2,
   border-color: var(--magenta);
   color: #ffd6f6;
   box-shadow: 0 0 16px rgba(255, 43, 214, 0.35);
-}
-
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: 22px;
-  z-index: 60;
-  max-width: calc(100% - 32px);
-  padding: 10px 18px;
-  border-radius: 999px;
-  border: 1px solid var(--magenta);
-  background: #140a17;
-  color: #ffe0f8;
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1.4;
-  box-shadow: 0 0 24px rgba(255, 43, 214, 0.4);
-  opacity: 0;
-  transform: translate(-50%, 12px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  pointer-events: none;
-}
-
-.toast.is-on {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.warp {
-  --accent: var(--cyan);
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  background:
-    radial-gradient(circle at var(--wx, 50%) var(--wy, 50%), #ffffff 0, var(--accent) 7%, #ff2bd6 26%, #07060a 58%);
-  clip-path: circle(0 at var(--wx, 50%) var(--wy, 50%));
-  transition: clip-path 0.5s cubic-bezier(0.7, 0, 0.3, 1) 0.12s;
-  pointer-events: none;
-}
-
-.warp.is-on { clip-path: circle(150% at var(--wx, 50%) var(--wy, 50%)); }
-
-/* Secret: Wonk mode */
-.is-wonk .arena,
-.is-wonk .home-logo { animation: wonk-hue 2.4s linear infinite; }
-
-.is-wonk .skwish-bob { animation: wonk-wobble 0.8s ease-in-out infinite; }
-
-.is-wonk .portal { animation: portal-wobble 1.1s ease-in-out infinite; }
-
-@keyframes floor-run { to { background-position: 0 54px, 0 0; } }
-
-@keyframes portal-turn { to { transform: rotate(360deg); } }
-
-@keyframes portal-wobble {
-  0%, 100% { rotate: 0deg; }
-  25% { rotate: -7deg; }
-  60% { rotate: 6deg; }
-}
-
-@keyframes portal-buzz {
-  0%, 100% { translate: 0 0; }
-  25% { translate: -1.5px 1px; }
-  75% { translate: 1.5px -1px; }
-}
-
-@keyframes waddle {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-9px) rotate(3deg); }
-}
-
-@keyframes squish {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.18, 0.8); }
-  60% { transform: scale(0.92, 1.1); }
-  100% { transform: scale(1); }
-}
-
-@keyframes secret-spin {
-  0% { transform: rotate(0) scale(1); filter: hue-rotate(0deg); }
-  50% { transform: rotate(400deg) scale(1.35); filter: hue-rotate(140deg); }
-  100% { transform: rotate(720deg) scale(1); filter: hue-rotate(0deg); }
-}
-
-@keyframes warp-in {
-  to { transform: scale(0.1) rotate(540deg); opacity: 0; }
-}
-
-@keyframes spark {
-  from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2); opacity: 0; }
-}
-
-@keyframes wonk-hue { to { filter: hue-rotate(360deg); } }
-
-@keyframes wonk-wobble {
-  0%, 100% { transform: rotate(-8deg) scale(1.2, 1.1); }
-  50% { transform: rotate(8deg) scale(1.1, 1.25); }
 }
 
 /* Small playful touches for every page's menu */
@@ -1929,31 +1803,19 @@ h2,
 
   .is-home .site-header { padding-top: 4px; }
 
-  .playground { padding: 14px 12px 40px; }
+  .home-top { padding: 14px 12px 40px; }
 
-  .home-logo { margin-bottom: 14px; }
+  .home-logo { margin-bottom: 16px; }
 
-  .arena {
-    --skw: 112px;
-    height: 540px;
-    border-radius: 26px;
-  }
+  .home-links { gap: 10px; margin-bottom: 20px; }
 
-  .portal { --size: 94px; }
+  .home-links li { flex: 1 1 calc(25% - 10px); }
 
-  .portal-label { padding: 3px 8px; font-size: 0.72rem; letter-spacing: 0.03em; }
+  .home-link { width: 100%; min-width: 0; padding: 10px 4px; font-size: 0.74rem; letter-spacing: 0.03em; }
 
-  .portal-plugins { --x: 25%; --y: 12%; }
-  .portal-music { --x: 75%; --y: 12%; }
-  .portal-shows { --x: 17%; --y: 50%; }
-  .portal-merch { --x: 83%; --y: 50%; }
-  .portal-app { --x: 25%; --y: 88%; }
-  .portal-signup { --x: 75%; --y: 88%; }
-  .portal-play { --x: 50%; --y: 70%; }
+  .pong { aspect-ratio: 1 / 1; border-radius: 24px; }
 
-  .skwish { top: calc(50% - var(--skw) / 2); }
-
-  .arena-bar { flex-direction: column; gap: 4px; }
+  .pong-skwish { width: 24%; }
 
   .hero { padding-top: 22px; }
 

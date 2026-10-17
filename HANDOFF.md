@@ -12,11 +12,9 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 
 ## Home page: done
 
-- Gamified Skwish navigation (the home play area), with a portal for every page, including the Play portal for the game.
+- Simplified on 2026-10-16: the steerable Skwish, portals, and secrets are gone. Now it is the logo, a neon button for each section (including Play), and Skwish Pong (`js/pong.js`): attract mode on its own, a quick game to 5 when Skwish or Play Pong is clicked, Esc or X to stop, and a still Skwish for reduced motion.
 - The Play pill in every nav, plus /play/ in the sitemap.
-- Last Lighthouse mobile run on home: 98 performance, 100 for everything else.
-
-Nothing is left open from the home page asks.
+- Lighthouse mobile on home: 99 performance, 100 for everything else (three runs).
 
 ## Skwish DDR game: done
 
@@ -85,7 +83,7 @@ The test scripts now find their paths on their own (see `dev/env.js`), so they r
 cd dev && npm install                      # puppeteer-core, plus an ffmpeg for the test audio
 python3 -m http.server 47321 --bind 127.0.0.1   # from the repo root, in another terminal
 node ddr-test.js all                       # the game (or one case: clear, fail, holds, late, calibrate, shots, mobile, reduce)
-node site-check.js                         # every page on desktop and phone, plus the home play area
+node site-check.js                         # every page on desktop and phone, plus home page Pong
 node report-shots.js                       # report screenshots
 python3 make_test_track.py                 # needs numpy; writes tmp-audio/ (then track-test.js, tool-test.js, score-chart.js)
 ```

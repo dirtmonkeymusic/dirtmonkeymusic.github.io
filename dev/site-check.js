@@ -1,6 +1,6 @@
 // Site checks: every page loads on desktop and phone with no errors, no broken
 // local links or files, no sideways scroll, JetBrains Mono, and no em dashes.
-// Then the home play area: steer Skwish, charge a portal, and warp through it.
+// Then the home page: the section links, and Skwish Pong (attract mode, a game, Esc, reduced motion).
 // node site-check.js [all|pages|home]
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
@@ -81,59 +81,97 @@ async function open(b, url, viewport) {
   }
 
   if (only === "all" || only === "home") {
-    // Desktop: arrow keys steer Skwish, parking on a portal charges it, then it warps.
-    const p = await open(b, "/", { ...DESKTOP, deviceScaleFactor: 2 });
-    await p.screenshot({ path: path.join(ART, "home-desktop-1440.png") });
-    const where = () => p.evaluate(() => { const r = document.querySelector("#skwish").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
-    const portal = await p.evaluate(() => { const r = document.querySelector(".portal-play").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
-    const start = await where();
-    await p.focus(".arena").catch(() => {});
-    // Steer toward the Play portal with the keys.
-    const steer = async (ms) => {
-      const end = Date.now() + ms;
-      while (Date.now() < end) {
-        const s = await where();
-        const dx = portal.x - s.x, dy = portal.y - s.y;
-        if (Math.hypot(dx, dy) < 18) break;
-        const want = [];
-        if (Math.abs(dx) > 10) want.push(dx > 0 ? "ArrowRight" : "ArrowLeft");
-        if (Math.abs(dy) > 10) want.push(dy > 0 ? "ArrowDown" : "ArrowUp");
-        for (const k of want) await p.keyboard.down(k);
-        await wait(60);
-        for (const k of want) await p.keyboard.up(k);
-      }
-    };
-    await p.keyboard.down("ArrowRight");
-    await wait(250);
-    await p.keyboard.up("ArrowRight");
-    const moved = await where();
-    ok("home: arrow keys move Skwish", Math.abs(moved.x - start.x) > 10, { start, moved });
-    await steer(6000);
-    await p.waitForSelector(".portal-play.is-charging", { timeout: 3000 }).catch(() => {});
-    await wait(320);
-    const charging = await p.evaluate(() => !!document.querySelector(".portal-play.is-charging"));
-    ok("home: parking on Play charges it", charging);
-    await p.screenshot({ path: path.join(ART, "home-mid-interaction.png") });
-    await p.waitForNavigation({ timeout: 4000 }).catch(() => {});
-    ok("home: charged portal warps to /play/", new URL(p.url()).pathname === "/play/", p.url());
+    const st = (p) => p.evaluate(() => window.skwishPong.state());
+    // Desktop: the paddles play on their own, every section has a link, and clicking Skwish starts Pong.
+    const p = await open(b, "/", DESKTOP);
+    await wait(1200);
+    await p.screenshot({ path: path.join(ART, "home2-desktop.png") });
+    const links = await p.$$eval(".home-links a", (as) => as.map((a) => a.getAttribute("href")));
+    ok("home: a link for each section", ["/plugins/", "/music/", "/shows/", "/merch/", "/app/", "/play/", "#signup"].every((h) => links.includes(h)), links);
+    const a1 = await st(p);
+    await wait(400);
+    const a2 = await st(p);
+    ok("home: attract mode moves Skwish", a1.mode === "attract" && a2.running && Math.abs(a2.ball.x - a1.ball.x) > 20, { a1, a2 });
+    const shift = await p.evaluate(() => new Promise((res) => {
+      let total = 0;
+      new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) total += e.value; })).observe({ type: "layout-shift", buffered: true });
+      setTimeout(() => res(total), 300);
+    }));
+    ok("home: no layout shift", shift < 0.01, shift);
+    const rect = await p.$eval(".pong-canvas", (c) => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top }; });
+    const s = await st(p);
+    await p.mouse.click(rect.x + s.ball.x, rect.y + s.ball.y);
+    await wait(100);
+    ok("home: clicking Skwish starts Pong", (await st(p)).mode !== "attract");
+    // Keys move the left paddle.
+    const before = (await st(p)).left;
+    await p.keyboard.down("ArrowDown");
+    await wait(300);
+    await p.keyboard.up("ArrowDown");
+    ok("home: arrow keys move the paddle", (await st(p)).left - before > 20, { before, after: (await st(p)).left });
+    // Mouse follows: aim the paddle at Skwish (missing now and then) until a few points are in, then take the shot mid game.
+    for (let i = 0; i < 400; i++) {
+      const g = await st(p);
+      if (g.score[0] + g.score[1] >= 3 && g.mode === "play" && g.ball.x > g.W * 0.3) break;
+      await p.mouse.move(rect.x + 200, rect.y + g.ball.y + (i % 60 < 12 ? g.H * 0.3 : 0));
+      await wait(50);
+    }
+    const mid = await st(p);
+    ok("home: Pong is on", mid.mode === "play" || mid.mode === "serve", mid);
+    await p.screenshot({ path: path.join(ART, "home2-pong.png") });
+    await p.keyboard.press("Escape");
+    await wait(100);
+    ok("home: Esc goes back to attract mode", (await st(p)).mode === "attract" && await p.$eval("[data-pong-score]", (e) => e.hidden));
+    await p.click(".pong-start");
+    await wait(100);
+    await p.click(".pong-close");
+    await wait(100);
+    ok("home: Play Pong and X work", (await st(p)).mode === "attract");
+    await Promise.all([p.waitForNavigation({ timeout: 4000 }).catch(() => {}), p.click('.home-links a[href="/shows/"]')]);
+    ok("home: links go straight to their page", new URL(p.url()).pathname === "/shows/", p.url());
     ok("home: no console errors (desktop)", p.errors.length === 0, p.errors.length ? p.errors : undefined);
     await p.close();
 
-    // Phone: tap a portal and Skwish dashes there, then warps.
+    // Phone: tap Skwish to play, drag to move, and the links still work.
     const m = await open(b, "/", PHONE);
-    await m.screenshot({ path: path.join(ART, "home-mobile-390.png") });
-    await m.tap(".portal-music");
-    await m.waitForNavigation({ timeout: 6000 }).catch(() => {});
-    ok("home: tapping a portal goes there (phone)", new URL(m.url()).pathname === "/music/", m.url());
+    await wait(1200);
+    await m.screenshot({ path: path.join(ART, "home2-mobile.png") });
+    const mr = await m.$eval(".pong-canvas", (c) => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top + scrollY }; });
+    await m.evaluate((y) => scrollTo(0, y - 100), mr.y);
+    await wait(200);
+    const mrect = await m.$eval(".pong-canvas", (c) => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top }; });
+    const ms = await st(m);
+    await m.touchscreen.tap(mrect.x + ms.ball.x, mrect.y + ms.ball.y);
+    await wait(100);
+    ok("home: tapping Skwish starts Pong (phone)", (await st(m)).mode !== "attract");
+    await m.touchscreen.touchStart(mrect.x + 40, mrect.y + 40);
+    await m.touchscreen.touchMove(mrect.x + 40, mrect.y + ms.H - 40);
+    await wait(400);
+    await m.touchscreen.touchEnd();
+    ok("home: dragging moves the paddle (phone)", (await st(m)).left > ms.H * 0.6, await st(m));
+    await m.tap(".pong-close");
+    await m.evaluate(() => scrollTo(0, 0));
+    await Promise.all([m.waitForNavigation({ timeout: 4000 }).catch(() => {}), m.tap('.home-links a[href="/music/"]')]);
+    ok("home: tapping a link goes there (phone)", new URL(m.url()).pathname === "/music/", m.url());
     ok("home: no console errors (phone)", m.errors.length === 0, m.errors.length ? m.errors : undefined);
     await m.close();
 
-    // Reduced motion: a portal click goes straight there.
+    // Reduced motion: Skwish stays still until someone asks for a game.
     const r = await b.newPage();
     await r.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
+    await r.setViewport(DESKTOP);
     await r.goto(BASE + "/", { waitUntil: "networkidle0" });
-    await Promise.all([r.waitForNavigation({ timeout: 3000 }).catch(() => {}), r.click(".portal-shows")]);
-    ok("home: reduced motion goes straight through", new URL(r.url()).pathname === "/shows/", r.url());
+    await wait(500);
+    const r1 = await st(r);
+    await wait(400);
+    const r2 = await st(r);
+    ok("home: reduced motion keeps Skwish still", !r2.running && r1.ball.x === r2.ball.x && Math.abs(r2.ball.x - r2.W / 2) < 1, { r1, r2 });
+    await r.click(".pong-start");
+    await wait(1500);
+    ok("home: reduced motion can still play on request", (await st(r)).running);
+    await r.keyboard.press("Escape");
+    await wait(100);
+    ok("home: reduced motion goes still again after Esc", !(await st(r)).running);
     await r.close();
   }
 

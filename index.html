@@ -53,8 +53,8 @@
     This is a normal website made of files. Nothing to install.
 
     SITE MAP: each page is a folder with an index.html inside.
-      /            This page. The logo, the Skwish play area with a portal
-                   for each section (js/play.js), and the email signup.
+      /            This page. The logo, a link to each section, Skwish Pong
+                   (js/pong.js), and the email signup.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
       /music/      Albums and releases.
       /shows/      Tour dates.
@@ -87,52 +87,43 @@
   </header>
 
   <main id="main" class="home">
-    <section class="playground" aria-labelledby="home-title">
+    <section class="home-top" aria-labelledby="home-title">
       <h1 id="home-title" class="home-logo logo-mark">
         <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
         <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="" width="1360" height="264">
         <span class="visually-hidden">Dirt Monkey</span>
       </h1>
 
-      <!--
-        THE PLAY AREA. js/play.js runs it.
-        Each portal is a normal link, so it works without the game too.
-        To add a portal: copy one <li>, change the link and the word,
-        and give it a new portal-something class with a spot in css/styles.css.
-      -->
-      <div id="arena" class="arena" tabindex="0" role="group" aria-label="Play area" aria-describedby="arena-help">
-        <div class="arena-floor" aria-hidden="true"></div>
-        <ul class="portals">
-          <li><a class="portal portal-plugins accent-cyan" href="/plugins/"><span class="portal-label">Plugins</span></a></li>
-          <li><a class="portal portal-music accent-magenta" href="/music/"><span class="portal-label">Music</span></a></li>
-          <li><a class="portal portal-shows accent-mint" href="/shows/"><span class="portal-label">Shows</span></a></li>
-          <li><a class="portal portal-merch accent-cyan" href="/merch/"><span class="portal-label">Merch</span></a></li>
-          <li><a class="portal portal-app accent-magenta" href="/app/"><span class="portal-label">App</span></a></li>
-          <li><a class="portal portal-play accent-cyan" href="/play/"><span class="portal-label">Play</span></a></li>
-          <li><a class="portal portal-signup accent-mint" href="/#signup"><span class="portal-label">Sign up</span></a></li>
-        </ul>
-        <div id="skwish" class="skwish" aria-hidden="true">
-          <div class="skwish-body">
-            <div class="skwish-bob">
-              <picture>
-                <source type="image/webp" srcset="/assets/skwish-cyan.webp">
-                <img class="skwish-front" src="/assets/skwish-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
-              </picture>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ul class="home-links" aria-label="Sections">
+        <li><a class="home-link accent-cyan" href="/plugins/">Plugins</a></li>
+        <li><a class="home-link accent-magenta" href="/music/">Music</a></li>
+        <li><a class="home-link accent-mint" href="/shows/">Shows</a></li>
+        <li><a class="home-link accent-cyan" href="/merch/">Merch</a></li>
+        <li><a class="home-link accent-magenta" href="/app/">App</a></li>
+        <li><a class="home-link home-link-play accent-mint" href="/play/">Play</a></li>
+        <li><a class="home-link accent-cyan" href="#signup">Sign up</a></li>
+      </ul>
 
-      <div class="arena-bar">
-        <p id="arena-help" class="arena-help">
-          <span class="help-keys">Steer Skwish with the arrow keys or WASD, or click a spot.</span>
-          <span class="help-touch">Tap or drag to steer Skwish.</span>
-          Park on a portal to jump in, or pick one.
+      <!--
+        SKWISH PONG. js/pong.js runs it.
+        Two paddles bounce Skwish back and forth on their own. Click or tap
+        Skwish (or Play Pong) for a quick game, first to 5. Esc or X stops it.
+      -->
+      <div class="pong" data-pong tabindex="-1">
+        <canvas class="pong-canvas" aria-hidden="true"></canvas>
+        <picture class="pong-skwish">
+          <source type="image/webp" srcset="/assets/skwish-cyan.webp">
+          <img src="/assets/skwish-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
+        </picture>
+        <p class="pong-score" aria-live="polite" data-pong-score hidden><span class="visually-hidden">You</span><span class="pong-you" data-pong-you>0</span><span class="visually-hidden">, computer</span><span class="pong-cpu" data-pong-cpu>0</span></p>
+        <p class="pong-msg" role="status" data-pong-msg hidden></p>
+        <p class="pong-help" data-pong-help hidden>
+          <span class="help-keys">Move with the mouse, the arrow keys, or W and S. First to 5. Esc to stop.</span>
+          <span class="help-touch">Drag up and down to move. First to 5.</span>
         </p>
-        <p class="arena-secrets">Secrets found: <strong data-secrets>0</strong> of 2</p>
-        <button class="sound-toggle" type="button" aria-pressed="false" data-sound>Sound off</button>
+        <button class="pong-start" type="button" data-pong-start>Play Pong</button>
+        <button class="pong-close" type="button" aria-label="Stop Pong" data-pong-close hidden>&times;</button>
       </div>
-      <p class="toast" role="status" aria-live="polite" data-toast></p>
     </section>
 
     <section id="signup" class="section section-signup" aria-labelledby="signup-title">
@@ -176,9 +167,7 @@
     </div>
   </footer>
 
-  <div class="warp" aria-hidden="true" data-warp></div>
-
   <script src="/js/site.js" defer></script>
-  <script src="/js/play.js" defer></script>
+  <script src="/js/pong.js" defer></script>
 </body>
 </html>
