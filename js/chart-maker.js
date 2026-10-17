@@ -507,6 +507,7 @@
     var lines = [];
     lines.push("  // >>> TRACK  (the beatmap maker rewrites everything down to the <<< TRACK line)");
     lines.push("  track: {");
+    if (info.title) lines.push("    title: " + q(info.title) + ",");
     lines.push("    audio: " + q(info.audio || "") + ",");
     lines.push("    bpm: " + result.bpm + ",");
     lines.push("    offset: " + result.offset + ",");

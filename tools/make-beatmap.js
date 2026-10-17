@@ -18,6 +18,7 @@
 //   --offset S         seconds from the start of the file to beat 1 of bar 1.
 //                      Leave it out to have it guessed.
 //   --audio PATH       what the game loads, default /assets/audio/<mix file name>
+//   --title TEXT       the song name on the start screen, for example "Genre Snob"
 //   --credit TEXT      the line under the Start button, default "Music by Dirt Monkey"
 //   --write            put the result into js/beatmap.js (between the TRACK lines)
 //   --out FILE         save the track block to a file instead of printing it
@@ -144,7 +145,7 @@ function readCurrentTrack(file) {
 function main() {
   const opts = parseArgs(process.argv.slice(2));
   if (opts.help || !ROLES.some((r) => opts[r])) {
-    const head = fs.readFileSync(__filename, "utf8").split("\n").slice(1, 28).map((l) => l.replace(/^\/\/ ?/, ""));
+    const head = fs.readFileSync(__filename, "utf8").split("\n").slice(1, 25).map((l) => l.replace(/^\/\/ ?/, ""));
     console.log(head.join("\n"));
     process.exit(opts.help ? 0 : 1);
   }
@@ -182,7 +183,7 @@ function main() {
   const current = readCurrentTrack(beatmapFile);
   const audio = opts.audio || (opts.mix ? "/assets/audio/" + path.basename(opts.mix) : current.audio || "");
   const from = ROLES.filter((r) => opts[r]).map((r) => path.basename(opts[r])).join(", ");
-  const block = ChartMaker.trackBlock(result, { audio, credit: opts.credit || current.credit, from });
+  const block = ChartMaker.trackBlock(result, { audio, title: opts.title || current.title, credit: opts.credit || current.credit, from });
 
   const drops = [];
   let bar = 0;

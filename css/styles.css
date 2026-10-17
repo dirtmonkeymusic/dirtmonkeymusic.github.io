@@ -2101,6 +2101,22 @@ nav a.nav-play[aria-current="page"]::before { border-left-color: #1a0610; filter
 
 .game-title-small { font-size: clamp(1.4rem, 4vw, 2rem); }
 
+.game-song {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  /* A fixed line box, so the web font arriving does not move what is below. */
+  line-height: 1.5rem;
+  letter-spacing: 0.04em;
+}
+
+.game-song-name {
+  color: var(--cyan);
+  font-weight: 800;
+  font-size: 1.05rem;
+  text-shadow: 0 0 12px rgba(61, 255, 242, 0.45);
+}
+
 .game-skwish {
   display: block;
   width: clamp(72px, 12vh, 120px);

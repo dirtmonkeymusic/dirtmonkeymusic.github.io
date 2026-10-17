@@ -62,15 +62,17 @@ An arrow rhythm game in the browser, in the style of a dance-pad game. Arrows ri
 - **Esc** or **P** pauses (so does switching tabs). **M** or the **Sound** button turns the sound on and off.
 - If a visitor's device asks for reduced motion, the screen does not shake or flash and Skwish bounces without spinning. The game plays the same.
 
-**The placeholder beat.** The music right now is an original beat that the browser makes on the spot (kick, snare, hats, sub bass, and a wobble bass), so there is no sound file and nothing copyrighted. It is 140 BPM and about 53 seconds long, with two drops. It keeps playing until the real track is set up.
+**The song.** The game plays "Genre Snob" by Dirt Monkey (`assets/audio/genre-snob.m4a`, AAC, 1:50). It is 140 BPM, and beat 1 is right at the start of the file (offset 0). The start screen shows "Now playing Genre Snob". The two drops land on bars 21 and 45. The charts came from the beatmap maker and were then hand-tuned by `dev/genre_snob_charts.js`. Run `node dev/genre_snob_charts.js` to make them again from the WAV.
 
-### Swap in the real track
+**The placeholder beat.** If the song file will not load, the game plays an original beat that the browser makes on the spot (kick, snare, hats, sub bass, and a wobble bass). It is 140 BPM and about 53 seconds long, with two drops.
+
+### Swap in another track
 
 `js/beatmap.js` has two parts: `track` (the real song) and `placeholder` (the beat above). The game plays the track as soon as `track.audio` has a file in it. Three lines are enough:
 
 1. Put the file in the site, for example `assets/audio/skwish-drop.mp3`. MP3 or WAV both work. One steady tempo, start to finish.
-2. In `track`, set `audio: "/assets/audio/skwish-drop.mp3"`, `bpm` to the tempo (for example `145`), and `offset` to the seconds from the very start of the file to beat 1 of bar 1 (`0` if the file starts right on it).
-3. Open `/play/`. With no charts listed, the game listens to the track when Start is pressed (well under a second) and makes all four charts and the drops itself.
+2. In `track`, set `title` to the song name for the start screen, `audio: "/assets/audio/skwish-drop.mp3"`, `bpm` to the tempo (for example `145`), and `offset` to the seconds from the very start of the file to beat 1 of bar 1 (`0` if the file starts right on it).
+3. Delete the old track's `sections` and `charts`, then open `/play/`. With no charts listed, the game listens to the track when Start is pressed (well under a second) and makes all four charts and the drops itself.
 
 Not sure of the BPM or offset? Set either one to `"auto"` (or leave it out) and the game, or the beatmap maker below, works it out from the audio.
 

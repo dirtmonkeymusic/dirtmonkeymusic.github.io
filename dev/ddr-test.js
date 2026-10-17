@@ -131,13 +131,15 @@ async function fps(p, ms) {
       await pick(p, diff);
       await p.click("[data-start]");
       await untilState(p, "playing", 5000);
+      const holds = (await p.evaluate(() => window.skwishDrop.notes())).filter((n) => n[3]).length;
       await autoplay(p, { keys });
       await untilState(p, "results");
       const r = await readResults(p);
       const counts = await p.evaluate(() => window.skwishDrop.counts());
-      const best = await p.evaluate((d) => localStorage.getItem("dm-play-best:Skwish Drop|" + d), diff);
+      // The key is "dm-play-best:<title>|<track audio, if any>|<difficulty>".
+      const best = await p.evaluate((d) => Object.keys(localStorage).find((k) => k.startsWith("dm-play-best:Skwish Drop|") && k.endsWith("|" + d)), diff);
       ok(`clear ${diff}`, r.grade === "S" && r.status === "Cleared" && /full combo/i.test(r.fc) && counts.miss === 0 && counts.ng === 0 && !!best, { r, counts });
-      if (diff === "hard") ok("holds counted on hard", /^20 \/ 20$/.test(r.holds), r.holds);
+      if (diff === "hard") ok("holds counted on hard", holds > 0 && r.holds === holds + " / " + holds, { holds, shown: r.holds });
       ok(`retry focused after ${diff}`, r.focus === "Retry", r.focus);
       await p.click('[data-screen="results"] [data-quit]');
       await wait(200);
@@ -167,6 +169,16 @@ async function fps(p, ms) {
     const again = await untilState(p, "playing", 5000);
     const t = await songTime(p);
     ok("R retries from results", again && t < 1.5, t);
+    ok("no console errors (fail)", p.errors.length === 0, p.errors);
+    await p.close();
+  }
+
+  if (only === "all" || only === "fail" || only === "retry") {
+    // Easy, with nobody playing, lasts long enough to try the other ways to retry.
+    const p = await fresh(b);
+    await pick(p, "easy");
+    await p.click("[data-start]");
+    await untilState(p, "playing", 5000);
     // toolbar Retry during play
     await untilSong(p, 3);
     await p.click("[data-retry-tool]");
@@ -180,7 +192,7 @@ async function fps(p, ms) {
     await p.keyboard.press("r");
     await untilState(p, "playing", 5000);
     ok("R retries from pause", (await songTime(p)) < 1);
-    ok("no console errors (fail)", p.errors.length === 0, p.errors);
+    ok("no console errors (retry)", p.errors.length === 0, p.errors);
     await p.close();
   }
 

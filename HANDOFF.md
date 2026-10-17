@@ -43,7 +43,8 @@ All of this is committed and pushed to main.
 - Speed: 1x to 4x, saved between visits.
 - Timing offset: -5 and +5 buttons, plus a Calibrate screen where you tap along with 16 clicks and the median sets the offset.
 - Reduced motion: no shake, flashes, or rotation.
-- Real track swap-in (still waiting on Patrick's file): it needs only the audio file, BPM, and offset. Missing charts are made from the audio in the game.
+- The real track is in: "Genre Snob" by Dirt Monkey, `assets/audio/genre-snob.m4a` (AAC 160 kbps, 2.2 MB), 140 BPM, offset 0. The start screen says "Now playing Genre Snob". The placeholder beat plays only if the file cannot load.
+- Another track swap-in still needs only the audio file, BPM, and offset. Missing charts are made from the audio in the game.
   - `js/chart-maker.js`, `tools/make-beatmap.js`, and `/tools/beatmap/` all make the four charts with holds now.
   - Drop detection uses energy above the sub plus hit density, so long sub notes no longer look like drops.
 - README: covers how to play and the charts format.
@@ -74,7 +75,7 @@ Done on 2026-10-16 (committed locally, not pushed):
 Still open:
 
 1. **Tuning, if wanted.** Life starts at 50, so 5 straight misses fail Hard and Skwished, 7 fail Normal, and 9 fail Easy. To soften it, raise the start or lower `MISS_LIFE` in `js/rhythm.js`. See the recommendation in `~/DMBuilds/DMSite-shots/REPORT.md`.
-2. **Real track.** When Patrick sends it, follow the note at the top of `js/beatmap.js`, or run `node tools/make-beatmap.js --mix ... --kick ... --snare ... --bass ... --write`.
+2. **Real track: done.** Genre Snob is in, with hand-tuned charts from `dev/genre_snob_charts.js` (it runs the beatmap maker on band-split stems, then shapes each section). If Patrick sends real stems, add them to that script's `toolBlock()` for cleaner notes.
 
 ## About `dev/`
 
@@ -92,6 +93,7 @@ python3 make_test_track.py                 # needs numpy; writes tmp-audio/ (the
 - Chrome is found in the usual Mac and Linux places. Set `CHROME` to point somewhere else.
 - Screenshots worth keeping go to `~/DMBuilds/DMSite-shots/` (set `ART` to change it). Scratch files go to the system temp folder (`SHOT`).
 - `make_test_track.py` uses ffmpeg from your PATH, or the one `npm install` puts in `dev/node_modules`.
+- `genre_snob_charts.js` remakes the Genre Snob charts from `~/DMBuilds/DMSite-shots/genre-snob.wav` (or a path you give it). `song-shots.js` takes the song-*.png screenshots.
 - `gen_charts.py` rewrites the placeholder charts in `js/beatmap.js` in place. Run as is, it writes the same charts that are there now.
 
 Do not commit `uploads/`, `tmp-audio/`, or `node_modules/` (all three are in `.gitignore`).

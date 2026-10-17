@@ -27,6 +27,8 @@
   var toolsEl = root.querySelector(".game-tools");
   var bestEl = root.querySelector("[data-best]");
   var creditEl = root.querySelector("[data-credit]");
+  var songNameEl = root.querySelector("[data-song-name]");
+  var songByEl = root.querySelector("[data-song-by]");
   var speedEl = root.querySelector("[data-speed]");
   var offsetEl = root.querySelector("[data-offset]");
   var motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
@@ -193,6 +195,13 @@
 
   function bestKey(diff) {
     return "dm-play-best:" + map.title + (useTrack ? "|" + track.audio : "") + "|" + (diff || settings.difficulty);
+  }
+
+  // "Now playing" on the start screen: the track's title, or the placeholder beat.
+  function showSong() {
+    if (!songNameEl) return;
+    songNameEl.textContent = useTrack ? track.title || track.audio.split("/").pop() : "the placeholder beat";
+    if (songByEl) songByEl.textContent = useTrack && track.title ? "by Dirt Monkey" : "";
   }
 
   function creditLine() {
@@ -895,6 +904,7 @@
     trackBuf = null;
     setSong(map.placeholder);
     if (creditEl) creditEl.textContent = "The track did not load, so this is the placeholder beat.";
+    showSong();
     updatePicker();
   }
 
@@ -2017,6 +2027,7 @@
   });
 
   if (creditEl) creditEl.textContent = creditLine() + ".";
+  showSong();
 
   window.addEventListener("resize", resize);
 
