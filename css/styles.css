@@ -2147,7 +2147,7 @@ nav a.nav-play[aria-current="page"]::before { border-left-color: #1a0610; filter
   user-select: none;
 }
 
-/* The background video, when one is found. It sits under the see-through canvas. */
+/* The background video (or its still), put in when Start is pressed. It sits under the see-through canvas. */
 .game-video {
   position: absolute;
   inset: 0;
@@ -2160,6 +2160,10 @@ nav a.nav-play[aria-current="page"]::before { border-left-color: #1a0610; filter
 }
 
 .game-video.is-on { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .game-video { transition: none; }
+}
 
 .game-video + .game-canvas { position: relative; }
 

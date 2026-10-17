@@ -572,16 +572,14 @@ const BEATMAP = {
   // copies made by dev/make_play_art.js from the full-res layers.
   //   dancer: the character that dances next to the lanes
   //   coins:  a strip of square coin cells; the last one is the 19K coin
-  //   video:  an optional visualizer that plays muted behind the lanes, in
-  //           time with the song (it starts at 0 s with the audio). Put an
-  //           .mp4 (and, if you like, a smaller .webm beside it) here:
-  //             assets/play/genre-snob-bg.mp4              landscape
-  //               (or genre-snob-bg-landscape.mp4)
-  //             assets/play/genre-snob-bg-vertical.mp4     phones held upright
-  //           Either one is used for both if the other is missing. The game
-  //           looks for them when Start is first pressed, so the page never
-  //           waits on them, and skips them for reduced motion and Save-Data.
-  //           Set video to null to stop it looking.
+  //   video:  the visualizer that plays muted behind the lanes, in time with
+  //           the song (it starts at 0 s with the audio). Landscape for wide
+  //           screens, vertical for phones held upright; each has a WebM (smaller,
+  //           tried first), an MP4, and a still. Made by dev/make_play_bg.js.
+  //           Nothing loads until Start is first pressed, so the page never
+  //           waits on them. Reduced motion and Save-Data get the still only,
+  //           and the still also stands in while the video loads or if it fails.
+  //           Set video to null to drop it.
   theme: {
     audio: "/assets/audio/genre-snob.m4a",
     name: "genre-snob",
@@ -609,8 +607,16 @@ const BEATMAP = {
       edgeHues: [42, -45]
     },
     video: {
-      landscape: ["/assets/play/genre-snob-bg", "/assets/play/genre-snob-bg-landscape"],
-      vertical: "/assets/play/genre-snob-bg-vertical"
+      landscape: {
+        webm: "/assets/play/genre-snob/genre-snob-bg-landscape.webm",
+        mp4: "/assets/play/genre-snob/genre-snob-bg-landscape.mp4",
+        still: "/assets/play/genre-snob/bg-poster-landscape-960.webp"
+      },
+      vertical: {
+        webm: "/assets/play/genre-snob/genre-snob-bg-vertical.webm",
+        mp4: "/assets/play/genre-snob/genre-snob-bg-vertical.mp4",
+        still: "/assets/play/genre-snob/bg-poster-vertical-540.webp"
+      }
     }
   },
 

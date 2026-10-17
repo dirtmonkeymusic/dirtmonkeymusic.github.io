@@ -95,7 +95,8 @@ python3 make_test_track.py                 # needs numpy; writes tmp-audio/ (the
 - `make_test_track.py` uses ffmpeg from your PATH, or the one `npm install` puts in `dev/node_modules`.
 - `genre_snob_charts.js` remakes the Genre Snob charts from `~/DMBuilds/DMSite-shots/genre-snob.wav` (or a path you give it). `song-shots.js` takes the song-*.png screenshots.
 - `make_play_art.js` makes the web-size Genre Snob art in `assets/play/genre-snob/` from DIRT's full-res layers in `~/DMBuilds/DMSite-shots/art/` (it only scales, crops, and re-encodes). `art-shots.js` takes the art-*.png screenshots and checks the theme.
-- The Genre Snob look (cover, dancer, coins, gold palette, optional background video) is the `theme` block in `js/beatmap.js`. It only applies while that song is the track.
+- The Genre Snob look (cover, dancer, coins, gold palette, background video) is the `theme` block in `js/beatmap.js`. It only applies while that song is the track.
+- The background video: `make_play_bg.js` copies the four silent visualizer files from `~/DMBuilds/DMSite-shots/bg/` into `assets/play/genre-snob/` and grabs a still from each. Nothing loads until Start; reduced motion and Save-Data get the still only. Python's server can't seek inside a video, so test it with `node serve.js` (port 47322, with Range support, like GitHub Pages), then `node bg-test.js` (sync through start, pause, a jump, turning the screen, and retry; the still for reduced motion and for a failed video; and the bg-*.png screenshots).
 - `gen_charts.py` rewrites the placeholder charts in `js/beatmap.js` in place. Run as is, it writes the same charts that are there now.
 
 Do not commit `uploads/`, `tmp-audio/`, or `node_modules/` (all three are in `.gitignore`).

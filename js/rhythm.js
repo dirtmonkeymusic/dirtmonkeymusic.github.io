@@ -693,6 +693,7 @@
     receptorSprites = [0, 1, 2, 3].map(function (lane) { return makeArrow(lane, "#ffffff", "receptor"); });
     litSprites = [0, 1, 2, 3].map(function (lane) { return makeArrow(lane, LANE_GLOW[lane], "lit"); });
 
+    if (video.el) setupVideo();
     buildBg();
     if (state !== "playing") draw(0);
   }
@@ -827,6 +828,7 @@
     if (video.el) video.el.remove();
     video.on = false;
     video.el = null;
+    video.shape = null;
     loadDancer();
     resize();
   }
@@ -1096,7 +1098,7 @@
     run.end = Math.max(run.end, lastEnd + 0.6);
     pointerLanes = {};
     keyLanes = {};
-    findVideo();
+    setupVideo();
     if (useTrack) {
       trackSource = ctx.createBufferSource();
       trackSource.buffer = trackBuf;
@@ -1493,69 +1495,77 @@
 
   // ---------- the optional background video (see "video" in the theme, js/beatmap.js)
 
-  var video = { on: false, el: null, checked: false, seekAt: 0 };
+  var video = { on: false, el: null, shape: null, still: false, failed: false, seekAt: 0 };
 
-  // Looks for the video files once, when Start is first pressed, so the page
-  // itself never waits on them. Phones in portrait try the vertical one first.
-  function findVideo() {
+  // Puts the backdrop in when Start is pressed (never before, so the page itself
+  // never waits on it), and swaps it when the screen turns between wide and tall.
+  // Reduced motion and Save-Data get the still only. The still is also the
+  // video's poster, so it shows while the video loads or if it cannot play.
+  function setupVideo() {
     var want = theme && theme.video;
-    if (video.checked || !want || calm() || !window.fetch) return;
-    if (navigator.connection && navigator.connection.saveData) return;
-    video.checked = true;
-    var vertical = canvas.clientHeight > canvas.clientWidth;
-    var bases = [].concat(vertical ? [want.vertical, want.landscape] : [want.landscape, want.vertical]);
-    bases = [].concat.apply([], bases).filter(Boolean);
-    var webm = !!document.createElement("video").canPlayType("video/webm");
-    function exists(url) {
-      return fetch(url, { method: "HEAD" }).then(function (res) { return res.ok ? url : null; }, function () { return null; });
-    }
-    // The MP4 plays everywhere, so it is looked for first; a WebM next to it is
-    // smaller and goes first where it plays. So with no video, one request per name.
-    (function next(i) {
-      if (i >= bases.length || !theme) return;
-      exists(bases[i] + ".mp4").then(function (mp4) {
-        if (!mp4) return next(i + 1);
-        (webm ? exists(bases[i] + ".webm") : Promise.resolve(null)).then(function (w) {
-          useVideo(w ? [w, mp4] : [mp4]);
-        });
+    if (!want) return;
+    var shape = canvas.clientHeight > canvas.clientWidth && want.vertical ? "vertical" : "landscape";
+    var files = want[shape] || want.vertical;
+    var still = calm() || !!(navigator.connection && navigator.connection.saveData);
+    if (video.el && video.shape === shape && video.still === still) return;
+    if (video.el) video.el.remove();
+    video.on = false;
+    video.failed = false;
+    video.shape = shape;
+    video.still = still;
+    var el;
+    if (still) {
+      el = document.createElement("img");
+      el.alt = "";
+      el.decoding = "async";
+      el.addEventListener("load", function () { showVideo(el); });
+      el.src = files.still;
+    } else {
+      el = document.createElement("video");
+      el.muted = true;
+      el.defaultMuted = true;
+      el.playsInline = true;
+      el.setAttribute("playsinline", "");
+      el.setAttribute("muted", "");
+      el.disablePictureInPicture = true;
+      el.preload = "auto";
+      el.tabIndex = -1;
+      if (files.still) {
+        el.poster = files.still;
+        var poster = new Image();
+        poster.onload = function () { showVideo(el); };
+        poster.src = files.still;
+      }
+      [["webm", 'video/webm; codecs="vp9"'], ["mp4", "video/mp4"]].forEach(function (kind, i, all) {
+        if (!files[kind[0]]) return;
+        var src = document.createElement("source");
+        src.src = files[kind[0]];
+        src.type = kind[1];
+        // When the last source fails, the poster stays up as the still.
+        src.addEventListener("error", function () { if (i === all.length - 1) video.failed = true; });
+        el.appendChild(src);
       });
-    })(0);
+      el.addEventListener("loadeddata", function () { showVideo(el); });
+    }
+    el.className = "game-video";
+    el.setAttribute("aria-hidden", "true");
+    root.insertBefore(el, canvas);
+    video.el = el;
   }
 
-  function useVideo(srcs) {
-    var v = document.createElement("video");
-    v.className = "game-video";
-    v.muted = true;
-    v.defaultMuted = true;
-    v.playsInline = true;
-    v.setAttribute("playsinline", "");
-    v.setAttribute("muted", "");
-    v.setAttribute("aria-hidden", "true");
-    v.disablePictureInPicture = true;
-    v.preload = "auto";
-    v.tabIndex = -1;
-    srcs.forEach(function (src) {
-      var el = document.createElement("source");
-      el.src = src;
-      el.type = "video/" + src.split(".").pop();
-      v.appendChild(el);
-    });
-    v.addEventListener("loadeddata", function () {
-      if (!theme) return;
-      video.on = true;
-      v.classList.add("is-on");
-      buildBg();
-      if (state !== "playing") draw(0);
-    });
-    root.insertBefore(v, canvas);
-    video.el = v;
+  function showVideo(el) {
+    if (!theme || video.el !== el || video.on) return;
+    video.on = true;
+    el.classList.add("is-on");
+    buildBg();
+    if (state !== "playing") draw(0);
   }
 
   // Keeps the video on the song as heard (the player's offset does not move it).
   // Small drift is eased out with the playback rate, big drift is a seek.
   function syncVideo() {
     var v = video.el;
-    if (!video.on || !v || !run) return;
+    if (!video.on || !v || !run || video.still || video.failed) return;
     var t = heard() - run.start;
     var end = v.duration || Infinity;
     if (state !== "playing" || run.failing || t < 0 || t >= end) {
@@ -1586,7 +1596,7 @@
   }
 
   function stopVideo(rewind) {
-    if (!video.el) return;
+    if (!video.el || video.still) return;
     video.el.pause();
     if (rewind && video.on) video.el.currentTime = 0;
   }
@@ -2371,6 +2381,10 @@
   showSong();
 
   window.addEventListener("resize", resize);
+  // Turning reduced motion on mid-song swaps the video for the still (and back).
+  if (motionQuery && motionQuery.addEventListener) {
+    motionQuery.addEventListener("change", function () { if (video.el) setupVideo(); });
+  }
 
   // Open /play/?debug to read the clock from the console or an automated test.
   if (/[?&]debug\b/.test(window.location.search)) {
@@ -2390,7 +2404,7 @@
           name: theme ? theme.name : null,
           art: { dancer: skwishArt.length, coins: !!coinImg, title: !!titleImg, logo: !!logoImg, backdrop: !!backdropImg },
           coins: run ? run.coins.length : 0,
-          video: v ? { on: video.on, src: v.currentSrc, time: v.currentTime, paused: v.paused, song: run ? heard() - run.start : 0 } : null
+          video: v ? { on: video.on, shape: video.shape, still: video.still, failed: video.failed, src: v.currentSrc, time: v.currentTime || 0, paused: !!v.paused, rate: v.playbackRate || 0, song: run ? heard() - run.start : 0 } : null
         };
       },
       calibration: function () { return cal ? { t0: cal.t0, taps: cal.taps.slice(), done: !!cal.done } : null; },

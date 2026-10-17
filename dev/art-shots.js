@@ -2,7 +2,6 @@
 // desktop, and mid-game on a phone, all with perfect autoplay on Hard.
 // node art-shots.js   (saves art-*.png into ART, see env.js)
 // It also checks the theme art loaded, coins fell, and there were no console errors.
-// The background video is optional, so 404s from looking for it do not count as errors.
 const puppeteer = require("puppeteer-core");
 const path = require("path");
 const { ART, LAUNCH, expected404 } = require("./env");
@@ -131,7 +130,7 @@ function ok(name, cond, extra) {
   }
 
   if (!only || only === "reduce") {
-    // Reduced motion: no falling coins, no video lookup.
+    // Reduced motion: no falling coins, the still instead of the video.
     const r = await fresh(b, DESKTOP, "reduce");
     await r.click("[data-start]");
     await untilState(r, "playing", 20000);
@@ -139,7 +138,7 @@ function ok(name, cond, extra) {
     await untilSong(r, DROP);
     const coinsMove = await r.evaluate(() => window.skwishDrop.theme());
     ok("reduced motion: coins fade in place, few of them", coinsMove.coins <= 8, coinsMove.coins);
-    ok("reduced motion: no video", coinsMove.video === null);
+    ok("reduced motion: still, no video", !!coinsMove.video && coinsMove.video.still && !/\.(webm|mp4)$/.test(coinsMove.video.src), coinsMove.video);
     ok("reduced motion: no console errors", r.errors.length === 0, r.errors.length ? r.errors : undefined);
     await r.close();
   }

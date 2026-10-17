@@ -28,8 +28,8 @@ const LAUNCH = {
   args: ["--no-sandbox", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required"]
 };
 
-// The game looks for an optional background video when Start is pressed.
-// When there is none, the 404s from that look are expected, not errors.
+// 404s for the background video files are not counted as errors (bg-test.js
+// blocks them on purpose to check the still stands in).
 const OPTIONAL = /\/assets\/play\/genre-snob-bg/;
 const expected404 = (m) => OPTIONAL.test((m.location() && m.location().url) || "");
 
