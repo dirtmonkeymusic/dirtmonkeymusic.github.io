@@ -16,6 +16,10 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 - The Play pill in every nav, plus /play/ in the sitemap.
 - Lighthouse mobile on home: 99 performance, 100 for everything else (three runs).
 
+## Nav trimmed to three: done
+
+- On 2026-10-16 the home page buttons and every page's nav were cut to Merch, Shows, and Sign up. Plugins, Music, App, and Play are hidden, not removed: their links sit in a `NAV3` HTML comment right under the visible ones, in each page's nav and in the home page buttons. To restore, move them back out of the comment. The pages, files, and sitemap entries are unchanged. `site-check.js` now expects the three links.
+
 ## Skwish DDR game: done
 
 All of this is committed and pushed to main.

@@ -87,7 +87,9 @@ async function open(b, url, viewport) {
     await wait(1200);
     await p.screenshot({ path: path.join(ART, "home2-desktop.png") });
     const links = await p.$$eval(".home-links a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("home: a link for each section", ["/plugins/", "/music/", "/shows/", "/merch/", "/app/", "/play/", "#signup"].every((h) => links.includes(h)), links);
+    ok("home: only Merch, Shows, and Sign up", JSON.stringify(links) === JSON.stringify(["/merch/", "/shows/", "#signup"]), links);
+    const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
+    ok("home: nav is Merch, Shows, Sign up", JSON.stringify(nav) === JSON.stringify(["/merch/", "/shows/", "/#signup"]), nav);
     const a1 = await st(p);
     await wait(400);
     const a2 = await st(p);
@@ -151,8 +153,8 @@ async function open(b, url, viewport) {
     ok("home: dragging moves the paddle (phone)", (await st(m)).left > ms.H * 0.6, await st(m));
     await m.tap(".pong-close");
     await m.evaluate(() => scrollTo(0, 0));
-    await Promise.all([m.waitForNavigation({ timeout: 4000 }).catch(() => {}), m.tap('.home-links a[href="/music/"]')]);
-    ok("home: tapping a link goes there (phone)", new URL(m.url()).pathname === "/music/", m.url());
+    await Promise.all([m.waitForNavigation({ timeout: 4000 }).catch(() => {}), m.tap('.home-links a[href="/merch/"]')]);
+    ok("home: tapping a link goes there (phone)", new URL(m.url()).pathname === "/merch/", m.url());
     ok("home: no console errors (phone)", m.errors.length === 0, m.errors.length ? m.errors : undefined);
     await m.close();
 
