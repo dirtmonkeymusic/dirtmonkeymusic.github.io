@@ -49,6 +49,9 @@
   var keys = { up: false, down: false };
   var aim = null;
   var sprite = null;
+  var started = false;
+  var artTries = 0;
+  var bakeTries = 0;
   var running = false;
   var onScreen = true;
   var last = 0;
@@ -228,6 +231,8 @@
   bindPlayer();
 
   // Skwish with his glow baked in once, so each frame is one drawImage.
+  // Safari can bake a blank Skwish (art not decoded yet) or drop a canvas
+  // while the tab sits in the background, so the bake is checked and redone.
   function makeSprite() {
     var size = 256;
     var c = document.createElement("canvas");
@@ -242,7 +247,74 @@
     g.shadowColor = "rgba(61, 255, 242, 0.7)";
     g.shadowBlur = 14;
     g.drawImage(art, 22, 22, size - 44, size - 44);
-    sprite = c;
+    sprite = spriteOk(c) ? c : null;
+    return !!sprite;
+  }
+
+  // The halo alone is under half opacity, so solid pixels mean Skwish is in there.
+  function spriteOk(c) {
+    try {
+      var d = c.getContext("2d").getImageData(64, 64, 128, 128).data;
+      for (var i = 3, n = 0; i < d.length; i += 4) if (d[i] > 200 && ++n > 200) return true;
+    } catch (err) {
+      return true;
+    }
+    return false;
+  }
+
+  function artReady() {
+    return art.complete && art.naturalWidth > 0;
+  }
+
+  // Wait for Skwish's art to load and decode. A failed load (a flaky phone
+  // connection, say) is retried with the PNG instead of giving up for good.
+  function loadArt() {
+    if (artReady()) {
+      art.onload = art.onerror = null;
+      var p = art.decode ? art.decode() : null;
+      if (p && p.then) p.then(bake, bake);
+      else bake();
+      return;
+    }
+    art.onload = loadArt;
+    art.onerror = retryArt;
+    if (art.complete && art.currentSrc) retryArt();
+  }
+
+  function retryArt() {
+    art.onerror = null;
+    if (artTries >= 5) return;
+    artTries++;
+    setTimeout(function () {
+      var pic = art.parentNode;
+      var srcs = pic ? pic.querySelectorAll("source") : [];
+      for (var i = 0; i < srcs.length; i++) pic.removeChild(srcs[i]);
+      art.onload = loadArt;
+      art.onerror = retryArt;
+      art.src = "/assets/skwish-cyan.png?retry=" + artTries + "-" + Date.now();
+    }, 400 * artTries);
+  }
+
+  // Bake the sprite. If the bake comes out blank, try again shortly; until
+  // then (or if it never takes) the draw loop paints the plain art instead.
+  function bake() {
+    if (makeSprite()) bakeTries = 0;
+    else if (++bakeTries < 20) setTimeout(bake, 150);
+    if (!started) begin();
+    else draw();
+  }
+
+  // Back from the background or the back button: make sure Skwish survived.
+  function recheck() {
+    if (!started) return;
+    if (sprite && !spriteOk(sprite)) sprite = null;
+    if (!sprite) {
+      bakeTries = 0;
+      if (artReady()) bake();
+      else loadArt();
+    }
+    measure();
+    draw();
   }
 
   function measure() {
@@ -414,7 +486,8 @@
     roundRect(W - inset - padW, right.y - padH / 2, padW, padH, padW / 2);
     ctx.shadowBlur = 0;
 
-    if (sprite && mode !== "over") {
+    var pic = sprite || (artReady() ? art : null);
+    if (pic && mode !== "over") {
       var s = r * 2.9;
       var sq = ball.squash * 0.2;
       ctx.save();
@@ -422,7 +495,8 @@
       if (ball.wall) ctx.scale(1 + sq, 1 - sq);
       else ctx.scale(1 - sq, 1 + sq);
       ctx.rotate(Math.sin(ball.spin) * 0.25);
-      ctx.drawImage(sprite, -s / 2, -s / 2, s, s);
+      if (pic === sprite) ctx.drawImage(sprite, -s / 2, -s / 2, s, s);
+      else ctx.drawImage(art, -s * 0.414, -s * 0.414, s * 0.828, s * 0.828);
       ctx.restore();
     }
   }
@@ -571,7 +645,7 @@
   else window.addEventListener("resize", measure);
 
   function begin() {
-    makeSprite();
+    started = true;
     measure();
     serve(Math.random() < 0.5);
     box.classList.add("is-live");
@@ -579,9 +653,16 @@
   }
 
   function ready() {
-    if (art.complete && art.naturalWidth) begin();
-    else art.addEventListener("load", begin, { once: true });
+    loadArt();
   }
+
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) recheck();
+  });
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) recheck();
+  });
+  canvas.addEventListener("contextrestored", recheck);
 
   // Wait for the page to settle so the first paint stays quick.
   if (document.readyState === "complete") ready();
@@ -591,7 +672,7 @@
   window.skwishPong = {
     state: function () {
       return {
-        mode: mode, score: score.slice(), ball: { x: ball.x, y: ball.y }, left: left.y, right: right.y, running: running, W: W, H: H,
+        mode: mode, head: sprite ? "sprite" : (artReady() ? "art" : "none"), score: score.slice(), ball: { x: ball.x, y: ball.y }, left: left.y, right: right.y, running: running, W: W, H: H,
         dub: { win: !!winEl && !winEl.hidden, ready: !!dub.buf, playing: dub.playing, connected: dub.connected, ended: dub.ended, sources: dub.sources, gain: dub.gain ? dub.gain.gain.value : 0, at: dubPos(), length: dub.buf ? dub.buf.duration : 0, title: dub.plate ? dub.plate.title : "", plates: PLATES.map(function (p) { return p.title; }) }
       };
     },

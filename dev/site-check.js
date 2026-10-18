@@ -392,6 +392,30 @@ async function open(b, url, viewport) {
     await r.keyboard.press("Escape");
     await wait(100);
     ok("home: reduced motion goes still again after Esc", !(await st(r)).running);
+
+    // Skwish always shows: even when his art fails to load the first time (a flaky
+    // phone connection), Pong retries it and draws him on the court.
+    for (const vp of [PHONE, DESKTOP]) {
+      const f = await b.newPage();
+      await f.setViewport(vp);
+      await f.setRequestInterception(true);
+      let tries = 0;
+      f.on("request", (q) => (/\/assets\/skwish-cyan\./.test(q.url()) && tries++ === 0 ? q.abort() : q.continue()));
+      await f.goto(BASE + "/", { waitUntil: "load" });
+      await f.$eval(".pong", (e) => e.scrollIntoView({ block: "center" }));
+      await wait(2500);
+      const seen = await f.evaluate(() => {
+        const s = window.skwishPong.state();
+        const c = document.querySelector(".pong-canvas");
+        const k = c.width / s.W, R = Math.round(Math.min(s.W, s.H) * 0.1 * k);
+        const d = c.getContext("2d").getImageData(Math.max(0, Math.round(s.ball.x * k) - R), Math.max(0, Math.round(s.ball.y * k) - R), 2 * R, 2 * R).data;
+        let n = 0;
+        for (let i = 3; i < d.length; i += 4) if (d[i] > 200) n++;
+        return { head: s.head, running: s.running, live: document.querySelector(".pong").classList.contains("is-live"), solid: n };
+      });
+      ok("home: Skwish shows after a failed first load (" + (vp.isMobile ? "phone" : "desktop") + ")", tries >= 2 && seen.head === "sprite" && seen.running && seen.live && seen.solid > 100, { tries, ...seen });
+      await f.close();
+    }
     await r.close();
   }
 
