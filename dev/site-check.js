@@ -146,7 +146,7 @@ async function open(b, url, viewport) {
     const su = await open(b, "/signup/", PHONE);
     const suEmbed = await su.$$eval("iframe[data-laylo-embed]", (fs) => fs.map((f) => f.src));
     await su.close();
-    ok("/signup/: still works, with the same Laylo embed", suEmbed.length === 1 && suEmbed[0] === "https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent", suEmbed);
+    ok("/signup/: still works, with the same Laylo embed", suEmbed.length === 1 && suEmbed[0] === "https://embed.laylo.com/?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c&color=&minimal=&theme=dark&customTitle=&background=transparent&emailPlusSms=false", suEmbed);
     const sitemap = fs.readFileSync(path.join(ROOT, "sitemap.xml"), "utf8");
     ok("/signup/ is not in the sitemap", !/\/signup\//.test(sitemap));
     const files = execList(ROOT);
@@ -198,7 +198,16 @@ async function open(b, url, viewport) {
         font: getComputedStyle(box.querySelector(".home-signup-legal")).fontFamily
       };
     });
-    ok("home: signup is the minimal Laylo embed, clipped, with the required line", JSON.stringify(su2.src) === JSON.stringify(["https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent&minimal=true&customColor=3dfff2"]) && su2.clip === "hidden" && su2.legal === "By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg & data rates may apply. Reply STOP to cancel." && su2.extra === 0 && /JetBrains Mono/.test(su2.font), su2);
+    ok("home: signup is the minimal Laylo embed, clipped, with the required line", JSON.stringify(su2.src) === JSON.stringify(["https://embed.laylo.com/?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c&color=3dfff2&minimal=true&theme=dark&customTitle=&background=transparent&emailPlusSms=false"]) && su2.clip === "hidden" && su2.legal === "By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg & data rates may apply. Reply STOP to cancel." && su2.extra === 0 && /JetBrains Mono/.test(su2.font), su2);
+    // The Drop frame only shows its form once Laylo's SDK hands it the Drop (js/laylo-drop.js).
+    let dropForm = {};
+    for (let i = 0; i < 40 && !dropForm.input; i++) {
+      const fr = p.frames().find((f) => /embed\.laylo\.com\/\?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c/.test(f.url()));
+      dropForm = fr ? await fr.evaluate(() => ({ input: !!document.querySelector("input"), buttons: [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).filter(Boolean).slice(0, 4) })).catch(() => ({})) : {};
+      if (!dropForm.input) await wait(250);
+    }
+    const sdk = await p.evaluate(() => !!document.querySelector("script#laylo-sdk[src=\"https://embed.laylo.com/laylo-sdk.js\"]"));
+    ok("home: the signup is the Dirt Monkey Website Drop, and its form shows", dropForm.input && sdk, { ...dropForm, sdk });
     // Countdown: four neon units between the logo and the signup, ticking.
     const cd = await p.evaluate(() => {
       const el = document.querySelector("[data-home-countdown]");
@@ -228,7 +237,7 @@ async function open(b, url, viewport) {
     const music = await open(b, "/music/", DESKTOP);
     const albumLinks = await music.$$eval(".upcoming-actions a", (as) => as.map((a) => [a.textContent.trim(), a.href, a.target]));
     await music.close();
-    ok("music: Pre-save and Notify me go to Laylo", albumLinks.length === 2 && albumLinks.every((l) => l[1] === "https://laylo.com/dirtmonkey" && l[2] === "_blank"), albumLinks);
+    ok("music: Pre-save and Notify me go to Laylo", albumLinks.length === 2 && albumLinks.every((l) => l[1] === "https://laylo.com/dirtmonkey/uf3d1m?ref=website" && l[2] === "_blank"), albumLinks);
     const a1 = await st(p);
     await wait(400);
     const a2 = await st(p);

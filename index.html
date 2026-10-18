@@ -111,15 +111,18 @@
       </div>
 
       <!--
-        SIGNUP: Laylo's minimal embed, just the number field and the RSVP button.
+        SIGNUP: Laylo's minimal embed of the "Dirt Monkey Website" Drop, so Laylo
+        counts the signups that come from this site. Just the number field and the RSVP button.
+        js/laylo-drop.js loads Laylo's SDK, then starts the frame (data-drop-src).
         The frame is clipped to the field (.home-signup in css/styles.css), so
         Laylo's own fine print is cut off. Laylo requires the line under it
         when minimal=true is on: keep it.
       -->
       <div id="signup" class="home-signup">
         <div class="home-signup-frame">
-          <iframe src="https://laylo.com/dirtmonkey/profile/embed?theme=dark&amp;background=transparent&amp;minimal=true&amp;customColor=3dfff2" title="Sign up for Dirt Monkey on Laylo" width="100%" height="300" frameborder="0" scrolling="no" allowtransparency="true" data-laylo-embed></iframe>
+          <iframe id="laylo-drop-01b4e6e5-95f4-49a2-90f8-6c67811d9a8c" data-drop-src="https://embed.laylo.com/?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c&amp;color=3dfff2&amp;minimal=true&amp;theme=dark&amp;customTitle=&amp;background=transparent&amp;emailPlusSms=false" title="Sign up for Dirt Monkey on Laylo" width="100%" height="300" frameborder="0" scrolling="no" allowtransparency="true" data-laylo-embed></iframe>
         </div>
+        <script src="/js/laylo-drop.js"></script>
         <p class="home-signup-legal">By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg &amp; data rates may apply. Reply STOP to cancel.</p>
       </div>
 
