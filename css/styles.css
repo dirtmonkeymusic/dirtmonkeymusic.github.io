@@ -281,7 +281,7 @@ nav a[aria-current="page"] {
   height: auto;
 }
 
-.skwish-stage {
+.monkey-stage {
   position: relative;
   display: grid;
   place-items: center;
@@ -292,9 +292,9 @@ nav a[aria-current="page"] {
   will-change: transform;
 }
 
-.skwish-stage.is-offscreen { animation-play-state: paused; }
+.monkey-stage.is-offscreen { animation-play-state: paused; }
 
-.skwish-stage::before {
+.monkey-stage::before {
   content: "";
   position: absolute;
   left: 50%;
@@ -308,7 +308,7 @@ nav a[aria-current="page"] {
   z-index: 0;
 }
 
-.skwish-front {
+.monkey-front {
   position: relative;
   z-index: 1;
   width: min(340px, 72%);
@@ -1365,7 +1365,7 @@ h2,
   font-size: 0.82rem;
 }
 
-/* Home: the logo, the links, and Skwish Pong (js/pong.js) */
+/* Home: the logo, the links, and Monkey Pong (js/pong.js) */
 
 .home-top {
   padding: 22px 18px 56px;
@@ -1610,8 +1610,8 @@ h2,
 
 .pong.is-playing .pong-canvas { touch-action: none; }
 
-/* Before the script draws, and with no script, Skwish waits in the middle. */
-.pong-skwish {
+/* Before the script draws, and with no script, the monkey waits in the middle. */
+.pong-monkey {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -1621,7 +1621,7 @@ h2,
   pointer-events: none;
 }
 
-.pong-skwish img {
+.pong-monkey img {
   display: block;
   width: 100%;
   height: auto;
@@ -1629,7 +1629,7 @@ h2,
   -webkit-user-drag: none;
 }
 
-.pong.is-live .pong-skwish { visibility: hidden; }
+.pong.is-live .pong-monkey { visibility: hidden; }
 
 .pong-start,
 .pong-close {
@@ -2088,7 +2088,7 @@ h2,
 
   .pong { aspect-ratio: 1 / 1; border-radius: 24px; }
 
-  .pong-skwish { width: 24%; }
+  .pong-monkey { width: 24%; }
 
   .hero { padding-top: 22px; }
 
@@ -2096,7 +2096,7 @@ h2,
   .wrap-narrow { width: min(1120px, calc(100% - 28px)); }
 }
 
-/* Play: the Skwish Drop rhythm game */
+/* Play: the Monkey Drop rhythm game */
 nav a.nav-play {
   position: relative;
   isolation: isolate;
@@ -2318,7 +2318,7 @@ nav a.nav-play[aria-current="page"]::before { border-left-color: #1a0610; filter
   text-shadow: 0 0 8px rgba(255, 194, 61, 0.7), 0 0 24px rgba(255, 43, 214, 0.4);
 }
 
-[data-theme="genre-snob"] .game-skwish { display: none; }
+[data-theme="genre-snob"] .game-monkey { display: none; }
 
 [data-theme="genre-snob"] .game-song-card {
   width: 100%;
@@ -2384,16 +2384,16 @@ nav a.nav-play[aria-current="page"]::before { border-left-color: #1a0610; filter
 
 [data-theme="genre-snob"] .game-tool:hover { border-color: var(--gold); box-shadow: 0 0 14px rgba(255, 194, 61, 0.4); }
 
-.game-skwish {
+.game-monkey {
   display: block;
   width: clamp(72px, 12vh, 120px);
 }
 
 @media (max-height: 860px) {
-  .game-skwish { display: none; }
+  .game-monkey { display: none; }
 }
 
-.game-skwish img {
+.game-monkey img {
   display: block;
   width: 100%;
   height: auto;
@@ -2402,7 +2402,7 @@ nav a.nav-play[aria-current="page"]::before { border-left-color: #1a0610; filter
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .game-skwish img { animation: game-bounce 0.857s cubic-bezier(0.3, 0, 0.4, 1) infinite; }
+  .game-monkey img { animation: game-bounce 0.857s cubic-bezier(0.3, 0, 0.4, 1) infinite; }
 }
 
 @keyframes game-bounce {
@@ -2615,7 +2615,7 @@ kbd {
 
 .diff-easy { --diff: #3dff8a; }
 .diff-hard { --diff: var(--magenta); }
-.diff-skwished { --diff: var(--mint); }
+.diff-wild { --diff: var(--mint); }
 
 .diff input {
   position: absolute;
@@ -2777,7 +2777,7 @@ kbd {
 
   .game-title { font-size: clamp(1.7rem, 8vw, 2.4rem); }
 
-  .game-skwish { display: none; }
+  .game-monkey { display: none; }
 
   [data-theme="genre-snob"] .game-song-card { gap: 12px; padding: 10px; }
 
@@ -2802,7 +2802,7 @@ kbd {
     transition: none !important;
   }
 
-  .skwish-stage { animation: none; }
+  .monkey-stage { animation: none; }
 }
 
 /* ------------------------------------------------------------------
@@ -2820,7 +2820,7 @@ kbd {
     0 0 18px rgba(255, 43, 214, 0.25);
 }
 
-/* SKWISH card */
+/* Music page feature card */
 .upcoming {
   display: grid;
   grid-template-columns: 168px 1fr;

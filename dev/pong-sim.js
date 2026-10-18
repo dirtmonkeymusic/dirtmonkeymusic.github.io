@@ -1,7 +1,7 @@
-// Plays Skwish Pong headless against a simple "casual player" bot and reports the win rate.
+// Plays Monkey Pong headless against a simple "casual player" bot and reports the win rate.
 // node pong-sim.js [games=50] [path to pong.js] [bot=casual|sloppy|sharp]
-// The bot follows Skwish with the mouse like a person would: it reacts a beat late,
-// misjudges where to stand a little each rally, and drifts to the middle when Skwish goes away.
+// The bot follows the monkey with the mouse like a person would: it reacts a beat late,
+// misjudges where to stand a little each rally, and drifts to the middle when the monkey goes away.
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
@@ -35,7 +35,7 @@ function playOne() {
   };
   const els = {};
   const box = el("box");
-  for (const q of ["canvas", ".pong-skwish img", "[data-pong-start]", "[data-pong-close]", "[data-pong-score]", "[data-pong-you]", "[data-pong-cpu]", "[data-pong-msg]", "[data-pong-help]", "[data-pong-win]", "[data-dub-player]"]) els[q] = el(q);
+  for (const q of ["canvas", ".pong-monkey img", "[data-pong-start]", "[data-pong-close]", "[data-pong-score]", "[data-pong-you]", "[data-pong-cpu]", "[data-pong-msg]", "[data-pong-help]", "[data-pong-win]", "[data-dub-player]"]) els[q] = el(q);
   els["[data-pong-win]"] = null; // no win player in the sim
   box.querySelector = (q) => (q in els ? els[q] : el(q));
   let now = 0;
@@ -51,7 +51,7 @@ function playOne() {
   ctx.window.document = ctx.document;
   vm.createContext(ctx);
   vm.runInContext(src, ctx);
-  const game = ctx.window.skwishPong;
+  const game = ctx.window.monkeyPong;
   handlers.get("[data-pong-start]:click")();
   const move = handlers.get("canvas:pointermove");
   const hist = [];

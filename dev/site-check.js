@@ -1,7 +1,7 @@
 // Site checks: every page loads on desktop and phone with no errors, no broken
 // local links or files, no sideways scroll, JetBrains Mono, and no em dashes.
 // Then the launch: only Merch and Shows linked, no visible link to a hidden page, /signup/ still works.
-// Then the home page: no top links, the countdown, the Laylo signup, the one-click buttons, Skwish Pong (attract mode, a game, Esc, reduced motion), and the dub plate win player.
+// Then the home page: no top links, the countdown, the Laylo signup, the one-click buttons, Monkey Pong (attract mode, a game, Esc, reduced motion), and the dub plate win player.
 // node site-check.js [all|pages|home]
 const puppeteer = require("puppeteer-core");
 const fs = require("fs");
@@ -152,11 +152,26 @@ async function open(b, url, viewport) {
     const files = execList(ROOT);
     const dashFiles = files.filter((f) => fs.readFileSync(f, "utf8").includes("\u2014")).map((f) => path.relative(ROOT, f));
     ok("no em dashes in source files", dashFiles.length === 0, dashFiles.length ? dashFiles : undefined);
+    // Kept off the site for now: the old mascot name (spelled in pieces so this file passes too),
+    // any mention of an upcoming record, and the old release date. Checks every served file's text and every file name.
+    const HUSH = new RegExp(["s", "k", "w", "i", "s", "h"].join(""), "i");
+    // Only what gets pushed (and so served): files git tracks or has staged.
+    const tracked = new Set(require("child_process").execFileSync("git", ["ls-files"], { cwd: ROOT }).toString().split("\n").filter(Boolean));
+    const hushText = files.filter((f) => tracked.has(path.relative(ROOT, f))).filter((f) => {
+      const t = fs.readFileSync(f, "utf8");
+      const rec = ["a", "l", "b", "u", "m"].join("");
+      const links = new RegExp("https://(music\\.apple\\.com/us|[a-z0-9-]+\\.bandcamp\\.com)/" + rec + "/", "gi");
+      return HUSH.test(t) || new RegExp("no" + "v(ember)?\\.? 1" + "3", "i").test(t) || new RegExp(rec, "i").test(t.replace(links, ""));
+    }).map((f) => path.relative(ROOT, f));
+    ok("hidden name: no served file mentions it", hushText.length === 0, hushText.length ? hushText : undefined);
+    const allNames = (function walk(dir) { return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => [".git", "node_modules", "tmp-audio", "uploads"].includes(e.name) ? [] : e.isDirectory() ? walk(path.join(dir, e.name)) : [path.relative(ROOT, path.join(dir, e.name))]); })(ROOT);
+    const hushNames = allNames.filter((n) => tracked.has(n) && HUSH.test(n));
+    ok("hidden name: no served file name has it", hushNames.length === 0 && allNames.includes("assets/monkey-cyan.png"), hushNames.length ? hushNames : undefined);
   }
 
   if (only === "all" || only === "home") {
-    const st = (p) => p.evaluate(() => window.skwishPong.state());
-    // Desktop: the paddles play on their own, every section has a link, and clicking Skwish starts Pong.
+    const st = (p) => p.evaluate(() => window.monkeyPong.state());
+    // Desktop: the paddles play on their own, every section has a link, and clicking the monkey starts Pong.
     const p = await open(b, "/", DESKTOP);
     await wait(1200);
     await p.screenshot({ path: path.join(ART, "home2-desktop.png") });
@@ -235,13 +250,13 @@ async function open(b, url, viewport) {
     ok("home: countdown hides itself when it reaches zero", zs.st.hidden && !zs.shown, zs);
     await z.close();
     const music = await open(b, "/music/", DESKTOP);
-    const albumLinks = await music.$$eval(".upcoming-actions a", (as) => as.map((a) => [a.textContent.trim(), a.href, a.target]));
+    const musicCard = await music.evaluate(() => ({ card: document.querySelectorAll(".upcoming").length, title: document.title, h1: document.querySelector("h1").textContent.trim() }));
     await music.close();
-    ok("music: Pre-save and Notify me go to Laylo", albumLinks.length === 2 && albumLinks.every((l) => l[1] === "https://laylo.com/dirtmonkey/uf3d1m?ref=website" && l[2] === "_blank"), albumLinks);
+    ok("music: no upcoming release card, neutral title", musicCard.card === 0 && musicCard.title === "Dirt Monkey Music" && musicCard.h1 === "Dirt Monkey Music", musicCard);
     const a1 = await st(p);
     await wait(400);
     const a2 = await st(p);
-    ok("home: attract mode moves Skwish", a1.mode === "attract" && a2.running && Math.abs(a2.ball.x - a1.ball.x) > 20, { a1, a2 });
+    ok("home: attract mode moves the monkey", a1.mode === "attract" && a2.running && Math.abs(a2.ball.x - a1.ball.x) > 20, { a1, a2 });
     const shift = await p.evaluate(() => new Promise((res) => {
       let total = 0;
       new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) total += e.value; })).observe({ type: "layout-shift", buffered: true });
@@ -252,7 +267,7 @@ async function open(b, url, viewport) {
     const s = await st(p);
     await p.mouse.click(rect.x + s.ball.x, rect.y + s.ball.y);
     await wait(100);
-    ok("home: clicking Skwish starts Pong", (await st(p)).mode !== "attract");
+    ok("home: clicking the monkey starts Pong", (await st(p)).mode !== "attract");
     const first = await p.evaluate(() => ({ msg: document.querySelector("[data-pong-msg]").textContent, help: document.querySelector(".help-keys").textContent }));
     ok("home: Pong is first to 3", first.msg === "First to 3" && /First to 3\./.test(first.help), first);
     // Keys move the left paddle.
@@ -261,7 +276,7 @@ async function open(b, url, viewport) {
     await wait(300);
     await p.keyboard.up("ArrowDown");
     ok("home: arrow keys move the paddle", (await st(p)).left - before > 20, { before, after: (await st(p)).left });
-    // Mouse follows: aim the paddle at Skwish (missing now and then) until a few points are in, then take the shot mid game.
+    // Mouse follows: aim the paddle at the monkey (missing now and then) until a few points are in, then take the shot mid game.
     for (let i = 0; i < 400; i++) {
       const g = await st(p);
       if (g.score[0] + g.score[1] >= 2 && g.mode === "play" && g.ball.x > g.W * 0.3) break;
@@ -284,7 +299,7 @@ async function open(b, url, viewport) {
     ok("home: no console errors (desktop)", p.errors.length === 0, p.errors.length ? p.errors : undefined);
     await p.close();
 
-    // Phone: tap Skwish to play, drag to move, and the links still work.
+    // Phone: tap the monkey to play, drag to move, and the links still work.
     const m = await open(b, "/", PHONE);
     await wait(1200);
     await m.screenshot({ path: path.join(ART, "home2-mobile.png") });
@@ -295,7 +310,7 @@ async function open(b, url, viewport) {
     const ms = await st(m);
     await m.touchscreen.tap(mrect.x + ms.ball.x, mrect.y + ms.ball.y);
     await wait(100);
-    ok("home: tapping Skwish starts Pong (phone)", (await st(m)).mode !== "attract");
+    ok("home: tapping the monkey starts Pong (phone)", (await st(m)).mode !== "attract");
     await m.touchscreen.touchStart(mrect.x + 40, mrect.y + 40);
     await m.touchscreen.touchMove(mrect.x + 40, mrect.y + ms.H - 40);
     await wait(400);
@@ -322,7 +337,7 @@ async function open(b, url, viewport) {
       // A loss: nothing plays.
       await w.click(".pong-start");
       await wait(200);
-      await w.evaluate(() => window.skwishPong.finish(false));
+      await w.evaluate(() => window.monkeyPong.finish(false));
       await wait(3000);
       const lose = (await st(w)).dub;
       ok("dub: a loss plays nothing", !lose.win && !lose.playing && !lose.connected && lose.sources === 0, lose);
@@ -330,7 +345,7 @@ async function open(b, url, viewport) {
       await w.click(".pong-start");
       await wait(200);
       ok("dub: a game fetches one dub plate", fx.length >= 1 && fx.every((u) => /^\/assets\/pong\/fx\d\.bin$/.test(u)), fx);
-      await w.evaluate(() => window.skwishPong.finish(true));
+      await w.evaluate(() => window.monkeyPong.finish(true));
       for (let i = 0; i < 60 && !(await st(w)).dub.playing; i++) await wait(250);
       const win = (await st(w)).dub;
       const ui = await w.evaluate(() => ({
@@ -355,7 +370,7 @@ async function open(b, url, viewport) {
       const resumed = (await st(w)).dub;
       ok("dub: pause and resume", !paused.playing && Math.abs(still2.at - paused.at) < 0.05 && resumed.playing && resumed.at >= paused.at && resumed.at < paused.at + 1.5, { paused: paused.at, resumed: resumed.at });
       // At the end it stops: no loop and no new source.
-      await w.evaluate(() => window.skwishPong.nearEnd(1));
+      await w.evaluate(() => window.monkeyPong.nearEnd(1));
       const before = (await st(w)).dub.sources;
       await wait(3000);
       const after = (await st(w)).dub;
@@ -366,7 +381,7 @@ async function open(b, url, viewport) {
       // Esc stops it and a new game drops it.
       await w.click(".pong-start");
       await wait(200);
-      await w.evaluate(() => window.skwishPong.finish(true));
+      await w.evaluate(() => window.monkeyPong.finish(true));
       for (let i = 0; i < 60 && !(await st(w)).dub.playing; i++) await wait(250);
       const pre = (await st(w)).dub.playing;
       await w.keyboard.press("Escape");
@@ -383,7 +398,7 @@ async function open(b, url, viewport) {
       ok("pong: a casual player wins most games", sim.wins / sim.games >= 0.5 && sim.avgPoints[1] > 0.5, sim);
     }
 
-    // Reduced motion: Skwish stays still until someone asks for a game.
+    // Reduced motion: the monkey stays still until someone asks for a game.
     const r = await b.newPage();
     await r.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
     await r.setViewport(DESKTOP);
@@ -392,7 +407,7 @@ async function open(b, url, viewport) {
     const r1 = await st(r);
     await wait(400);
     const r2 = await st(r);
-    ok("home: reduced motion keeps Skwish still", !r2.running && r1.ball.x === r2.ball.x && Math.abs(r2.ball.x - r2.W / 2) < 1, { r1, r2 });
+    ok("home: reduced motion keeps the monkey still", !r2.running && r1.ball.x === r2.ball.x && Math.abs(r2.ball.x - r2.W / 2) < 1, { r1, r2 });
     const hum = await r.$eval(".home-countdown-unit strong", (e) => getComputedStyle(e).animationName);
     ok("home: reduced motion stops the countdown glow pulse", hum === "none", hum);
     await r.click(".pong-start");
@@ -402,19 +417,19 @@ async function open(b, url, viewport) {
     await wait(100);
     ok("home: reduced motion goes still again after Esc", !(await st(r)).running);
 
-    // Skwish always shows: even when his art fails to load the first time (a flaky
+    // The monkey always shows: even when his art fails to load the first time (a flaky
     // phone connection), Pong retries it and draws him on the court.
     for (const vp of [PHONE, DESKTOP]) {
       const f = await b.newPage();
       await f.setViewport(vp);
       await f.setRequestInterception(true);
       let tries = 0;
-      f.on("request", (q) => (/\/assets\/skwish-cyan\./.test(q.url()) && tries++ === 0 ? q.abort() : q.continue()));
+      f.on("request", (q) => (/\/assets\/monkey-cyan\./.test(q.url()) && tries++ === 0 ? q.abort() : q.continue()));
       await f.goto(BASE + "/", { waitUntil: "load" });
       await f.$eval(".pong", (e) => e.scrollIntoView({ block: "center" }));
       await wait(2500);
       const seen = await f.evaluate(() => {
-        const s = window.skwishPong.state();
+        const s = window.monkeyPong.state();
         const c = document.querySelector(".pong-canvas");
         const k = c.width / s.W, R = Math.round(Math.min(s.W, s.H) * 0.1 * k);
         const d = c.getContext("2d").getImageData(Math.max(0, Math.round(s.ball.x * k) - R), Math.max(0, Math.round(s.ball.y * k) - R), 2 * R, 2 * R).data;
@@ -422,7 +437,7 @@ async function open(b, url, viewport) {
         for (let i = 3; i < d.length; i += 4) if (d[i] > 200) n++;
         return { head: s.head, running: s.running, live: document.querySelector(".pong").classList.contains("is-live"), solid: n };
       });
-      ok("home: Skwish shows after a failed first load (" + (vp.isMobile ? "phone" : "desktop") + ")", tries >= 2 && seen.head === "sprite" && seen.running && seen.live && seen.solid > 100, { tries, ...seen });
+      ok("home: the monkey shows after a failed first load (" + (vp.isMobile ? "phone" : "desktop") + ")", tries >= 2 && seen.head === "sprite" && seen.running && seen.live && seen.solid > 100, { tries, ...seen });
       await f.close();
     }
     await r.close();

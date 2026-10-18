@@ -6,7 +6,7 @@
 //   cover-280.webp, cover-560.webp, cover-280.jpg   the cover, for the start screen
 //   title-560.webp                                  the GENRE SNOB lettering
 //   logo-320.webp                                   the gold DIRT MONKEY lettering
-//   skwish-640.webp                                 the skull monkey, the dancer in the game
+//   monkey-640.webp                                 the skull monkey, the dancer in the game
 //   backdrop-384.webp                               the gold spotlight behind the cover
 //   coins-160.webp                                  coin sprites in one strip, 160 px cells:
 //                                                   5 coins cut from coins.png, then the 19K coin
@@ -67,7 +67,7 @@ ff(["-i", src("cover.jpg"), "-vf", "scale=280:280:flags=lanczos", ...webp(80, fa
 ff(["-i", src("cover.jpg"), "-vf", "scale=280:280:flags=lanczos", "-q:v", "5", "-frames:v", "1", out("cover-280.jpg")]);
 ff(["-i", src("title-genre-snob.png"), "-vf", "scale=560:-1:flags=lanczos", ...webp(85, true), out("title-560.webp")]);
 ff(["-i", src("logo-dirt-monkey.png"), "-vf", "scale=320:-1:flags=lanczos", ...webp(85, true), out("logo-320.webp")]);
-ff(["-i", src("skwish-skull-monkey.png"), "-vf", "scale=640:-1:flags=lanczos", ...webp(82, true), out("skwish-640.webp")]);
+ff(["-i", src("monkey-skull-monkey.png"), "-vf", "scale=640:-1:flags=lanczos", ...webp(82, true), out("monkey-640.webp")]);
 ff(["-i", src("background.png"), "-vf", "scale=384:384:flags=area", ...webp(80, false), out("backdrop-384.webp")]);
 
 const coins = findCoins();

@@ -1,39 +1,9 @@
 // The Music page, copied from the app's Music tab:
-// the SKWISH countdown card, and 30-second previews for the released songs.
+// 30-second previews for the released songs.
 (function () {
   "use strict";
 
-  // EDIT: SKWISH release day (local time) and where "Listen" goes once it is out.
-  var RELEASE = { year: 2026, month: 11, day: 13 };
-  var LISTEN_URL = "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH";
   var LOOKUP_TIMEOUT_MS = 15000;
-
-  // ?now=2026-11-13T09:00:00 shows the page as it looks on another day.
-  function now() {
-    var param = new URLSearchParams(location.search).get("now");
-    var at = param ? new Date(param) : new Date();
-    return isNaN(at) ? new Date() : at;
-  }
-
-  function albumCard() {
-    var card = document.querySelector("[data-album]");
-    if (!card) return;
-    var today = now();
-    var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    var release = new Date(RELEASE.year, RELEASE.month - 1, RELEASE.day);
-    var days = Math.max(0, Math.round((release - start) / 86400000));
-    var tail = card.querySelector("[data-album-tail]");
-    if (days === 0) {
-      tail.textContent = " · Out now";
-      card.querySelector("[data-album-kicker]").textContent = "New album";
-      var cta = card.querySelector("[data-album-cta]");
-      cta.textContent = "Listen";
-      cta.href = LISTEN_URL;
-      card.classList.add("is-out");
-    } else {
-      tail.textContent = " · " + days + (days === 1 ? " day to go" : " days to go");
-    }
-  }
 
   // One audio element plays every preview, so only one song plays at a time.
   function previews() {
@@ -158,6 +128,5 @@
     });
   }
 
-  albumCard();
   previews();
 })();

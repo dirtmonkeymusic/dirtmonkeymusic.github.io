@@ -6,13 +6,13 @@ This is the Dirt Monkey website, made for the address **https://dirtmonkey.music
 
 | Address | File | What is on it |
 | --- | --- | --- |
-| `/` | `index.html` | The bubble logo, a neon button for each section, Skwish Pong, then the email signup |
+| `/` | `index.html` | The bubble logo, a neon button for each section, Monkey Pong, then the email signup |
 | `/plugins/` | `plugins/index.html` | The whole plugin shop: plugins, The Everything Suite, the Founders Suite, sample packs, how demos work, and the FAQ |
-| `/music/` | `music/index.html` | Like the app's Music tab: the SKWISH card with a countdown, the released songs with 30-second previews, and Connect links |
+| `/music/` | `music/index.html` | Like the app's Music tab: the released songs with 30-second previews, and Connect links |
 | `/shows/` | `shows/index.html` | Like the app's Shows tab: tour dates live from Bandsintown, with saved dates as a fallback |
 | `/merch/` | `merch/index.html` | Merch cards from the Bass Threads store, plus a Shop all merch button |
 | `/app/` | `app/index.html` | The Dirt Monkey iPhone app, coming November 2 |
-| `/play/` | `play/index.html` | Skwish Drop, a bass-drop rhythm game starring Skwish |
+| `/play/` | `play/index.html` | Monkey Drop, a bass-drop rhythm game starring the monkey |
 | `/privacy/` | `privacy/index.html` | The app privacy policy, exactly as written |
 | `/#signup` | `index.html` | The signup: Laylo's minimal embed of the "Dirt Monkey Website" Drop (js/laylo-drop.js) |
 
@@ -26,37 +26,37 @@ The plugin shop has:
 - **Sample packs:** six placeholder packs (rename them whenever you want). On phones this section is one "Sample packs coming soon" line.
 - **How demos work** and an **FAQ**
 
-Skwish, the neon monkey, is the mascot. On the home page he is the ball in a game of Pong.
+The neon monkey is the mascot. On the home page he is the ball in a game of Pong.
 
 ## The home page
 
-The home page is the logo, a neon button for each section (Plugins, Music, Shows, Merch, App, Play, and Sign up), Skwish Pong, and the email signup. `js/pong.js` runs Pong. Nothing to install, and no outside code.
+The home page is the logo, a neon button for each section (Plugins, Music, Shows, Merch, App, Play, and Sign up), Monkey Pong, and the email signup. `js/pong.js` runs Pong. Nothing to install, and no outside code.
 
-- **Attract mode:** two neon paddles bounce Skwish back and forth on their own, like a screensaver. It pauses when it is scrolled off screen or the tab is hidden.
-- **A quick game:** click or tap Skwish, or press **Play Pong**. The visitor has the cyan paddle on the left (mouse, a finger dragging up and down, the arrow keys, or W and S). The computer has the pink one. First to 5. Esc or the X goes back to attract mode.
-- **Reduced motion:** Skwish sits still in the middle until someone presses Play Pong.
+- **Attract mode:** two neon paddles bounce the monkey back and forth on their own, like a screensaver. It pauses when it is scrolled off screen or the tab is hidden.
+- **A quick game:** click or tap the monkey, or press **Play Pong**. The visitor has the cyan paddle on the left (mouse, a finger dragging up and down, the arrow keys, or W and S). The computer has the pink one. First to 5. Esc or the X goes back to attract mode.
+- **Reduced motion:** the monkey sits still in the middle until someone presses Play Pong.
 - **Moving between pages:** in browsers that support it, the old page shrinks away and the new one pops in. The header stays put.
 
-The section buttons are plain links, outside the Pong area, so nothing in the game gets in their way. To change the game, the numbers at the top of `js/pong.js` (`WIN`) and in `measure()` (paddle and Skwish sizes) and `track()` (how fast the computer moves) are the ones to touch.
+The section buttons are plain links, outside the Pong area, so nothing in the game gets in their way. To change the game, the numbers at the top of `js/pong.js` (`WIN`) and in `measure()` (paddle and the monkey sizes) and `track()` (how fast the computer moves) are the ones to touch.
 
-## Skwish Drop, the game at /play/
+## Monkey Drop, the game at /play/
 
 An arrow rhythm game in the browser, in the style of a dance-pad game. Arrows rise up four lanes (left, down, up, right) to target arrows at the top, in time with a bass beat. `js/rhythm.js` runs it (plain JavaScript, a canvas, and the Web Audio API, with no outside code). `js/beatmap.js` holds the song and the charts.
 
 **How to play**
 
-- Pick a difficulty (**Easy**, **Normal**, **Hard**, or **Skwished**), then press **Start**. A short count-in plays, then the arrows start rising.
+- Pick a difficulty (**Easy**, **Normal**, **Hard**, or **Wild**), then press **Start**. A short count-in plays, then the arrows start rising.
 - Press the matching arrow the moment it lands on its target. On a computer use the **arrow keys** or **A S W D** (A left, S down, W up, D right). On a phone or tablet, tap the four big pads at the bottom. Two arrows at once is a jump: hit both.
 - Timing is judged **Marvelous**, **Perfect**, **Great**, or **Good**, from dead on to a bit off. Great and Good also say if you were early or late. An arrow that goes by is a **Miss**. Pressing with no arrow there costs nothing.
-- **Holds** (Hard and Skwished): an arrow with a tail. Press on the head and keep holding until the tail runs out for an **OK**. Let go too soon and it is **NG**.
-- The **life bar** fills with good hits and drains with misses. On Hard and Skwished, empty means the stage fails. Easy fails after 15 misses in a row and Normal after 10.
-- The **combo** counts hits in a row. At 25 the lanes pulse with the beat, at 50 Skwish dances harder and the targets glow, at 100 the edges light up, and at 200 the combo goes rainbow. The drops turn it all up.
+- **Holds** (Hard and Wild): an arrow with a tail. Press on the head and keep holding until the tail runs out for an **OK**. Let go too soon and it is **NG**.
+- The **life bar** fills with good hits and drains with misses. On Hard and Wild, empty means the stage fails. Easy fails after 15 misses in a row and Normal after 10.
+- The **combo** counts hits in a row. At 25 the lanes pulse with the beat, at 50 the monkey dances harder and the targets glow, at 100 the edges light up, and at 200 the combo goes rainbow. The drops turn it all up.
 - At the end you get a score out of 1,000,000, a grade (S, A, B, C, or D), and a full combo badge if nothing was missed (Marvelous, Perfect, Great, or plain full combo, by your worst hit). Each difficulty keeps its own best score in the browser on that device.
 - **Retry** starts the song over at once: the button in the corner while playing, on the pause screen, on the results screen, or the **R** key when paused or on results.
 - **Speed** (1x to 4x) sets how fast the arrows scroll. It does not change the music.
 - **Offset and Calibrate:** if hits feel late or early on a device, press **Calibrate** and tap along with 16 clicks. The game measures the delay and saves it. The **-5** and **+5** buttons fine-tune it, and the results screen offers a **Nudge offset** button when your hits were on average 15 ms or more off.
 - **Esc** or **P** pauses (so does switching tabs). **M** or the **Sound** button turns the sound on and off.
-- If a visitor's device asks for reduced motion, the screen does not shake or flash and Skwish bounces without spinning. The game plays the same.
+- If a visitor's device asks for reduced motion, the screen does not shake or flash and the monkey bounces without spinning. The game plays the same.
 
 **The song.** The game plays "Genre Snob" by Dirt Monkey (`assets/audio/genre-snob.m4a`, AAC, 1:50). It is 140 BPM, and beat 1 is right at the start of the file (offset 0). The start screen shows "Now playing Genre Snob". The two drops land on bars 21 and 45. The charts came from the beatmap maker and were then hand-tuned by `dev/genre_snob_charts.js`. Run `node dev/genre_snob_charts.js` to make them again from the WAV.
 
@@ -66,13 +66,13 @@ An arrow rhythm game in the browser, in the style of a dance-pad game. Arrows ri
 
 `js/beatmap.js` has two parts: `track` (the real song) and `placeholder` (the beat above). The game plays the track as soon as `track.audio` has a file in it. Three lines are enough:
 
-1. Put the file in the site, for example `assets/audio/skwish-drop.mp3`. MP3 or WAV both work. One steady tempo, start to finish.
-2. In `track`, set `title` to the song name for the start screen, `audio: "/assets/audio/skwish-drop.mp3"`, `bpm` to the tempo (for example `145`), and `offset` to the seconds from the very start of the file to beat 1 of bar 1 (`0` if the file starts right on it).
+1. Put the file in the site, for example `assets/audio/monkey-drop.mp3`. MP3 or WAV both work. One steady tempo, start to finish.
+2. In `track`, set `title` to the song name for the start screen, `audio: "/assets/audio/monkey-drop.mp3"`, `bpm` to the tempo (for example `145`), and `offset` to the seconds from the very start of the file to beat 1 of bar 1 (`0` if the file starts right on it).
 3. Delete the old track's `sections` and `charts`, then open `/play/`. With no charts listed, the game listens to the track when Start is pressed (well under a second) and makes all four charts and the drops itself.
 
 Not sure of the BPM or offset? Set either one to `"auto"` (or leave it out) and the game, or the beatmap maker below, works it out from the audio.
 
-**Try a track without editing anything:** open `/play/?audio=/assets/audio/skwish-drop.mp3&bpm=145&offset=0`. Leave out `bpm` or `offset` to have them guessed. Each track keeps its own best scores. If the file is missing or will not play, the game says so under the Start button and plays the placeholder beat instead.
+**Try a track without editing anything:** open `/play/?audio=/assets/audio/monkey-drop.mp3&bpm=145&offset=0`. Leave out `bpm` or `offset` to have them guessed. Each track keeps its own best scores. If the file is missing or will not play, the game says so under the Start button and plays the placeholder beat instead.
 
 ### Make cleaner charts from the stems
 
@@ -82,14 +82,14 @@ The charts the game makes from the full track are good. Charts made from the ste
 - **In a terminal:** needs Node. WAV works as is. MP3 needs [ffmpeg](https://ffmpeg.org).
 
 ```
-node tools/make-beatmap.js --mix skwish-drop.wav --kick kick.wav --snare snare.wav --bass bass.wav --bpm 145 --write
+node tools/make-beatmap.js --mix monkey-drop.wav --kick kick.wav --snare snare.wav --bass bass.wav --bpm 145 --write
 ```
 
 `--write` puts the result straight into `js/beatmap.js`. Leave it off to print the track block instead. Leave out `--bpm` or add `--offset 0.12` as needed. It always makes all four difficulties. `--audio` sets the address the game loads (it defaults to `/assets/audio/` plus the mix's file name).
 
-Export the stems from the same session as the full track, all starting at the same moment, so they line up. Each difficulty uses more of the music: Easy follows the kick and snare on quarter notes, Normal adds the bass and 8th notes, Hard goes to 16th notes, and Skwished adds the hats and more jumps. Kicks land on the left and right arrows, snares on up and down. On Hard and Skwished, long kick and bass notes become holds. The loudest, busiest long stretches become the drops, where Skwish goes wild.
+Export the stems from the same session as the full track, all starting at the same moment, so they line up. Each difficulty uses more of the music: Easy follows the kick and snare on quarter notes, Normal adds the bass and 8th notes, Hard goes to 16th notes, and Wild adds the hats and more jumps. Kicks land on the left and right arrows, snares on up and down. On Hard and Wild, long kick and bass notes become holds. The loudest, busiest long stretches become the drops, where the monkey goes wild.
 
-The charts it writes are plain lines in `js/beatmap.js` (`charts: { easy: [...], normal: [...], hard: [...], skwished: [...] }`), so any arrow can be moved or deleted by hand. A tap arrow is `[beat, lane]` and a hold is `[beat, lane, beats]`: beat 0 is beat 1 of bar 1, `4.5` is the "and" right after beat 4, and lanes are 0 left, 1 down, 2 up, 3 right. Delete a chart and the game makes that one from the audio. Players set their own offset in the game. `inputOffsetMs` adds to it for everyone, so only change it if every hit feels late (raise it, try 30) or early (lower it) on most devices.
+The charts it writes are plain lines in `js/beatmap.js` (`charts: { easy: [...], normal: [...], hard: [...], wild: [...] }`), so any arrow can be moved or deleted by hand. A tap arrow is `[beat, lane]` and a hold is `[beat, lane, beats]`: beat 0 is beat 1 of bar 1, `4.5` is the "and" right after beat 4, and lanes are 0 left, 1 down, 2 up, 3 right. Delete a chart and the game makes that one from the audio. Players set their own offset in the game. `inputOffsetMs` adds to it for everyone, so only change it if every hit feels late (raise it, try 30) or early (lower it) on most devices.
 
 The listening code is `js/chart-maker.js`. The game, the page, and the terminal tool all share it, so they give the same charts.
 
@@ -264,14 +264,14 @@ A square picture fits the card best.
 Each page is the `index.html` inside its folder. Look for comments that say `EDIT`.
 
 - **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The track, tempo, offset, and charts are in `js/beatmap.js`. The line under the Start button is `credit` in the track.
-- **Home (`index.html`):** the logo, the section buttons, Skwish Pong, and the email signup.
+- **Home (`index.html`):** the logo, the section buttons, Monkey Pong, and the email signup.
 - **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
-- **Music (`music/index.html`, `js/music.js`):** the same songs as the app's `ReleasedTracks.swift`, newest first. To add a song, copy a `<li class="track">` block, set `data-song-id` (the Apple Music "?i=" number), the links, and a cover in `assets/music/` (240 px WebP). The play button finds the preview through the iTunes Lookup API. The Pre-save button is a placeholder (the Spotify artist page); swap in the real link in the page, and the release-day Listen link (`LISTEN_URL`) in `js/music.js`. On November 13 the card says "Out now" and the button says Listen. Try `?now=2026-11-13T09:00:00` to see it.
+- **Music (`music/index.html`, `js/music.js`):** the same songs as the app's `ReleasedTracks.swift`, newest first. To add a song, copy a `<li class="track">` block, set `data-song-id` (the Apple Music "?i=" number), the links, and a cover in `assets/music/` (240 px WebP). The play button finds the preview through the iTunes Lookup API.
 - **Shows (`shows/index.html`, `js/shows.js`):** the list loads live from Bandsintown with the app's `app_id`, so new dates show up on their own. The last good answer is saved in the browser for 5 minutes (and used for up to a week if Bandsintown is down). The blocks written in the page are only the fallback, shown if Bandsintown can't be reached. Each has `data-show-date` (the show day) and `data-show-tz` (the city's time zone), and drops off at 6 AM local time the next morning.
 - **App (`app/index.html`):** when the app is live, replace the App Store placeholder with the real link. The comment above it shows the line to paste.
 - **Privacy (`privacy/index.html`):** this is the policy file exactly as it was supplied. It keeps its own simple style and has no site header. Replace the whole file when a final version is ready.
 - **Header and footer:** copied on every page. If you change a nav link or a footer link, change it on every page.
-- **Signup:** the home page and /signup/ embed the Laylo Drop "Dirt Monkey Website" (dropId `01b4e6e5-95f4-49a2-90f8-6c67811d9a8c`, share link https://laylo.com/dirtmonkey/uf3d1m), so the Laylo dashboard counts signups from this site under that Drop. `js/laylo-drop.js` loads Laylo's SDK first, then starts each `iframe[data-drop-src]` (the Drop frame stays blank without the SDK). The Music page SKWISH Pre-save and Notify me buttons and the /signup/ fallback link go to https://laylo.com/dirtmonkey/uf3d1m?ref=website.
+- **Signup:** the home page and /signup/ embed the Laylo Drop "Dirt Monkey Website" (dropId `01b4e6e5-95f4-49a2-90f8-6c67811d9a8c`, share link https://laylo.com/dirtmonkey/uf3d1m), so the Laylo dashboard counts signups from this site under that Drop. `js/laylo-drop.js` loads Laylo's SDK first, then starts each `iframe[data-drop-src]` (the Drop frame stays blank without the SDK). The /signup/ fallback link goes to https://laylo.com/dirtmonkey/uf3d1m?ref=website.
 
 Do not rename the folders `assets`, `css`, `js`, `downloads`, or `tools`. The pages look for those names.
 
@@ -293,7 +293,7 @@ To refresh the saved list, open the address above in a browser, copy everything 
 
 ## Search and share previews
 
-Every page has its own title, search description, and share preview (used by Instagram, Discord, iMessage, Slack, and X) at the top of its `index.html`. The share picture is `assets/share-card-2.jpg` (1200 by 630, made from the real logo and Skwish).
+Every page has its own title, search description, and share preview (used by Instagram, Discord, iMessage, Slack, and X) at the top of its `index.html`. The share picture is `assets/share-card-2.jpg` (1200 by 630, made from the real logo and the monkey).
 
 Share previews and search need the site's full address. It is `https://dirtmonkey.music/` in these places:
 
@@ -310,7 +310,7 @@ If the address ever changes, change it in all of those. `404.html` is the page G
 
 - `assets/dirt-monkey-logo-1360.webp`: the Dirt Monkey wordmark in the header, at the top of the home page, and in the footer. The neon glow is drawn from this same file.
 - `assets/dirt-monkey-logo.png`: the full-size original of that wordmark. The page does not load it. Keep it for making new sizes.
-- `assets/skwish-cyan.webp` and `assets/skwish-cyan.png`: Skwish, the neon monkey in home page Pong and on the App page. Browsers that cannot show WebP get the PNG.
+- `assets/monkey-cyan.webp` and `assets/monkey-cyan.png`: the neon monkey in home page Pong and on the App page. Browsers that cannot show WebP get the PNG.
 - `assets/favicon-32.png` and `assets/apple-touch-icon.png`: the browser-tab icon and the iPhone home-screen icon. `favicon.ico` at the top is the same icon, for pages (like the privacy policy) that do not name one.
 - `assets/share-card-2.jpg`: the share preview picture.
 - `assets/fonts/jetbrains-mono-latin.woff2`: JetBrains Mono, the only font on the site. It is served from this folder, so the page does not wait on Google Fonts. Its license is `assets/fonts/OFL.txt`.
@@ -356,3 +356,7 @@ Each page is a folder with an `index.html` inside, so its address is the folder 
 4. Add the address to `sitemap.xml`.
 
 Keep using `/css/styles.css` so a new page matches the rest of the site.
+
+## Restore point
+
+Some content is off the site for now. A branch and a tag hold the site exactly as it was before it came off. Their names, and the steps to put it back, are in the message of the commit that took it off: run `git log --grep "Restore point"` to find it. In short: `git fetch gh --tags`, then `git revert <that commit>` on main (or check out the tag to look at the old version), drop the site check that blocks the old name, run `node dev/site-check.js all`, and push.

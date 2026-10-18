@@ -33,7 +33,7 @@ async function fresh(b, viewport, motion) {
   return p;
 }
 
-const st = (p) => p.evaluate(() => window.skwishDrop.state());
+const st = (p) => p.evaluate(() => window.monkeyDrop.state());
 async function untilState(p, want, ms = 120000) {
   const end = Date.now() + ms;
   while (Date.now() < end) {
@@ -44,7 +44,7 @@ async function untilState(p, want, ms = 120000) {
 }
 async function untilSong(p, t) {
   for (;;) {
-    const now = await p.evaluate(() => window.skwishDrop.songTime());
+    const now = await p.evaluate(() => window.monkeyDrop.songTime());
     if (now >= t) return;
     await wait(Math.min(200, Math.max(10, (t - now) * 1000 - 30)));
   }
@@ -53,7 +53,7 @@ async function untilSong(p, t) {
 // Perfect play from inside the page, pressing as each note is heard.
 async function autoplay(p) {
   await p.evaluate(() => {
-    const S = window.skwishDrop;
+    const S = window.monkeyDrop;
     const keys = ["ArrowLeft", "ArrowDown", "ArrowUp", "ArrowRight"];
     const offset = S.settings().offsetMs / 1000;
     const heardSong = () => S.songTime() + offset;
@@ -79,7 +79,7 @@ async function autoplay(p) {
   });
 }
 
-const vid = (p) => p.evaluate(() => window.skwishDrop.theme().video);
+const vid = (p) => p.evaluate(() => window.monkeyDrop.theme().video);
 const drift = (v) => Math.abs(v.time - v.song);
 const shot = (p, name) => p.screenshot({ path: path.join(ART, name) });
 const fails = [];

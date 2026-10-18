@@ -26,7 +26,7 @@ The rest is polish: trust details (system requirements, license terms, support e
 | Metric | Mobile | Desktop |
 | --- | --- | --- |
 | First Contentful Paint | 2.3 s | 0.7 s |
-| Largest Contentful Paint | 2.7 s (the Skwish monkey image) | 0.7 s (the logo) |
+| Largest Contentful Paint | 2.7 s (the monkey image) | 0.7 s (the logo) |
 | Total Blocking Time | 0 ms | 0 ms |
 | Cumulative Layout Shift | 0 | 0 |
 | Speed Index | 2.3 s | 0.7 s |
@@ -72,7 +72,7 @@ Report files: `lighthouse-mobile.png` (summary screenshot), `lighthouse-mobile-r
 
 ### 1.3 Hero image and logo
 
-- **Issue:** The largest element on the first phone screen is the Skwish monkey (`skwish-cyan.png`, 512 × 512, 215 KB). It is preloaded but lacks `fetchpriority="high"`, which Lighthouse flags. The logo PNG is 2,801 px wide (110 KB) but appears at most 680 px wide. The same file is also the CSS mask for the glow layers.
+- **Issue:** The largest element on the first phone screen is the monkey (`monkey-cyan.png`, 512 × 512, 215 KB). It is preloaded but lacks `fetchpriority="high"`, which Lighthouse flags. The logo PNG is 2,801 px wide (110 KB) but appears at most 680 px wide. The same file is also the CSS mask for the glow layers.
 - **Fix:** Add `fetchpriority="high"` to the monkey image. Losslessly re-saving the monkey PNG takes it from 215 KB to about 136 KB with identical pixels; WebP takes it to about 60 to 85 KB. Export the logo at 1,360 px wide (2x of 680): about 57 KB as PNG or 32 KB as WebP with transparency. Point both the `<img>` and the CSS `mask-image` at the new file so the neon look stays the same.
 - **Impact:** Medium (mobile LCP is 2.7 s; target is under 2.5 s).
 
@@ -96,7 +96,7 @@ Report files: `lighthouse-mobile.png` (summary screenshot), `lighthouse-mobile-r
   - The logo appears three times (header, hero, footer), each with masked layers and stacked `drop-shadow` filters.
 - **Fix:** All three keep the current look:
   - At 720 px wide or less, give the header a near-solid background (for example `rgba(7, 6, 10, 0.94)`) without `backdrop-filter`. It looks the same on the dark page.
-  - Add `will-change: transform` to `.skwish-stage`. Pause the float animation when the hero scrolls out of view (IntersectionObserver).
+  - Add `will-change: transform` to `.monkey-stage`. Pause the float animation when the hero scrolls out of view (IntersectionObserver).
   - Leave the logo glow alone; it is static and paints once.
 
   Reduced motion already turns off the float animation. Test once on a real older Android phone.
@@ -155,9 +155,9 @@ Checked at 390 × 844 (iPhone 14 size): no horizontal scrolling, cards fill the 
 
 ### 3.3 Share previews (Open Graph and Twitter)
 
-- **Issue:** `og:image` is a relative path (`assets/skwish-cyan.png`). Instagram, Discord, iMessage, Slack, and X need a full `https://` address, so shared links show no picture or a broken one. The image is also a 512 px square, and there's no `og:url`, `og:site_name`, image width and height, or `twitter:card`.
+- **Issue:** `og:image` is a relative path (`assets/monkey-cyan.png`). Instagram, Discord, iMessage, Slack, and X need a full `https://` address, so shared links show no picture or a broken one. The image is also a 512 px square, and there's no `og:url`, `og:site_name`, image width and height, or `twitter:card`.
 - **Fix:**
-  - Make a 1200 × 630 share image from the existing logo and Skwish art on the dark background, without redrawing them.
+  - Make a 1200 × 630 share image from the existing logo and monkey art on the dark background, without redrawing them.
   - Once the web address is final, use absolute URLs.
   - Add `og:url`, `og:site_name`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card` set to `summary_large_image`, `twitter:title`, `twitter:description`, and `twitter:image`.
 - **Impact:** High (much discovery will come from shared links).
@@ -365,10 +365,10 @@ Checked at 390 × 844 (iPhone 14 size): no horizontal scrolling, cards fill the 
   - `site.js` still has SVG drawings for Punch, Updown, and Wonk Factory, which are no longer shown because every plugin has a screenshot.
   - `setupVideo()` looks for a video that isn't on the page.
   - CSS for `.tagline`, `.features`, and `.system` is unused.
-  - `skwish-magenta.png` and `skwish-loop.mp4` (about 395 KB) are in the repo but never loaded.
+  - `monkey-magenta.png` and `monkey-loop.mp4` (about 395 KB) are in the repo but never loaded.
   - Free plugins carry `demoLink` and `buyLink` values that point to files that don't exist; `dip-demo-PLACEHOLDER.txt` is unused.
   - `wonk-factory-ui.png` is unused by design and kept for later product pages.
-- **Fix:** Remove the unused drawings, but keep the generic fallback for a future plugin without a screenshot. Remove `setupVideo` and the unused CSS, and blank out the free plugins' demo and buy fields. Keep the spare Skwish files only if you plan to use them. None of this affects visitors' download size except the small amount of JavaScript.
+- **Fix:** Remove the unused drawings, but keep the generic fallback for a future plugin without a screenshot. Remove `setupVideo` and the unused CSS, and blank out the free plugins' demo and buy fields. Keep the spare the monkey files only if you plan to use them. None of this affects visitors' download size except the small amount of JavaScript.
 - **Impact:** Low.
 
 ### 6.3 Accent colors live in `site.js`

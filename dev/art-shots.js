@@ -31,7 +31,7 @@ async function fresh(b, viewport, motion) {
   return p;
 }
 
-const st = (p) => p.evaluate(() => window.skwishDrop.state());
+const st = (p) => p.evaluate(() => window.monkeyDrop.state());
 async function untilState(p, want, ms = 120000) {
   const end = Date.now() + ms;
   while (Date.now() < end) {
@@ -42,7 +42,7 @@ async function untilState(p, want, ms = 120000) {
 }
 async function untilSong(p, t) {
   for (;;) {
-    const now = await p.evaluate(() => window.skwishDrop.songTime());
+    const now = await p.evaluate(() => window.monkeyDrop.songTime());
     if (now >= t) return;
     await wait(Math.min(200, Math.max(10, (t - now) * 1000 - 30)));
   }
@@ -51,7 +51,7 @@ async function untilSong(p, t) {
 // Perfect play from inside the page, pressing as each note is heard.
 async function autoplay(p) {
   await p.evaluate(() => {
-    const S = window.skwishDrop;
+    const S = window.monkeyDrop;
     const keys = ["ArrowLeft", "ArrowDown", "ArrowUp", "ArrowRight"];
     const offset = S.settings().offsetMs / 1000;
     const heardSong = () => S.songTime() + offset;
@@ -103,9 +103,9 @@ function ok(name, cond, extra) {
     await untilState(p, "playing", 20000);
     await autoplay(p);
     await untilSong(p, DROP);
-    const missed = await p.evaluate(() => window.skwishDrop.counts().miss);
+    const missed = await p.evaluate(() => window.monkeyDrop.counts().miss);
     await shot(p, "art-drop-desktop.png");
-    const t = await p.evaluate(() => window.skwishDrop.theme());
+    const t = await p.evaluate(() => window.monkeyDrop.theme());
     ok("desktop: theme art loaded", t.art.dancer && t.art.coins && t.art.title && t.art.logo && t.art.backdrop, t.art);
     ok("desktop: coins falling on the drop", t.coins > 10, t.coins);
     ok("desktop: no misses up to the drop", missed === 0, missed);
@@ -123,7 +123,7 @@ function ok(name, cond, extra) {
     await autoplay(m);
     await untilSong(m, MID);
     await shot(m, "art-midgame-mobile.png");
-    const t = await m.evaluate(() => window.skwishDrop.theme());
+    const t = await m.evaluate(() => window.monkeyDrop.theme());
     ok("mobile: coins falling mid-drop", t.coins > 3, t.coins);
     ok("mobile: no console errors", m.errors.length === 0, m.errors.length ? m.errors : undefined);
     await m.close();
@@ -136,7 +136,7 @@ function ok(name, cond, extra) {
     await untilState(r, "playing", 20000);
     await autoplay(r);
     await untilSong(r, DROP);
-    const coinsMove = await r.evaluate(() => window.skwishDrop.theme());
+    const coinsMove = await r.evaluate(() => window.monkeyDrop.theme());
     ok("reduced motion: coins fade in place, few of them", coinsMove.coins <= 8, coinsMove.coins);
     ok("reduced motion: still, no video", !!coinsMove.video && coinsMove.video.still && !/\.(webm|mp4)$/.test(coinsMove.video.src), coinsMove.video);
     ok("reduced motion: no console errors", r.errors.length === 0, r.errors.length ? r.errors : undefined);

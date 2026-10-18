@@ -19,7 +19,7 @@ async function startAndWait(p) {
   const t0 = Date.now();
   await p.click("[data-start]");
   for (;;) {
-    const s = await p.evaluate(() => window.skwishDrop.state());
+    const s = await p.evaluate(() => window.monkeyDrop.state());
     if (s === "playing") break;
     if (Date.now() - t0 > 20000) throw new Error("never started");
     await wait(50);
@@ -29,7 +29,7 @@ async function startAndWait(p) {
 
 async function autoplay(p, opts = {}) {
   await p.evaluate((opts) => {
-    const S = window.skwishDrop;
+    const S = window.monkeyDrop;
     const sets = { arrows: ["ArrowLeft", "ArrowDown", "ArrowUp", "ArrowRight"], wasd: ["a", "s", "w", "d"] };
     const keys = sets[opts.keys || "arrows"];
     const skip = new Set(opts.skip || []);
@@ -68,15 +68,15 @@ async function autoplay(p, opts = {}) {
     const p = await open(b, "&audio=/tmp-audio/mix.mp3&bpm=145");
     out.autoCredit = await p.$eval("[data-credit]", (e) => e.textContent);
     out.autoLoadMs = await startAndWait(p);
-    out.autoSong = await p.evaluate(() => window.skwishDrop.song());
+    out.autoSong = await p.evaluate(() => window.monkeyDrop.song());
     await autoplay(p);
     await wait(2500);
     // While playing, read where the music is against the note times.
-    for (;;) { if ((await p.evaluate(() => window.skwishDrop.state())) === "results") break; await wait(1000); }
+    for (;;) { if ((await p.evaluate(() => window.monkeyDrop.state())) === "results") break; await wait(1000); }
     out.autoResults = await p.evaluate(() => [...document.querySelectorAll("[data-r]")].map((e) => e.dataset.r + "=" + e.textContent).join(" "));
     out.autoBestKeys = await p.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith("dm-play-best")));
     out.autoMakerLoaded = p.reqs.some((r) => r.includes("chart-maker.js"));
-    out.autoLogs = p.logs.filter((l) => l.includes("Skwish"));
+    out.autoLogs = p.logs.filter((l) => l.includes("Monkey Drop"));
     out.autoErrors = p.errors;
     await p.close();
   }
@@ -84,7 +84,7 @@ async function autoplay(p, opts = {}) {
   if (which === "all" || which === "guess") {
     const p = await open(b, "&audio=/tmp-audio/b146/mix.mp3");
     await startAndWait(p);
-    out.guessSong = await p.evaluate(() => window.skwishDrop.song());
+    out.guessSong = await p.evaluate(() => window.monkeyDrop.song());
     out.guessErrors = p.errors;
     await p.close();
   }
@@ -92,7 +92,7 @@ async function autoplay(p, opts = {}) {
   if (which === "all" || which === "broken") {
     const p = await open(b, "&audio=/tmp-audio/nope.mp3&bpm=145");
     await startAndWait(p);
-    out.brokenSong = await p.evaluate(() => window.skwishDrop.song());
+    out.brokenSong = await p.evaluate(() => window.monkeyDrop.song());
     out.brokenCredit = await p.$eval("[data-credit]", (e) => e.textContent);
     out.brokenWarn = p.logs.filter((l) => l.startsWith("warn"));
     await p.close();
@@ -102,10 +102,10 @@ async function autoplay(p, opts = {}) {
     const p = await open(b, "");
     out.phCredit = await p.$eval("[data-credit]", (e) => e.textContent);
     await startAndWait(p);
-    out.phSong = await p.evaluate(() => window.skwishDrop.song());
+    out.phSong = await p.evaluate(() => window.monkeyDrop.song());
     await autoplay(p);
     await wait(6000);
-    out.phEarly = await p.evaluate(() => window.skwishDrop.notes().slice(0, 10).map((n) => n[2]).join(","));
+    out.phEarly = await p.evaluate(() => window.monkeyDrop.notes().slice(0, 10).map((n) => n[2]).join(","));
     out.phMaker = p.reqs.some((r) => r.includes("chart-maker.js"));
     out.phErrors = p.errors;
     await p.close();
@@ -115,10 +115,10 @@ async function autoplay(p, opts = {}) {
     const p = await open(b, "");
     out.wCredit = await p.$eval("[data-credit]", (e) => e.textContent);
     await startAndWait(p);
-    out.wSong = await p.evaluate(() => window.skwishDrop.song());
+    out.wSong = await p.evaluate(() => window.monkeyDrop.song());
     await autoplay(p);
     await wait(20000);
-    out.wEarly = await p.evaluate(() => { const n = window.skwishDrop.notes(); const r = n.filter((x) => x[2]); return r.length + " judged, " + r.filter((x) => x[2] === "marvelous" || x[2] === "perfect").length + " marvelous or perfect, " + r.filter((x) => x[2] === "miss").length + " miss"; });
+    out.wEarly = await p.evaluate(() => { const n = window.monkeyDrop.notes(); const r = n.filter((x) => x[2]); return r.length + " judged, " + r.filter((x) => x[2] === "marvelous" || x[2] === "perfect").length + " marvelous or perfect, " + r.filter((x) => x[2] === "miss").length + " miss"; });
     out.wMaker = p.reqs.some((r) => r.includes("chart-maker.js"));
     out.wErrors = p.errors;
     await p.close();

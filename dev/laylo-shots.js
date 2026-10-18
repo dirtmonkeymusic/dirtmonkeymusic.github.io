@@ -1,4 +1,4 @@
-// Desktop screenshots of the Laylo signup and the Music page SKWISH card.
+// Desktop screenshots of the Laylo signup and the Music page.
 // node laylo-shots.js
 const puppeteer = require("puppeteer-core");
 const path = require("path");

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Make the Skwish Drop beatmap from a track and its stems.
+// Make the Monkey Drop beatmap from a track and its stems.
 //
 // The site does not need this to run. Use it when a new track arrives.
 // Nothing to install except Node. WAV files work as they are. MP3 and

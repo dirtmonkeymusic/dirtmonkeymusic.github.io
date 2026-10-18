@@ -1,5 +1,5 @@
 // You do not need to edit this file.
-// Skwish Drop, the arrow rhythm game at /play/.
+// Monkey Drop, the arrow rhythm game at /play/.
 // The song, the charts, and the drops live in js/beatmap.js.
 //
 // Timing uses the Web Audio clock, so arrows stay locked to the music
@@ -47,10 +47,10 @@
   // A hold survives a slip this long, and letting go this close to the end still counts.
   var HOLD_GRACE = 0.2;
   var HOLD_EARLY_OK = 0.1;
-  var DIFFS = ["easy", "normal", "hard", "skwished"];
-  var DIFF_NAMES = { easy: "Easy", normal: "Normal", hard: "Hard", skwished: "Skwished" };
+  var DIFFS = ["easy", "normal", "hard", "wild"];
+  var DIFF_NAMES = { easy: "Easy", normal: "Normal", hard: "Hard", wild: "Wild" };
   var SPEEDS = [1, 1.5, 2, 2.5, 3, 4];
-  var MISS_LIFE = { easy: 6, normal: 8, hard: 10, skwished: 12 };
+  var MISS_LIFE = { easy: 6, normal: 8, hard: 10, wild: 12 };
   // Easy and Normal fail after this many misses in a row instead of when the life bar empties.
   var MISS_STREAK_FAIL = { easy: 15, normal: 10 };
   var JUDGE = {
@@ -751,11 +751,11 @@
     }
   }
 
-  // ---------- Skwish (existing art, recolored for the light show)
+  // ---------- The monkey (existing art, recolored for the light show)
   // With a theme, its dancer art is used as is: no recoloring.
 
-  var skwishArt = [];
-  var skwishAspect = 1;
+  var monkeyArt = [];
+  var monkeyAspect = 1;
   var backdropImg = null;
   var coinImg = null;
   var titleImg = null;
@@ -770,12 +770,12 @@
 
   function loadDancer() {
     var want = theme && theme.dancer;
-    picture(want ? want.src : "/assets/skwish-cyan.webp", function (img) {
+    picture(want ? want.src : "/assets/monkey-cyan.webp", function (img) {
       if (!!want !== !!(theme && theme.dancer)) return;
-      skwishArt = [];
-      skwishAspect = img.naturalHeight / img.naturalWidth || 1;
+      monkeyArt = [];
+      monkeyAspect = img.naturalHeight / img.naturalWidth || 1;
       var w = Math.min(640, img.naturalWidth || 512);
-      var h = Math.round(w * skwishAspect);
+      var h = Math.round(w * monkeyAspect);
       (want ? [null] : [null, "#ff4fe0", "#e4ff70"]).forEach(function (color) {
         var c = document.createElement("canvas");
         c.width = w;
@@ -788,7 +788,7 @@
           x.fillStyle = color;
           x.fillRect(0, 0, w, h);
         }
-        skwishArt.push(c);
+        monkeyArt.push(c);
       });
       if (state !== "playing") draw(0);
     });
@@ -992,7 +992,7 @@
             madeCharts: all
           });
           if (window.console) {
-            console.info("Skwish Drop: made the " + madeNames.join(", ") + " charts from the track. BPM " + made.bpm + ", offset " + made.offset + " s. For cleaner charts, run the beatmap maker on the stems (/tools/beatmap/).");
+            console.info("Monkey Drop: made the " + madeNames.join(", ") + " charts from the track. BPM " + made.bpm + ", offset " + made.offset + " s. For cleaner charts, run the beatmap maker on the stems (/tools/beatmap/).");
           }
         });
       })
@@ -1015,7 +1015,7 @@
 
   // The track is missing or broken: play the placeholder beat instead, and say so.
   function fallBack(err) {
-    if (window.console) console.warn("Skwish Drop: could not use " + track.audio + " (" + (err && err.message) + "). Playing the placeholder beat.");
+    if (window.console) console.warn("Monkey Drop: could not use " + track.audio + " (" + (err && err.message) + "). Playing the placeholder beat.");
     useTrack = false;
     trackBuf = null;
     dropTheme();
@@ -1756,7 +1756,7 @@
     }
     if (r && r.combo >= 100) drawEdgeGlow(beatPos, pulse, still);
 
-    drawSkwish(now, beatPos, phase, drop, still);
+    drawMonkey(now, beatPos, phase, drop, still);
     if (r) drawCoins(r);
 
     if (r && r.combo >= 25 && !r.failing) {
@@ -1934,8 +1934,8 @@
     }
   }
 
-  function drawSkwish(now, beatPos, phase, drop, still) {
-    if (!skwishArt.length) return;
+  function drawMonkey(now, beatPos, phase, drop, still) {
+    if (!monkeyArt.length) return;
     var r = run && state !== "start" && state !== "calibrating" ? run : null;
     var combo = r ? r.combo : 0;
     var tier = combo >= 100 ? 3 : combo >= 50 ? 2 : combo >= 25 ? 1 : 0;
@@ -1986,8 +1986,8 @@
     g.rotate(rot);
     g.scale(scale * sx, scale * sy);
     g.globalAlpha = dim * (r ? 1 - r.wince * 0.35 : 1);
-    var sh = size * skwishAspect;
-    var sprite = skwishArt[art] || skwishArt[0];
+    var sh = size * monkeyAspect;
+    var sprite = monkeyArt[art] || monkeyArt[0];
     g.drawImage(sprite, -size / 2, -sh / 2, size, sh);
     // On the drop the dancer lights up on each beat (the same art, added on top).
     if (theme && drop && !still && pulse > 0.05) {
@@ -2395,7 +2395,7 @@
 
   // Open /play/?debug to read the clock from the console or an automated test.
   if (/[?&]debug\b/.test(window.location.search)) {
-    window.skwishDrop = {
+    window.monkeyDrop = {
       songTime: songTime,
       heard: heard,
       state: function () { return state; },
@@ -2410,7 +2410,7 @@
         var v = video.el;
         return {
           name: theme ? theme.name : null,
-          art: { dancer: skwishArt.length, coins: !!coinImg, title: !!titleImg, logo: !!logoImg, backdrop: !!backdropImg },
+          art: { dancer: monkeyArt.length, coins: !!coinImg, title: !!titleImg, logo: !!logoImg, backdrop: !!backdropImg },
           coins: run ? run.coins.length : 0,
           video: v ? { on: video.on, shape: video.shape, still: video.still, failed: video.failed, src: v.currentSrc, time: v.currentTime || 0, paused: !!v.paused, rate: v.playbackRate || 0, song: run ? heard() - run.start : 0 } : null
         };

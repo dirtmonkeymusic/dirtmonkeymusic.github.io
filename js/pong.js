@@ -1,8 +1,8 @@
-// Skwish Pong on the home page.
-// Two neon paddles bounce Skwish back and forth on their own, like a
-// screensaver. Click or tap Skwish (or Play Pong) to take the left paddle:
+// Monkey Pong on the home page.
+// Two neon paddles bounce the monkey back and forth on their own, like a
+// screensaver. Click or tap the monkey (or Play Pong) to take the left paddle:
 // mouse, a finger, the arrow keys, or W and S. First to 3. Esc or X stops it.
-// With reduced motion, Skwish sits still until someone asks for a game.
+// With reduced motion, the monkey sits still until someone asks for a game.
 // Beat the computer and one dub plate, picked at random, plays once through the
 // mini player (Web Audio, no audio element). It is fetched only once a game
 // starts, never plays on a loss, and stops on Esc, X, or a new game. When it
@@ -14,7 +14,7 @@
   if (!box) return;
   var canvas = box.querySelector("canvas");
   var ctx = canvas.getContext("2d");
-  var art = box.querySelector(".pong-skwish img");
+  var art = box.querySelector(".pong-monkey img");
   var startBtn = box.querySelector("[data-pong-start]");
   var closeBtn = box.querySelector("[data-pong-close]");
   var scoreEl = box.querySelector("[data-pong-score]");
@@ -28,7 +28,7 @@
   var WIN = 3;
   // EDIT: how hard the computer is in a real game (the screensaver is separate).
   // speed: fastest the paddle moves, in court heights per second. react: seconds
-  // between looks at Skwish, so it is a beat late. wake: how far across Skwish
+  // between looks at the monkey, so it is a beat late. wake: how far across the monkey
   // must be before it starts to follow. miss: aim error, in paddle heights, with
   // extra on steep shots (angleMiss). ball: serve speed, speed-up per hit, and
   // top speed, in court widths per second.
@@ -230,8 +230,8 @@
   }
   bindPlayer();
 
-  // Skwish with his glow baked in once, so each frame is one drawImage.
-  // Safari can bake a blank Skwish (art not decoded yet) or drop a canvas
+  // The monkey with his glow baked in once, so each frame is one drawImage.
+  // Safari can bake a blank monkey (art not decoded yet) or drop a canvas
   // while the tab sits in the background, so the bake is checked and redone.
   function makeSprite() {
     var size = 256;
@@ -251,7 +251,7 @@
     return !!sprite;
   }
 
-  // The halo alone is under half opacity, so solid pixels mean Skwish is in there.
+  // The halo alone is under half opacity, so solid pixels mean the monkey is in there.
   function spriteOk(c) {
     try {
       var d = c.getContext("2d").getImageData(64, 64, 128, 128).data;
@@ -266,7 +266,7 @@
     return art.complete && art.naturalWidth > 0;
   }
 
-  // Wait for Skwish's art to load and decode. A failed load (a flaky phone
+  // Wait for the monkey's art to load and decode. A failed load (a flaky phone
   // connection, say) is retried with the PNG instead of giving up for good.
   function loadArt() {
     if (artReady()) {
@@ -291,7 +291,7 @@
       for (var i = 0; i < srcs.length; i++) pic.removeChild(srcs[i]);
       art.onload = loadArt;
       art.onerror = retryArt;
-      art.src = "/assets/skwish-cyan.png?retry=" + artTries + "-" + Date.now();
+      art.src = "/assets/monkey-cyan.png?retry=" + artTries + "-" + Date.now();
     }, 400 * artTries);
   }
 
@@ -304,7 +304,7 @@
     else draw();
   }
 
-  // Back from the background or the back button: make sure Skwish survived.
+  // Back from the background or the back button: make sure the monkey survived.
   function recheck() {
     if (!started) return;
     if (sprite && !spriteOk(sprite)) sprite = null;
@@ -579,7 +579,7 @@
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
   }
 
-  function onSkwish(pt) {
+  function onMonkey(pt) {
     var dx = pt.x - ball.x, dy = pt.y - ball.y;
     return Math.sqrt(dx * dx + dy * dy) < r * 1.7;
   }
@@ -587,7 +587,7 @@
   canvas.addEventListener("pointerdown", function (e) {
     var pt = local(e);
     if (mode === "attract") {
-      if (onSkwish(pt)) start();
+      if (onMonkey(pt)) start();
       return;
     }
     if (mode === "over") return;
@@ -598,7 +598,7 @@
   canvas.addEventListener("pointermove", function (e) {
     var pt = local(e);
     if (mode === "attract") {
-      canvas.style.cursor = onSkwish(pt) ? "pointer" : "";
+      canvas.style.cursor = onMonkey(pt) ? "pointer" : "";
       return;
     }
     canvas.style.cursor = "";
@@ -669,7 +669,7 @@
   else window.addEventListener("load", ready, { once: true });
 
   // For the tests.
-  window.skwishPong = {
+  window.monkeyPong = {
     state: function () {
       return {
         mode: mode, head: sprite ? "sprite" : (artReady() ? "art" : "none"), score: score.slice(), ball: { x: ball.x, y: ball.y }, left: left.y, right: right.y, running: running, W: W, H: H,

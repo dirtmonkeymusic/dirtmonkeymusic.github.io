@@ -46,7 +46,7 @@ const RULES = {
   easy: { intro: [2, 2], break: [4, 1], drop: [1, 4], outro: [4, 1], jumps: "none" },
   normal: { intro: [1, 4], break: [2, 2], drop: [0.5, 7], outro: [4, 1], jumps: "phrase" },
   hard: { intro: [0.5, 7], break: [1, 4], drop: [0.25, 11], outro: [4, 1], jumps: "bar" },
-  skwished: { intro: [0.25, 10], break: [0.5, 6], drop: [0.25, 15], outro: [4, 1], jumps: "beat" }
+  wild: { intro: [0.25, 10], break: [0.5, 6], drop: [0.25, 15], outro: [4, 1], jumps: "beat" }
 };
 
 // Bar 20 and bar 44, as heard: hits on 1, a 16th roll through beat 2, a last
@@ -55,7 +55,7 @@ const PRE_DROP = {
   easy: [0, 1, 2],
   normal: [0, 1, 1.5, 2],
   hard: [0, 1, 1.25, 1.5, 1.75, 2],
-  skwished: [0, 0.5, 1, 1.25, 1.5, 1.75, 2]
+  wild: [0, 0.5, 1, 1.25, 1.5, 1.75, 2]
 };
 
 function ffmpeg(args) {
@@ -142,7 +142,7 @@ function build(level, sec) {
     easy: [1, 1, 1],
     normal: [1, 1, 0.5],
     hard: [0.5, 0.5, 0.25],
-    skwished: [0.5, 0.25, 0.25]
+    wild: [0.5, 0.25, 0.25]
   }[level];
   const climb = [0, 1, 2, 3, 2, 1];
   const notes = [];
@@ -174,7 +174,7 @@ function tune(level, notes) {
       n[1] = inner;
       return true;
     });
-    if (level === "hard" || level === "skwished") out.push([hit, 0, 1], [hit, 3, 1]);
+    if (level === "hard" || level === "wild") out.push([hit, 0, 1], [hit, 3, 1]);
     else out.push([hit, 0], [hit, 3]);
     // Each later 4-bar phrase opens on a jump from Normal up.
     if (level !== "easy") {
@@ -185,8 +185,8 @@ function tune(level, notes) {
     }
   }
 
-  // Holds across the breaks on Hard and Skwished: one per bar, lanes 1 and 2 in turn.
-  if (level === "hard" || level === "skwished") {
+  // Holds across the breaks on Hard and Wild: one per bar, lanes 1 and 2 in turn.
+  if (level === "hard" || level === "wild") {
     for (const sec of MAP.filter((s) => s.type === "break")) {
       for (let bar = sec.from; bar <= sec.to; bar++) {
         const b = (bar - 1) * 4;
@@ -201,7 +201,7 @@ function tune(level, notes) {
   // The last hit, bar 61.
   const last = (MAP[MAP.length - 1].from - 1) * 4;
   out = out.filter((n) => n[0] < last);
-  if (level === "hard" || level === "skwished") out.push([last, 0, 2], [last, 3, 2]);
+  if (level === "hard" || level === "wild") out.push([last, 0, 2], [last, 3, 2]);
   else out.push([last, 0], [last, 3]);
 
   // Drop the tool's own holds outside the breaks and impacts if anything sits

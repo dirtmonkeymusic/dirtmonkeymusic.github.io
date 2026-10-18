@@ -172,7 +172,7 @@
       var holds = c.filter(function (n) { return n.length > 2; }).length;
       stat(name.charAt(0).toUpperCase() + name.slice(1), String(c.length), (holds ? holds + " holds, " : "") + "from " + result.source);
     });
-    stat("Drops", String(d.drops.length), d.drops.map(function (x) { return "bars " + (x.from + 1) + " to " + x.to; }).join(", ") || "None found, so Skwish stays calm");
+    stat("Drops", String(d.drops.length), d.drops.map(function (x) { return "bars " + (x.from + 1) + " to " + x.to; }).join(", ") || "None found, so the monkey stays calm");
     blockEl.value = block;
     var where = audioEl.value.trim() || "/assets/audio/";
     whereEl.textContent = where;

@@ -27,7 +27,7 @@ async function fresh(b, viewport) {
   return p;
 }
 
-const st = (p) => p.evaluate(() => window.skwishDrop.state());
+const st = (p) => p.evaluate(() => window.monkeyDrop.state());
 async function untilState(p, want, ms = 120000) {
   const end = Date.now() + ms;
   while (Date.now() < end) {
@@ -38,7 +38,7 @@ async function untilState(p, want, ms = 120000) {
 }
 async function untilSong(p, t) {
   for (;;) {
-    const now = await p.evaluate(() => window.skwishDrop.songTime());
+    const now = await p.evaluate(() => window.monkeyDrop.songTime());
     if (now >= t) return;
     await wait(Math.min(200, Math.max(10, (t - now) * 1000 - 30)));
   }
@@ -47,7 +47,7 @@ async function untilSong(p, t) {
 // Perfect play from inside the page, pressing as each note is heard.
 async function autoplay(p) {
   await p.evaluate(() => {
-    const S = window.skwishDrop;
+    const S = window.monkeyDrop;
     const keys = ["ArrowLeft", "ArrowDown", "ArrowUp", "ArrowRight"];
     const offset = S.settings().offsetMs / 1000;
     const heardSong = () => S.songTime() + offset;

@@ -27,8 +27,8 @@ async function fresh(b, opts = {}) {
   return p;
 }
 
-const st = (p) => p.evaluate(() => window.skwishDrop.state());
-const songTime = (p) => p.evaluate(() => window.skwishDrop.songTime());
+const st = (p) => p.evaluate(() => window.monkeyDrop.state());
+const songTime = (p) => p.evaluate(() => window.monkeyDrop.songTime());
 
 async function untilState(p, want, ms = 120000) {
   const end = Date.now() + ms;
@@ -51,7 +51,7 @@ async function untilSong(p, t) {
 // opts.early: note indexes whose hold is let go half way. opts.late: ms added to every press.
 async function autoplay(p, opts = {}) {
   await p.evaluate((opts) => {
-    const S = window.skwishDrop;
+    const S = window.monkeyDrop;
     const sets = { arrows: ["ArrowLeft", "ArrowDown", "ArrowUp", "ArrowRight"], wasd: ["a", "s", "w", "d"] };
     const keys = sets[opts.keys || "arrows"];
     const skip = new Set(opts.skip || []);
@@ -127,17 +127,17 @@ async function fps(p, ms) {
 
   if (only === "all" || only === "clear") {
     const p = await fresh(b);
-    for (const [diff, keys] of [["easy", "arrows"], ["normal", "wasd"], ["hard", "arrows"], ["skwished", "wasd"]]) {
+    for (const [diff, keys] of [["easy", "arrows"], ["normal", "wasd"], ["hard", "arrows"], ["wild", "wasd"]]) {
       await pick(p, diff);
       await p.click("[data-start]");
       await untilState(p, "playing", 5000);
-      const holds = (await p.evaluate(() => window.skwishDrop.notes())).filter((n) => n[3]).length;
+      const holds = (await p.evaluate(() => window.monkeyDrop.notes())).filter((n) => n[3]).length;
       await autoplay(p, { keys });
       await untilState(p, "results");
       const r = await readResults(p);
-      const counts = await p.evaluate(() => window.skwishDrop.counts());
+      const counts = await p.evaluate(() => window.monkeyDrop.counts());
       // The key is "dm-play-best:<title>|<track audio, if any>|<difficulty>".
-      const best = await p.evaluate((d) => Object.keys(localStorage).find((k) => k.startsWith("dm-play-best:Skwish Drop|") && k.endsWith("|" + d)), diff);
+      const best = await p.evaluate((d) => Object.keys(localStorage).find((k) => k.startsWith("dm-play-best:Monkey Drop|") && k.endsWith("|" + d)), diff);
       ok(`clear ${diff}`, r.grade === "S" && r.status === "Cleared" && /full combo/i.test(r.fc) && counts.miss === 0 && counts.ng === 0 && !!best, { r, counts });
       if (diff === "hard") ok("holds counted on hard", holds > 0 && r.holds === holds + " / " + holds, { holds, shown: r.holds });
       ok(`retry focused after ${diff}`, r.focus === "Retry", r.focus);
@@ -152,12 +152,12 @@ async function fps(p, ms) {
 
   if (only === "all" || only === "fail") {
     const p = await fresh(b);
-    await pick(p, "skwished");
+    await pick(p, "wild");
     await p.click("[data-start]");
     await untilState(p, "playing", 5000);
     let lifeSeen = [];
     for (let i = 0; i < 40 && (await st(p)) === "playing"; i++) {
-      lifeSeen.push(await p.evaluate(() => window.skwishDrop.life()));
+      lifeSeen.push(await p.evaluate(() => window.monkeyDrop.life()));
       await wait(250);
     }
     await untilState(p, "results", 20000);
@@ -180,14 +180,14 @@ async function fps(p, ms) {
       await pick(p, diff);
       await p.click("[data-start]");
       await untilState(p, "playing", 5000);
-      const times = (await p.evaluate(() => window.skwishDrop.notes())).map((n) => n[0]);
+      const times = (await p.evaluate(() => window.monkeyDrop.notes())).map((n) => n[0]);
       // Just after the miss before the limit: life is empty but the stage plays on.
       await untilSong(p, times[limit - 2] + 0.25);
-      const before = await p.evaluate(() => ({ s: window.skwishDrop.state(), life: window.skwishDrop.life(), streak: window.skwishDrop.missStreak() }));
+      const before = await p.evaluate(() => ({ s: window.monkeyDrop.state(), life: window.monkeyDrop.life(), streak: window.monkeyDrop.missStreak() }));
       ok(`${diff}: empty life does not fail`, before.s === "playing" && before.life === 0 && before.streak === limit - 1, before);
       await untilState(p, "results", 20000);
       const r = await readResults(p);
-      const counts = await p.evaluate(() => window.skwishDrop.counts());
+      const counts = await p.evaluate(() => window.monkeyDrop.counts());
       ok(`${diff}: fails after ${limit} misses in a row`, r.status === "Stage failed" && counts.miss === limit, { r, counts });
       ok(`no console errors (${diff} streak)`, p.errors.length === 0, p.errors);
       await p.close();
@@ -197,14 +197,14 @@ async function fps(p, ms) {
     await pick(p, "normal");
     await p.click("[data-start]");
     await untilState(p, "playing", 5000);
-    const times = (await p.evaluate(() => window.skwishDrop.notes())).map((n) => n[0]);
+    const times = (await p.evaluate(() => window.monkeyDrop.notes())).map((n) => n[0]);
     const skip = [...Array(times.length).keys()].filter((i) => i !== 9);
     await autoplay(p, { skip });
     await untilSong(p, times[18] + 0.25);
-    const mid = await p.evaluate(() => ({ s: window.skwishDrop.state(), streak: window.skwishDrop.missStreak(), counts: window.skwishDrop.counts() }));
+    const mid = await p.evaluate(() => ({ s: window.monkeyDrop.state(), streak: window.monkeyDrop.missStreak(), counts: window.monkeyDrop.counts() }));
     ok("normal: a hit resets the miss streak", mid.s === "playing" && mid.streak === 9 && mid.counts.miss === 18, mid);
     await untilState(p, "results", 20000);
-    ok("normal: fails on the 10th miss after the hit", (await p.evaluate(() => window.skwishDrop.counts().miss)) === 19);
+    ok("normal: fails on the 10th miss after the hit", (await p.evaluate(() => window.monkeyDrop.counts().miss)) === 19);
     await p.close();
   }
 
@@ -236,13 +236,13 @@ async function fps(p, ms) {
     await pick(p, "hard");
     await p.click("[data-start]");
     await untilState(p, "playing", 5000);
-    const notes = await p.evaluate(() => window.skwishDrop.notes());
+    const notes = await p.evaluate(() => window.monkeyDrop.notes());
     const holdIdx = notes.map((n, i) => (n[3] ? i : -1)).filter((i) => i >= 0);
     const missIdx = notes.findIndex((n) => !n[3] && n[0] > 3);
     await autoplay(p, { keys: "arrows", early: holdIdx.slice(0, 2), skip: [missIdx] });
     await untilState(p, "results");
     const r = await readResults(p);
-    const counts = await p.evaluate(() => window.skwishDrop.counts());
+    const counts = await p.evaluate(() => window.monkeyDrop.counts());
     ok("early release makes NG", counts.ng === 2 && counts.ok === holdIdx.length - 2, counts);
     ok("one miss, no full combo", counts.miss === 1 && !r.fc, { counts, fc: r.fc });
     // speed modifier is saved and shown
@@ -272,7 +272,7 @@ async function fps(p, ms) {
     const r = await readResults(p);
     ok("late presses read as late", /^\+(3[5-9]|4[0-5]) ms late$/.test(r.timing) && /Nudge offset by \+/.test(r.nudge), r);
     await p.click("[data-nudge]");
-    const s = await p.evaluate(() => window.skwishDrop.settings());
+    const s = await p.evaluate(() => window.monkeyDrop.settings());
     ok("nudge moves offset", s.offsetMs >= 35 && s.offsetMs <= 45, s);
     await p.keyboard.press("r");
     await untilState(p, "playing", 5000);
@@ -282,7 +282,7 @@ async function fps(p, ms) {
     ok("after nudge the same late presses are on time", r2.grade === "S" && (/On time/.test(r2.timing) || Math.abs(parseInt(r2.timing, 10)) < 6), r2);
     await p.click('[data-screen="results"] [data-quit]');
     await p.click('[data-offset-step="-5"]');
-    const s2 = await p.evaluate(() => window.skwishDrop.settings());
+    const s2 = await p.evaluate(() => window.monkeyDrop.settings());
     ok("-5 button", s2.offsetMs === s.offsetMs - 5, s2);
     await p.close();
   }
@@ -296,7 +296,7 @@ async function fps(p, ms) {
     await p.screenshot({ path: `${SHOT}/calibrate.png` });
     // Tap 32 ms after each click as heard.
     await p.evaluate(() => {
-      const S = window.skwishDrop;
+      const S = window.monkeyDrop;
       const t0 = S.calibration().t0;
       for (let k = 4; k < 20; k++) {
         const at = t0 + k * 0.5 + 0.032;
@@ -304,7 +304,7 @@ async function fps(p, ms) {
       }
     });
     await wait(11500);
-    const s = await p.evaluate(() => window.skwishDrop.settings());
+    const s = await p.evaluate(() => window.monkeyDrop.settings());
     const text = await p.evaluate(() => document.querySelector("[data-cal-result]").textContent);
     ok("calibration finds the delay", s.offsetMs >= 27 && s.offsetMs <= 37, { s, text });
     await p.screenshot({ path: `${SHOT}/calibrate-done.png` });
@@ -317,17 +317,17 @@ async function fps(p, ms) {
   if (only === "all" || only === "shots") {
     const p = await fresh(b);
     await p.evaluate(() => document.getElementById("game").scrollIntoView());
-    await p.screenshot({ path: `${ART}/skwish-ddr-start.png` });
+    await p.screenshot({ path: `${ART}/monkey-ddr-start.png` });
     await pick(p, "hard");
     await p.click("[data-start]");
     await untilState(p, "playing", 5000);
     await autoplay(p, { keys: "arrows" });
     await untilSong(p, 52 * 60 / 140 * 0 + (36 + 20.6) * 60 / 140);
-    await p.screenshot({ path: `${ART}/skwish-ddr-desktop.png` });
+    await p.screenshot({ path: `${ART}/monkey-ddr-desktop.png` });
     const f = await fps(p, 3000);
     ok("60fps desktop", f.fps >= 55, f);
     await untilState(p, "results");
-    await p.screenshot({ path: `${ART}/skwish-ddr-results.png` });
+    await p.screenshot({ path: `${ART}/monkey-ddr-results.png` });
     await p.close();
   }
 
@@ -344,7 +344,7 @@ async function fps(p, ms) {
     const padY = box.y + box.h - Math.max(84, Math.min(120, box.h * 0.16)) / 2;
     const laneX = (l) => box.x + 8 + ((box.w - 16) / 4) * (l + 0.5);
     let tapped = 0;
-    const notes = await p.evaluate(() => window.skwishDrop.notes());
+    const notes = await p.evaluate(() => window.monkeyDrop.notes());
     for (let i = 0; i < notes.length && tapped < 24; i++) {
       const n = notes[i];
       const now = await songTime(p);
@@ -355,13 +355,13 @@ async function fps(p, ms) {
       const a = await p.touchscreen.touchStart(laneX(n[1]), padY);
       let bTouch = null;
       if (twin) bTouch = await p.touchscreen.touchStart(laneX(twin[1]), padY);
-      if (tapped === 6) await p.screenshot({ path: `${ART}/skwish-ddr-mobile.png` });
+      if (tapped === 6) await p.screenshot({ path: `${ART}/monkey-ddr-mobile.png` });
       await wait(30);
       await a.end();
       if (bTouch) { await bTouch.end(); i++; }
       tapped++;
     }
-    const counts = await p.evaluate(() => window.skwishDrop.counts());
+    const counts = await p.evaluate(() => window.monkeyDrop.counts());
     const hits = counts.marvelous + counts.perfect + counts.great + counts.good;
     ok("pads hit with touch", hits >= 20 && counts.miss <= 6, counts);
     ok("no console errors (mobile)", p.errors.length === 0, p.errors);

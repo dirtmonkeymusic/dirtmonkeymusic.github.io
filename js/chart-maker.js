@@ -1,4 +1,4 @@
-// Turns a track, and its stems if there are any, into notes for Skwish Drop.
+// Turns a track, and its stems if there are any, into notes for Monkey Drop.
 //
 // Three things use this file:
 //   tools/beatmap/          the beatmap maker page (runs in the browser)
@@ -35,9 +35,9 @@
     easy: { voices: { kick: 1, snare: 1 }, jumps: "none", holds: false },
     normal: { voices: { kick: 0.5, snare: 0.5, bass: 1 }, jumps: "some", holds: false },
     hard: { voices: { kick: 0.25, snare: 0.25, bass: 0.5 }, jumps: "some", holds: true },
-    skwished: { voices: { kick: 0.25, snare: 0.25, bass: 0.25, hats: 0.5 }, jumps: "all", holds: true }
+    wild: { voices: { kick: 0.25, snare: 0.25, bass: 0.25, hats: 0.5 }, jumps: "all", holds: true }
   };
-  var ORDER = ["easy", "normal", "hard", "skwished"];
+  var ORDER = ["easy", "normal", "hard", "wild"];
 
   var FRAME_RATE = 200;
   var ANALYSIS_RATE = 22050;
@@ -453,7 +453,7 @@
 
     var charts = {};
     ORDER.forEach(function (name) { charts[name] = makeNotes(voices, bpm, offset, LEVELS[name]); });
-    var sections = makeSections(frames, voices, bpm, offset, duration, charts.easy.concat(charts.skwished).sort(function (a, b) { return a[0] - b[0]; }));
+    var sections = makeSections(frames, voices, bpm, offset, duration, charts.easy.concat(charts.wild).sort(function (a, b) { return a[0] - b[0]; }));
     var counts = {};
     Object.keys(voices).forEach(function (k) { counts[k] = voices[k].length; });
     return {

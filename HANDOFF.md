@@ -8,22 +8,22 @@ Where things stand, so work can pick up on another machine. Nothing has been pub
 python3 -m http.server 47321 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game). Add `?debug` to `/play/` for the test hook (`window.skwishDrop`).
+Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game). Add `?debug` to `/play/` for the test hook (`window.monkeyDrop`).
 
 ## Home page: done
 
-- Simplified on 2026-10-16: the steerable Skwish, portals, and secrets are gone. Now it is the logo, a neon button for each section (including Play), and Skwish Pong (`js/pong.js`): attract mode on its own, a quick game to 5 when Skwish or Play Pong is clicked, Esc or X to stop, and a still Skwish for reduced motion.
+- Simplified on 2026-10-16: the steerable monkey, portals, and secrets are gone. Now it is the logo, a neon button for each section (including Play), and Monkey Pong (`js/pong.js`): attract mode on its own, a quick game to 5 when the monkey or Play Pong is clicked, Esc or X to stop, and a still the monkey for reduced motion.
 - The Play pill in every nav, plus /play/ in the sitemap.
 - Lighthouse mobile on home: 99 performance, 100 for everything else (three runs).
 
 ## Launch page: done
 
-- 2026-10-17: the home page is the launch page: the bubble logo, the Nov 2 noon ET countdown, Merch and Shows buttons, Skwish Pong, and the Laylo signup embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent`, not minimal).
+- 2026-10-17: the home page is the launch page: the bubble logo, the Nov 2 noon ET countdown, Merch and Shows buttons, Monkey Pong, and the Laylo signup embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent`, not minimal).
 - Every nav is just Merch and Shows. Sign up left the nav and the home buttons since the signup is on the home page; its links wait in the `NAV3` comments with Plugins, Music, App, and Play.
 - `/signup/` is a page of its own with the same embed. It works but nothing links to it, and it is not in the sitemap. `/privacy/` stays linked in every footer.
 - Added 2026-10-17: every Merch link (home button and every nav) opens https://dirtmonkey.bassthreadsmerch.com/ in a new tab. /merch/ still works but is unlinked and out of the sitemap; to bring it back, point the Merch links at `/merch/` again and re-add its sitemap entry.
 - `site-check.js` checks that every nav is only Merch (the store, new tab) and Shows, that home, Shows, and Privacy show no link to a hidden page (Merch page, Plugins, Music, App, Play, Sign up, tools) on desktop and phone, the launch order on home, and that /signup/ still works.
-- Changed 2026-10-17: new home order is logo, countdown, signup, Skwish Pong, then the Merch and Shows buttons, then the footer. The signup is Laylo's minimal embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent&minimal=true&customColor=3dfff2`) clipped by `.home-signup-frame` to just the number field and RSVP button, with Laylo's required consent line under it in our own type. The clip offsets (16px down, 56px tall, 7px over) match where Laylo draws its pill; if Laylo changes its layout, rerun `node dev/launch2-shots.js`, which checks the field fits and Laylo's fine print stays hidden at several widths and saves `launch2-desktop.png`, `launch2-mobile.png`, and `launch2-signup.png`. /signup/ still has the full, non-minimal embed.
+- Changed 2026-10-17: new home order is logo, countdown, signup, Monkey Pong, then the Merch and Shows buttons, then the footer. The signup is Laylo's minimal embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent&minimal=true&customColor=3dfff2`) clipped by `.home-signup-frame` to just the number field and RSVP button, with Laylo's required consent line under it in our own type. The clip offsets (16px down, 56px tall, 7px over) match where Laylo draws its pill; if Laylo changes its layout, rerun `node dev/launch2-shots.js`, which checks the field fits and Laylo's fine print stays hidden at several widths and saves `launch2-desktop.png`, `launch2-mobile.png`, and `launch2-signup.png`. /signup/ still has the full, non-minimal embed.
 - `dev/launch-shots.js` saves full-page `launch-desktop.png` and `launch-mobile.png`. It grows the viewport to the page height itself because puppeteer's fullPage leaves Laylo's frame blank.
 
 ## Home countdown: done
@@ -34,7 +34,7 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 
 - On 2026-10-16 the home page buttons and every page's nav were cut to Merch, Shows, and Sign up. Plugins, Music, App, and Play are hidden, not removed: their links sit in a `NAV3` HTML comment right under the visible ones, in each page's nav and in the home page buttons. To restore, move them back out of the comment. The pages, files, and sitemap entries are unchanged. `site-check.js` now expects the three links.
 
-## Skwish DDR game: done
+## Monkey DDR game: done
 
 All of this is committed and pushed to main.
 
@@ -43,13 +43,13 @@ All of this is committed and pushed to main.
 - Judgments: Marvelous ±22.5 ms, Perfect ±45, Great ±90, Good ±135, and Miss. Great and Good also show EARLY or LATE. The popups are neon, and Marvelous gets a moving gradient.
 - Combo effects:
   - at 25 the lanes pulse;
-  - at 50 Skwish dances harder and the targets glow;
+  - at 50 the monkey dances harder and the targets glow;
   - at 100 the edges glow with cycling color and throw particles;
   - at 200 the combo number goes rainbow;
   - drops amplify all of it, with a bigger glow;
   - milestone shouts appear at 50, 100, 200, and so on.
-- Life bar: starts at 50. Misses cost more on harder difficulties. On Hard and Skwished, when it empties, the music fades, FAILED shows, and the stage fails. Easy fails the same way after 15 misses in a row, and Normal after 10.
-- Difficulties: Easy, Normal, Hard, and Skwished, each with its own chart. The placeholder charts are in `js/beatmap.js` and were made by `dev/gen_charts.py`. Hold arrows appear on Hard and Skwished, with a 0.2 s re-press grace.
+- Life bar: starts at 50. Misses cost more on harder difficulties. On Hard and Wild, when it empties, the music fades, FAILED shows, and the stage fails. Easy fails the same way after 15 misses in a row, and Normal after 10.
+- Difficulties: Easy, Normal, Hard, and Wild, each with its own chart. The placeholder charts are in `js/beatmap.js` and were made by `dev/gen_charts.py`. Hold arrows appear on Hard and Wild, with a 0.2 s re-press grace.
 - Scoring and results:
   - scores run to 1,000,000, with S/A/B/C/D grades;
   - full combo badges come in Marvelous, Perfect, Great, and plain tiers;
@@ -80,7 +80,7 @@ These ran on this machine with puppeteer against Chrome.
 
 ## Shows and Music: copied from the app
 
-- Done on 2026-10-16 (committed locally, not pushed). /shows/ loads live from Bandsintown (`js/shows.js`, 5-minute localStorage cache, 15 s timeout, the page's own dates as the fallback). /music/ has the SKWISH countdown card, the six released songs with iTunes 30-second previews (`js/music.js`), and the Connect links.
+- Done on 2026-10-16 (committed locally, not pushed). /shows/ loads live from Bandsintown (`js/shows.js`, 5-minute localStorage cache, 15 s timeout, the page's own dates as the fallback). /music/ has the six released songs with iTunes 30-second previews (`js/music.js`), and the Connect links.
 - Both Bandsintown and iTunes Lookup allow browser requests (CORS `*`), so both work live.
 - Test: `node dev/appcopy-shots.js` (29 checks, needs internet). Lighthouse mobile: Shows 99, Music 97.
 
@@ -96,7 +96,7 @@ Done on 2026-10-16 (committed locally, not pushed):
 
 Still open:
 
-1. **Tuning, if wanted.** Life starts at 50, so 5 straight misses fail Hard and Skwished, 7 fail Normal, and 9 fail Easy. To soften it, raise the start or lower `MISS_LIFE` in `js/rhythm.js`. See the recommendation in `~/DMBuilds/DMSite-shots/REPORT.md`.
+1. **Tuning, if wanted.** Life starts at 50, so 5 straight misses fail Hard and Wild, 7 fail Normal, and 9 fail Easy. To soften it, raise the start or lower `MISS_LIFE` in `js/rhythm.js`. See the recommendation in `~/DMBuilds/DMSite-shots/REPORT.md`.
 2. **Real track: done.** Genre Snob is in, with hand-tuned charts from `dev/genre_snob_charts.js` (it runs the beatmap maker on band-split stems, then shapes each section). If Patrick sends real stems, add them to that script's `toolBlock()` for cleaner notes.
 
 ## About `dev/`

@@ -52,10 +52,10 @@
 
     SITE MAP: each page is a folder with an index.html inside.
       /            This page, the launch page. The logo, the countdown
-                   (js/countdown.js), the Laylo signup, Skwish Pong
+                   (js/countdown.js), the Laylo signup, Monkey Pong
                    (js/pong.js), then the Merch and Shows buttons.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
-      /music/      Albums and releases.
+      /music/      Releases.
       /shows/      Tour dates.
       /merch/      Merch cards from the Bass Threads store (js/merch.js). Not
                    linked for now: every Merch link opens the store itself.
@@ -127,16 +127,16 @@
       </div>
 
       <!--
-        SKWISH PONG. js/pong.js runs it.
-        Two paddles bounce Skwish back and forth on their own. Click or tap
-        Skwish (or Play Pong) for a quick game, first to 3. Esc or X stops it.
+        MONKEY PONG. js/pong.js runs it.
+        Two paddles bounce the monkey back and forth on their own. Click or tap
+        the monkey (or Play Pong) for a quick game, first to 3. Esc or X stops it.
         Win and FREAK plays (only on a win).
       -->
       <div class="pong" data-pong tabindex="-1">
         <canvas class="pong-canvas" aria-hidden="true"></canvas>
-        <picture class="pong-skwish">
-          <source type="image/webp" srcset="/assets/skwish-cyan.webp">
-          <img src="/assets/skwish-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
+        <picture class="pong-monkey">
+          <source type="image/webp" srcset="/assets/monkey-cyan.webp">
+          <img src="/assets/monkey-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
         </picture>
         <p class="pong-score" aria-live="polite" data-pong-score hidden><span class="visually-hidden">You</span><span class="pong-you" data-pong-you>0</span><span class="visually-hidden">, computer</span><span class="pong-cpu" data-pong-cpu>0</span></p>
         <p class="pong-msg" role="status" data-pong-msg hidden></p>

@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Skwish Drop: a Dirt Monkey rhythm game</title>
-  <meta name="description" content="Play Skwish Drop, an arrow rhythm game starring Skwish. Four lanes, four difficulties, hold arrows, and a bass drop. Play on a keyboard or a phone, free in your browser.">
+  <title>Monkey Drop: a Dirt Monkey rhythm game</title>
+  <meta name="description" content="Play Monkey Drop, an arrow rhythm game starring the monkey. Four lanes, four difficulties, hold arrows, and a bass drop. Play on a keyboard or a phone, free in your browser.">
   <meta name="theme-color" content="#07060a">
   <!-- SITE ADDRESS: https://dirtmonkey.music/ . See the note in /index.html if it ever changes. -->
   <link rel="canonical" href="https://dirtmonkey.music/play/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Dirt Monkey">
-  <meta property="og:title" content="Skwish Drop: a Dirt Monkey rhythm game">
-  <meta property="og:description" content="Hit the arrows in time with the bass and keep Skwish dancing. Free, in your browser.">
+  <meta property="og:title" content="Monkey Drop: a Dirt Monkey rhythm game">
+  <meta property="og:description" content="Hit the arrows in time with the bass and keep the monkey dancing. Free, in your browser.">
   <meta property="og:url" content="https://dirtmonkey.music/play/">
   <meta property="og:image" content="https://dirtmonkey.music/assets/share-card-2.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Dirt Monkey">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Skwish Drop: a Dirt Monkey rhythm game">
-  <meta name="twitter:description" content="Hit the arrows in time with the bass and keep Skwish dancing. Free, in your browser.">
+  <meta name="twitter:title" content="Monkey Drop: a Dirt Monkey rhythm game">
+  <meta name="twitter:description" content="Hit the arrows in time with the bass and keep the monkey dancing. Free, in your browser.">
   <meta name="twitter:image" content="https://dirtmonkey.music/assets/share-card-2.jpg">
   <meta name="twitter:image:alt" content="Dirt Monkey">
   <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -57,7 +57,7 @@
     -->
     <section class="play-stage" aria-labelledby="play-title">
       <div id="game" class="game" data-theme="genre-snob">
-        <canvas class="game-canvas" tabindex="-1" role="img" aria-label="Skwish Drop: arrows rise up four lanes toward the target arrows at the top while Skwish dances to the beat"></canvas>
+        <canvas class="game-canvas" tabindex="-1" role="img" aria-label="Monkey Drop: arrows rise up four lanes toward the target arrows at the top while the monkey dances to the beat"></canvas>
 
         <div class="game-tools">
           <button type="button" class="game-tool" data-retry-tool hidden>Retry</button>
@@ -68,12 +68,12 @@
         <div class="game-screen" data-screen="start">
           <div class="game-panel">
             <p class="eyebrow">A Dirt Monkey rhythm game</p>
-            <h1 id="play-title" class="game-title">Skwish Drop</h1>
+            <h1 id="play-title" class="game-title">Monkey Drop</h1>
             <!-- The song card. The cover, title, and logo art show while the Genre Snob theme is on (see "theme" in js/beatmap.js). -->
             <div class="game-song-card">
               <picture class="game-cover">
                 <source type="image/webp" srcset="/assets/play/genre-snob/cover-280.webp 280w, /assets/play/genre-snob/cover-560.webp 560w" sizes="(max-width: 720px) 112px, 168px">
-                <img src="/assets/play/genre-snob/cover-280.jpg" alt="Genre Snob cover art: Skwish as a gold skull monkey in shades, with gold coins" width="280" height="280" fetchpriority="low" draggable="false">
+                <img src="/assets/play/genre-snob/cover-280.jpg" alt="Genre Snob cover art: a gold skull monkey in shades, with gold coins" width="280" height="280" fetchpriority="low" draggable="false">
               </picture>
               <div class="game-song-info">
                 <p class="game-song" data-song><span class="game-song-now">Now playing</span> <span class="game-song-name" data-song-name>Genre Snob</span> <span class="game-song-by" data-song-by>by Dirt Monkey</span></p>
@@ -81,11 +81,11 @@
                 <img class="game-song-logo" src="/assets/play/genre-snob/logo-320.webp" alt="" width="320" height="60" fetchpriority="low" draggable="false">
               </div>
             </div>
-            <picture class="game-skwish">
-              <source type="image/webp" srcset="/assets/skwish-cyan.webp">
-              <img src="/assets/skwish-cyan.png" alt="" width="512" height="512" loading="lazy" draggable="false">
+            <picture class="game-monkey">
+              <source type="image/webp" srcset="/assets/monkey-cyan.webp">
+              <img src="/assets/monkey-cyan.png" alt="" width="512" height="512" loading="lazy" draggable="false">
             </picture>
-            <p class="game-how">Arrows rise to the targets at the top. Hit the matching arrow the moment it lands. Chain a combo to make Skwish dance, and keep your life bar out of the red.</p>
+            <p class="game-how">Arrows rise to the targets at the top. Hit the matching arrow the moment it lands. Chain a combo to make the monkey dance, and keep your life bar out of the red.</p>
 
             <fieldset class="game-diffs">
               <legend class="visually-hidden">Difficulty</legend>
@@ -104,9 +104,9 @@
                 <span class="diff-name">Hard</span>
                 <span class="diff-meta"><span data-lv>Lv ?</span> <span data-diff-best>No best yet</span></span>
               </label>
-              <label class="diff diff-skwished">
-                <input type="radio" name="difficulty" value="skwished">
-                <span class="diff-name">Skwished</span>
+              <label class="diff diff-wild">
+                <input type="radio" name="difficulty" value="wild">
+                <span class="diff-name">Wild</span>
                 <span class="diff-meta"><span data-lv>Lv ?</span> <span data-diff-best>No best yet</span></span>
               </label>
             </fieldset>
@@ -203,7 +203,7 @@
         <noscript>
           <div class="game-screen">
             <div class="game-panel">
-              <p class="game-how">Skwish Drop needs JavaScript to run. Switch it on and reload to play.</p>
+              <p class="game-how">Monkey Drop needs JavaScript to run. Switch it on and reload to play.</p>
             </div>
           </div>
         </noscript>
@@ -219,13 +219,13 @@
         <ul class="play-rules">
           <li><strong>Hit the arrows.</strong> Arrows rise up four lanes: left, down, up, right. Press the matching key the moment one lands on its target at the top: the arrow keys, or <kbd>A</kbd> <kbd>S</kbd> <kbd>W</kbd> <kbd>D</kbd>. On a phone or tablet, tap the four big pads at the bottom. Two arrows at once? Hit both.</li>
           <li><strong>Timing counts.</strong> Dead on is Marvelous, then Perfect, Great, and Good the further off you are. Miss an arrow and your combo breaks. Great and Good tell you if you were early or late. Pressing with no arrow there costs nothing.</li>
-          <li><strong>Hold the long ones.</strong> On Hard and Skwished, some arrows have a tail. Press on the head and keep holding until the tail runs out for an OK. Let go too soon and it is NG.</li>
-          <li><strong>Watch your life bar.</strong> Good hits fill it, misses drain it. On Hard and Skwished, the stage fails if it empties. On Easy, 15 misses in a row fail the stage, and on Normal, 10.</li>
-          <li><strong>Chain a combo.</strong> At 25 the lanes pulse, at 50 Skwish dances harder, at 100 the edges light up, and at 200 the combo goes rainbow. The drop turns it all up.</li>
+          <li><strong>Hold the long ones.</strong> On Hard and Wild, some arrows have a tail. Press on the head and keep holding until the tail runs out for an OK. Let go too soon and it is NG.</li>
+          <li><strong>Watch your life bar.</strong> Good hits fill it, misses drain it. On Hard and Wild, the stage fails if it empties. On Easy, 15 misses in a row fail the stage, and on Normal, 10.</li>
+          <li><strong>Chain a combo.</strong> At 25 the lanes pulse, at 50 the monkey dances harder, at 100 the edges light up, and at 200 the combo goes rainbow. The drop turns it all up.</li>
           <li><strong>Get a grade.</strong> Scores go up to 1,000,000. S, A, B, C, or D, plus a full combo badge if you never miss. Each difficulty keeps its own best score on this device. Retry any time with the Retry button or R.</li>
           <li><strong>Make it fair.</strong> Speed sets how fast the arrows scroll (it does not change the song). If hits feel late or early, press Calibrate and tap along with the clicks, or nudge the offset 5 ms at a time.</li>
         </ul>
-        <p class="page-cta"><a class="text-link" href="/music/">Hear the real thing: SKWISH, out November 13</a></p>
+        <p class="page-cta"><a class="text-link" href="/music/">Hear more Dirt Monkey music</a></p>
       </div>
     </section>
   </main>

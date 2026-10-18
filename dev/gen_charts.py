@@ -192,8 +192,8 @@ def hard():
     return c
 
 
-def skwished():
-    c = Chart("skwished")
+def wild():
+    c = Chart("wild")
     for bar in range(4):
         s = 4 + bar * 4
         c.new_bar()
@@ -281,7 +281,7 @@ def check(chart):
                 raise AssertionError((chart.name, "note inside hold", h, n))
 
 
-charts = [easy(), normal(), hard(), skwished()]
+charts = [easy(), normal(), hard(), wild()]
 block = ["    charts: {"]
 for i, ch in enumerate(charts):
     check(ch)

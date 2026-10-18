@@ -1,5 +1,5 @@
 // ============================================================
-//  SKWISH DROP: THE BEATMAP
+//  MONKEY DROP: THE BEATMAP
 //
 //  This file is the song and the charts (the arrows) for the
 //  game at /play/.
@@ -14,10 +14,10 @@
 //
 //  TO SWAP IN ANOTHER TRACK, three lines are enough:
 //    1. Put the file in the site, for example
-//       assets/audio/skwish-drop.m4a (M4A, MP3 or WAV all work).
+//       assets/audio/monkey-drop.m4a (M4A, MP3 or WAV all work).
 //    2. In "track" below, set:
 //         title:  the song name for the start screen
-//         audio:  "/assets/audio/skwish-drop.m4a"
+//         audio:  "/assets/audio/monkey-drop.m4a"
 //         bpm:    the tempo, for example 145
 //         offset: seconds from the start of the file to beat 1
 //                 of bar 1. 0 if the file starts right on it.
@@ -36,11 +36,11 @@
 //  The charts it writes are normal lines you can edit by hand.
 //
 //  TRY A TRACK WITHOUT EDITING ANYTHING: open
-//    /play/?audio=/assets/audio/skwish-drop.mp3&bpm=145&offset=0
+//    /play/?audio=/assets/audio/monkey-drop.mp3&bpm=145&offset=0
 //
 //  CHARTS
 //    There is one chart per difficulty: easy, normal, hard, and
-//    skwished. Leave one out and the game makes it from the audio
+//    wild. Leave one out and the game makes it from the audio
 //    (or, for the placeholder, uses the nearest one).
 //
 //  NOTES
@@ -48,12 +48,12 @@
 //    is the start of bar 2, and 4.5 is the "and" right after it.
 //    Lanes: 0 left, 1 down, 2 up, 3 right.
 //    A hold arrow is [beat, lane, beats]: press on the beat and keep
-//    holding for that many beats. Holds belong on hard and skwished.
+//    holding for that many beats. Holds belong on hard and wild.
 //    Two arrows on the same beat are a jump: hit both.
 //
 //  SECTIONS
 //    Each section is a number of 4-beat bars, in order. "drop"
-//    sections are where Skwish goes wild and the screen pulses.
+//    sections are where the monkey goes wild and the screen pulses.
 //    A "countin" bar at the start shows 3, 2, 1, GO.
 //
 //  Players set their own timing offset in the game (Calibrate).
@@ -62,7 +62,7 @@
 // ============================================================
 
 const BEATMAP = {
-  title: "Skwish Drop",
+  title: "Monkey Drop",
   inputOffsetMs: 0,
 
   // >>> TRACK  (the beatmap maker rewrites everything down to the <<< TRACK line)
@@ -438,7 +438,7 @@ const BEATMAP = {
         // bar 61
         [240, 0, 2], [240, 3, 2]
       ],
-      skwished: [
+      wild: [
         // bar 1
         [0, 0], [0.5, 2], [1, 3], [1.5, 2], [2, 0], [2.25, 2], [2.5, 1], [3, 3], [3.5, 1],
         // bar 2
@@ -583,7 +583,7 @@ const BEATMAP = {
   theme: {
     audio: "/assets/audio/genre-snob.m4a",
     name: "genre-snob",
-    dancer: { src: "/assets/play/genre-snob/skwish-640.webp", width: 640, height: 625 },
+    dancer: { src: "/assets/play/genre-snob/monkey-640.webp", width: 640, height: 625 },
     title: { src: "/assets/play/genre-snob/title-560.webp", width: 560, height: 81 },
     logo: { src: "/assets/play/genre-snob/logo-320.webp", width: 320, height: 60 },
     backdrop: "/assets/play/genre-snob/backdrop-384.webp",
@@ -818,7 +818,7 @@ const BEATMAP = {
         // bar 30
         [116, 0, 4], [116, 3]
       ],
-      skwished: [
+      wild: [
         // bar 2
         [4, 3, 3], [4.5, 2], [5, 1], [5.5, 0], [6, 2], [6.5, 1], [7, 0], [7.5, 2],
         // bar 3
