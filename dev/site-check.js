@@ -119,6 +119,26 @@ async function open(b, url, viewport) {
       const good = (url === "/privacy/" ? /^Dirt Monkey/.test(title) : title === "Dirt Monkey") && meta("og:title") === "Dirt Monkey" && meta("twitter:title") === "Dirt Monkey" && meta("og:site_name") === "Dirt Monkey" && meta("og:image:alt") === "Dirt Monkey" && /share-card-2\.jpg$/.test(meta("og:image") || "") && !/name="?description|og:description|twitter:description/.test(html) && !/Sounds of|Sample Packs|Plugins &amp;/i.test(html);
       ok(`${url}: preview is just Dirt Monkey`, good, { title, og: meta("og:title"), img: meta("og:image") });
     }
+    // Plugin update feeds: /updates/<Plugin>.json, each valid JSON with a x.y.z version,
+    // reachable URL-encoded (spaces as %20), and not linked from any page.
+    {
+      const dir = path.join(ROOT, "updates");
+      const feeds = fs.readdirSync(dir).filter((f) => f.endsWith(".json"));
+      const bad = [];
+      for (const f of feeds) {
+        let j = null;
+        try { j = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")); } catch (e) { bad.push(f + ": " + e.message); continue; }
+        if (!/^\d+\.\d+\.\d+$/.test(j.version || "")) bad.push(f + ": version " + j.version);
+        if (!/^https:\/\//.test(j.url || "")) bad.push(f + ": url " + j.url);
+        if (typeof j.notes !== "string") bad.push(f + ": notes");
+        const r = await fetch(BASE + "/updates/" + encodeURIComponent(f.slice(0, -5)) + ".json");
+        if (!r.ok) bad.push(f + ": HTTP " + r.status);
+        else { try { if ((await r.json()).version !== j.version) bad.push(f + ": served version differs"); } catch (e) { bad.push(f + ": served JSON " + e.message); } }
+      }
+      ok(`updates: ${feeds.length} plugin feeds parse, have x.y.z versions, and load URL-encoded`, feeds.length >= 11 && bad.length === 0, bad.length ? bad : feeds.map((f) => f.slice(0, -5)));
+      const linked = execList(ROOT).filter((f) => f.endsWith(".html") && /\/updates\//.test(fs.readFileSync(f, "utf8"))).map((f) => path.relative(ROOT, f));
+      ok("updates: no page links to /updates/", linked.length === 0, linked.length ? linked : undefined);
+    }
     const home = await open(b, "/", PHONE);
     const priv = await home.$$eval('.site-footer a[href="/privacy/"]', (as) => as.filter((a) => a.getClientRects().length).length);
     await home.close();
