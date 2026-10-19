@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "updated": "2026-10-19",
+  "note": "Public released singles for the Dirt Monkey iOS app Music tab. Newest first. Released tracks only.",
+  "releases": [
+    {
+      "title": "Genre Snob",
+      "artist": "Dirt Monkey",
+      "songID": "6817900451",
+      "spotifyTrackID": "7JDnLEppNt2ESBZhT7pB5u",
+      "releaseDate": "2026-10-14",
+      "artURL": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/dd/da/19/ddda1948-9641-5198-7422-7c7f33294d99/612891273595.jpg/600x600bb.jpg",
+      "spotifyURL": "https://open.spotify.com/track/7JDnLEppNt2ESBZhT7pB5u",
+      "appleMusicURL": "https://music.apple.com/us/album/genre-snob-single/6817900450?i=6817900451",
+      "collectionID": "6817900450"
+    },
+    {
+      "title": "Try Again",
+      "artist": "Dirt Monkey & Chozen",
+      "songID": "6814886983",
+      "spotifyTrackID": "370kpDKxzvGBdwZWplqc47",
+      "releaseDate": "2026-10-02",
+      "artURL": null,
+      "spotifyURL": "https://open.spotify.com/track/370kpDKxzvGBdwZWplqc47",
+      "appleMusicURL": "https://music.apple.com/us/album/6814886982?i=6814886983",
+      "collectionID": "6814886982"
+    },
+    {
+      "title": "Candy",
+      "artist": "Dirt Monkey",
+      "songID": "6808004973",
+      "spotifyTrackID": "3Kfklu38w4IjeBkhnHQMLc",
+      "releaseDate": "2026-09-18",
+      "artURL": null,
+      "spotifyURL": "https://open.spotify.com/track/3Kfklu38w4IjeBkhnHQMLc",
+      "appleMusicURL": "https://music.apple.com/us/album/6808004972?i=6808004973",
+      "collectionID": "6808004972"
+    },
+    {
+      "title": "Heads Will Roll",
+      "artist": "Dirt Monkey",
+      "songID": "1874338642",
+      "spotifyTrackID": "5k4UqLB6JctNsqw4IIPvAI",
+      "releaseDate": "2026-01-01",
+      "artURL": null,
+      "spotifyURL": "https://open.spotify.com/track/5k4UqLB6JctNsqw4IIPvAI",
+      "appleMusicURL": "https://music.apple.com/us/album/1874338638?i=1874338642",
+      "collectionID": "1874338638"
+    },
+    {
+      "title": "YKDR",
+      "artist": "Dirt Monkey",
+      "songID": "1865011222",
+      "spotifyTrackID": null,
+      "releaseDate": null,
+      "artURL": null,
+      "spotifyURL": "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH",
+      "appleMusicURL": "https://music.apple.com/us/album/1865011221?i=1865011222",
+      "collectionID": "1865011221"
+    },
+    {
+      "title": "Y2K DUB",
+      "artist": "Dirt Monkey & Shank Aaron",
+      "songID": "1832477035",
+      "spotifyTrackID": null,
+      "releaseDate": null,
+      "artURL": null,
+      "spotifyURL": "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH",
+      "appleMusicURL": "https://music.apple.com/us/album/1832476636?i=1832477035",
+      "collectionID": "1832476636"
+    },
+    {
+      "title": "ARROWS",
+      "artist": "Dirt Monkey & Eligh",
+      "songID": "1834777925",
+      "spotifyTrackID": null,
+      "releaseDate": null,
+      "artURL": null,
+      "spotifyURL": "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH",
+      "appleMusicURL": "https://music.apple.com/us/album/1834777924?i=1834777925",
+      "collectionID": "1834777924"
+    }
+  ]
+}
