@@ -144,7 +144,7 @@ const PRODUCTS = [
       "True-peak ceiling and LUFS meter.",
       "Light on CPU."
     ],
-    formats: "VST3, AU, Mac, Windows coming, Standalone",
+    formats: "VST3, AU, Mac, Windows coming",
     accent: "mint",
     demoLink: "downloads/the-end-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.

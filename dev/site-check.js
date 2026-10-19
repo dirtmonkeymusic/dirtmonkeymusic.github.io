@@ -166,6 +166,11 @@ async function open(b, url, viewport) {
     ok("hidden name: no served file mentions it", hushText.length === 0, hushText.length ? hushText : undefined);
     const allNames = (function walk(dir) { return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => [".git", "node_modules", "tmp-audio", "uploads"].includes(e.name) ? [] : e.isDirectory() ? walk(path.join(dir, e.name)) : [path.relative(ROOT, path.join(dir, e.name))]); })(ROOT);
     const hushNames = allNames.filter((n) => tracked.has(n) && HUSH.test(n));
+    // App Store pages: one contact email, and the progress tip says what lives where.
+    const contact = ["support/index.html", "support.html", "privacy/index.html"].map((f) => [f, fs.readFileSync(path.join(ROOT, f), "utf8")]);
+    ok("support and privacy: one contact email", contact.every(([f, t]) => t.includes("dirtmonkey@mail.grokbot.com") && !/gmail\.com/i.test(t)) && contact.filter(([f]) => f.startsWith("support")).every(([f, t]) => (t.match(/mailto:([^"]+)"/g) || []).every((m) => m === 'mailto:dirtmonkey@mail.grokbot.com"') && /saved on your phone/.test(t) && /stored in iCloud/.test(t)), contact.map(([f]) => f));
+    const formats = [...fs.readFileSync(path.join(ROOT, "js", "products.js"), "utf8").matchAll(/name: "([^"]+)"[\s\S]*?formats: "([^"]+)"/g)].map((m) => [m[1], m[2]]);
+    ok("products: only Meter lists Standalone, The End is VST3 and AU", formats.filter(([n, f]) => /Standalone/.test(f)).map(([n]) => n).join() === "Meter" && formats.some(([n, f]) => n === "The End" && f === "VST3, AU, Mac, Windows coming"), formats.filter(([n, f]) => /Standalone/.test(f) || n === "The End"));
     ok("hidden name: no served file name has it", hushNames.length === 0 && allNames.includes("assets/monkey-cyan.png"), hushNames.length ? hushNames : undefined);
   }
 
