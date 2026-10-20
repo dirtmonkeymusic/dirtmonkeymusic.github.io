@@ -17,7 +17,7 @@ http.createServer((req, res) => {
     req.on("end", () => {
       let d; try { d = JSON.parse(body); } catch (e) { return res.writeHead(400, cors).end("bad json"); }
       const row = { ts: new Date().toISOString(), clientTs: String(d.ts || ""), kind: d.kind === "feedback" ? "feedback" : "download", name: String(d.name || "").trim(), email: String(d.email || "").trim().toLowerCase(), platform: d.platform === "PC" ? "PC" : d.platform === "Mac" ? "Mac" : "", version: String(d.version || ""), plugins: String(d.plugins || "").slice(0, 300), message: String(d.message || "").trim().slice(0, 4000) };
-      if (!row.name || !EMAIL.test(row.email) || (row.kind === "download" ? !row.platform : !row.message)) return res.writeHead(400, cors).end("missing fields");
+      if (!row.name || (row.email && !EMAIL.test(row.email)) || (row.kind === "download" ? !row.platform : !row.message)) return res.writeHead(400, cors).end("missing fields");
       fs.appendFileSync(FILE, JSON.stringify(row) + "\n");
       res.writeHead(200, cors).end("ok");
     });

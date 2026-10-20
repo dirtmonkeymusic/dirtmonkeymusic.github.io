@@ -1,4 +1,4 @@
-// The hidden beta page (/beta/). Name and email (both required) open the Download for Mac and
+// The hidden beta page (/beta/). Name (required) and email (optional, checked if filled) open the Download for Mac and
 // Download for PC buttons. Versions and links come from /beta/latest.json (dev/beta-publish.js
 // writes it). Testers can untick plugins: all ticked gets the full suite installer, otherwise one
 // installer per ticked plugin (latest[platform].plugins[name]). Each download, and each "Send feedback" note, is logged to LOG_URL.
@@ -31,7 +31,7 @@
     if (saved) { name.value = saved.name || ""; email.value = saved.email || ""; }
   } catch (e) {}
 
-  function good() { return name.value.trim().length > 0 && EMAIL.test(email.value.trim()); }
+  function good() { var em = email.value.trim(); return name.value.trim().length > 0 && (!em || EMAIL.test(em)); }
   function refresh() {
     var ok = good();
     Array.prototype.forEach.call(links, function (a) {

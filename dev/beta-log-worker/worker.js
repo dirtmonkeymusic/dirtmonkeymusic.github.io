@@ -29,7 +29,7 @@ export default {
       let d;
       try { d = JSON.parse(await req.text()); } catch (e) { return new Response("bad json", { status: 400, headers: cors }); }
       const row = { ts: new Date().toISOString(), clientTs: clip(d.ts, 40), kind: d.kind === "feedback" ? "feedback" : "download", name: clip(d.name, 120), email: clip(d.email, 200).toLowerCase(), platform: d.platform === "PC" ? "PC" : d.platform === "Mac" ? "Mac" : "", version: clip(d.version, 20), plugins: clip(d.plugins, 300), message: clip(d.message, 4000) };
-      if (!row.name || !EMAIL.test(row.email) || (row.kind === "download" ? !row.platform : !row.message)) return new Response("missing fields", { status: 400, headers: cors });
+      if (!row.name || (row.email && !EMAIL.test(row.email)) || (row.kind === "download" ? !row.platform : !row.message)) return new Response("missing fields", { status: 400, headers: cors });
       await env.BETA_LOG.put("dl:" + row.ts + ":" + crypto.randomUUID().slice(0, 8), JSON.stringify(row));
       return new Response("ok", { headers: cors });
     }

@@ -34,16 +34,16 @@
           </picture>
           <p class="eyebrow">Beta testers</p>
           <h1 id="beta-title" class="page-title">Get the beta</h1>
-          <p class="lede">Thanks for helping test the Dirt Monkey plugins. Add your name and email, pick your plugins, then grab your download. Found a bug? Tell us at <a class="text-link" href="mailto:dirtmonkey@mail.grokbot.com">dirtmonkey@mail.grokbot.com</a>.</p>
+          <p class="lede">Thanks for helping test the Dirt Monkey plugins. Add your name (email optional), pick your plugins, then grab your download. Found a bug? Tell us at <a class="text-link" href="mailto:dirtmonkey@mail.grokbot.com">dirtmonkey@mail.grokbot.com</a>.</p>
           <form class="beta-who" data-beta-who novalidate>
             <div class="beta-who-fields">
               <label class="visually-hidden" for="beta-name">Your name</label>
               <input id="beta-name" class="beta-input" name="name" type="text" autocomplete="name" placeholder="Your name" required data-beta-name>
-              <label class="visually-hidden" for="beta-email">Your email</label>
-              <input id="beta-email" class="beta-input" name="email" type="email" autocomplete="email" placeholder="you@example.com" required data-beta-email>
+              <label class="visually-hidden" for="beta-email">Gimme your email if you want to stay up to date</label>
+              <input id="beta-email" class="beta-input" name="email" type="email" autocomplete="email" placeholder="Gimme your email if you want to stay up to date" data-beta-email>
             </div>
             <p class="beta-privacy">We only use this to follow up on bugs and send beta updates. We never share it.</p>
-            <p class="beta-error" role="alert" data-beta-who-error hidden>Add your name and a working email first.</p>
+            <p class="beta-error" role="alert" data-beta-who-error hidden>Add your name first, and check your email if you added one.</p>
             <div class="beta-buttons">
               <div class="beta-dl-col">
                 <a class="btn btn-demo beta-download is-soon" href="#" aria-disabled="true" download data-beta-platform="mac">Download for Mac</a>
@@ -62,12 +62,12 @@
                 <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Updown"><span class="beta-pl-name">Updown</span></label><span class="beta-pl-desc">Tempo-synced riser and downlifter generator.</span></li>
                 <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Slammer"><span class="beta-pl-name">Slammer</span></label><span class="beta-pl-desc">Slams your mix to a clean 0 dB ceiling.</span></li>
                 <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Punch"><span class="beta-pl-name">Punch</span></label><span class="beta-pl-desc">A one-knob cherry on top for punch and loudness.</span></li>
-                <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Spaces"><span class="beta-pl-name">Spaces</span></label><span class="beta-pl-desc">A spring-first reverb that stays out of the way of your mix.</span></li>
                 <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Dip"><span class="beta-pl-name">Dip</span></label><span class="beta-pl-desc">Draw the duck, and it plays on every kick in time with your track.</span></li>
-                <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Meter"><span class="beta-pl-name">Meter</span></label><span class="beta-pl-desc">A dead-simple meter for your master.</span></li>
                 <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Frequalizer"><span class="beta-pl-name">Frequalizer</span></label><span class="beta-pl-desc">A clean, fast 8-band EQ with a little wonk built in.</span></li>
-                <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Fizz"><span class="beta-pl-name">Fizz</span></label><span class="beta-pl-desc">Five flavors of grit, split across three bands, with one knob to rule them.</span></li>
                 <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Dub-It"><span class="beta-pl-name">Dub-It</span></label><span class="beta-pl-desc">From crisp digital repeats to dark, gritty dub throws, all on one knob.</span></li>
+                <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Spaces"><span class="beta-pl-name">Spaces</span></label><span class="beta-pl-desc">A spring-first reverb that stays out of the way of your mix.</span></li>
+                <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Fizz"><span class="beta-pl-name">Fizz</span></label><span class="beta-pl-desc">Five flavors of grit, split across three bands, with one knob to rule them.</span></li>
+                <li><label class="beta-pick"><input type="checkbox" checked data-beta-pick value="Meter"><span class="beta-pl-name">Meter</span></label><span class="beta-pl-desc">A dead-simple meter for your master.</span></li>
               </ul>
             </div>
             <div class="beta-files" data-beta-files hidden>
