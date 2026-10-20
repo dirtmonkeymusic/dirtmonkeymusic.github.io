@@ -3343,3 +3343,4 @@ kbd {
 .beta-files-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; }
 .beta-files-list .soon { color: rgba(255,255,255,.45); }
 .beta-pl-list li { grid-template-columns: 9.5em 1fr; } @media (max-width: 480px) { .beta-pl-list li { grid-template-columns: 1fr; } }
+.beta-who-fields { display: grid; grid-template-columns: 1fr; gap: 10px; } .beta-who-fields .beta-input { width: 100%; min-width: 0; box-sizing: border-box; }
