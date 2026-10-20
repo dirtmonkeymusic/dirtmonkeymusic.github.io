@@ -107,7 +107,7 @@ const node = process.execPath;
       ok(label + ": log has name, email, platform, version, time per download", dl.length === 3 && dl[2].plugins === "Punch, Dip" && dl[0].plugins === "Full suite" && dl[0].platform === "Mac" && dl[0].version === "1.0.3" && dl[1].platform === "PC" && dl[1].version === "1.0.2" && dl.every((r) => r.name === "Test Tester" && r.email === "test@example.com" && r.ts), dl);
       ok(label + ": both feedback notes logged with name and email", rows.filter((r) => r.kind === "feedback").map((r) => r.message).join("|") === "Love the knobs.|PC install was smooth.", rows);
       await p.click("[data-beta-all]");
-      await p.evaluate(() => { document.querySelector("[data-beta-files]").hidden = true; document.querySelector("[data-beta-sent]").hidden = true; window.scrollTo(0, 0); });
+      await p.evaluate(() => { document.querySelector("[data-beta-email]").value = ""; document.querySelector("[data-beta-files]").hidden = true; document.querySelector("[data-beta-sent]").hidden = true; window.scrollTo(0, 0); });
       await p.screenshot({ path: shot, fullPage: true });
       await ctx.close();
     }
