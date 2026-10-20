@@ -1,6 +1,7 @@
 // The hidden beta page (/beta/). Name and email (both required) open the Download for Mac and
 // Download for PC buttons. Versions and links come from /beta/latest.json (dev/beta-publish.js
-// writes it). Each download, and each "Send feedback" note, is logged to LOG_URL.
+// writes it). Testers can untick plugins: all ticked gets the full suite installer, otherwise one
+// installer per ticked plugin (latest[platform].plugins[name]). Each download, and each "Send feedback" note, is logged to LOG_URL.
 (function () {
   "use strict";
   var WHO = "dm-beta-who";
@@ -19,6 +20,11 @@
   var note = who.querySelector("[data-beta-feedback]");
   var sent = who.querySelector("[data-beta-sent]");
   var links = who.querySelectorAll("[data-beta-platform]");
+  var all = who.querySelector("[data-beta-all]");
+  var picks = Array.prototype.slice.call(who.querySelectorAll("[data-beta-pick]"));
+  var files = who.querySelector("[data-beta-files]");
+  var filesList = who.querySelector("[data-beta-files-list]");
+  var latest = {};
 
   try {
     var saved = JSON.parse(localStorage.getItem(WHO) || "null");
@@ -47,21 +53,66 @@
   }
 
   // Versions and links from the manifest. A platform with no build says "Coming soon".
-  fetch("/beta/latest.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : {}; }).then(function (latest) {
+  function direct(url) {
+    // Direct download: Dropbox dl=1 serves the file itself, no preview page.
+    try { var u = new URL(url); if (/(^|\.)dropbox\.com$/.test(u.hostname)) u.searchParams.set("dl", "1"); return u.toString(); } catch (x) { return url; }
+  }
+  function chosen() { return picks.filter(function (c) { return c.checked; }).map(function (c) { return c.value; }); }
+  function fill() {
+    var sel = chosen(), suite = sel.length === picks.length;
+    all.checked = suite;
+    all.indeterminate = sel.length > 0 && !suite;
     Array.prototype.forEach.call(links, function (a) {
-      var p = a.dataset.betaPlatform, b = latest[p] || {};
+      var p = a.dataset.betaPlatform, b = latest[p] || {}, per = b.plugins || {};
       var ver = who.querySelector('[data-beta-ver="' + p + '"]');
-      if (!b.url || !b.version) return;
-      // Direct download: Dropbox dl=1 serves the file itself, no preview page, same tab.
-      try { var u = new URL(b.url); if (/(^|\.)dropbox\.com$/.test(u.hostname)) u.searchParams.set("dl", "1"); a.href = u.toString(); } catch (x) { a.href = b.url; }
+      var useSuite = suite && b.url && b.version;
+      var have = sel.filter(function (n) { return per[n] && per[n].url; });
       a.removeAttribute("target");
-      a.dataset.betaVersion = b.version;
-      a.classList.remove("is-soon");
-      var d = b.date ? new Date(b.date + "T12:00:00") : null;
-      ver.textContent = "v" + b.version + (d ? " · " + MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() : "") + (b.size ? " · " + Math.max(1, Math.round(b.size / 1e6)) + " MB" : "");
+      a.dataset.betaVersion = useSuite ? b.version : have.map(function (n) { return per[n].version; }).filter(function (v, i, l) { return l.indexOf(v) === i; }).join("/");
+      if (useSuite) {
+        a.href = direct(b.url);
+        a.classList.remove("is-soon");
+        var d = b.date ? new Date(b.date + "T12:00:00") : null;
+        ver.textContent = "v" + b.version + (d ? " · " + MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear() : "") + (b.size ? " · " + Math.max(1, Math.round(b.size / 1e6)) + " MB" : "");
+      } else if (have.length) {
+        a.href = "#";
+        a.classList.remove("is-soon");
+        var mb = have.reduce(function (t, n) { return t + (per[n].size || 0); }, 0);
+        ver.textContent = have.length + (have.length === 1 ? " plugin" : " plugins") + (a.dataset.betaVersion ? " · v" + a.dataset.betaVersion : "") + (mb ? " · " + Math.max(1, Math.round(mb / 1e6)) + " MB" : "") + (have.length < sel.length ? " · " + (sel.length - have.length) + " not ready yet" : "");
+      } else {
+        a.href = "#";
+        a.classList.add("is-soon");
+        ver.textContent = sel.length ? "Coming soon" : "Pick at least one plugin";
+      }
     });
     refresh();
-  }).catch(function () {});
+  }
+  // One installer per ticked plugin. Browsers block a burst of downloads, so they start one at a time
+  // in hidden frames, and a list of direct links shows in case any is blocked.
+  function many(p) {
+    var per = (latest[p] || {}).plugins || {}, sel = chosen();
+    filesList.textContent = "";
+    sel.forEach(function (n, i) {
+      var li = document.createElement("li");
+      if (per[n] && per[n].url) {
+        var url = direct(per[n].url), link = document.createElement("a");
+        link.className = "text-link"; link.href = url; link.setAttribute("download", ""); link.textContent = n;
+        li.appendChild(link);
+        setTimeout(function () {
+          var f = document.createElement("iframe");
+          f.hidden = true; f.src = url;
+          document.body.appendChild(f);
+          setTimeout(function () { f.remove(); }, 60000);
+        }, i * 1200);
+      } else { li.className = "soon"; li.textContent = n + " (not ready yet)"; }
+      filesList.appendChild(li);
+    });
+    files.hidden = false;
+  }
+
+  fetch("/beta/latest.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { latest = j || {}; fill(); }).catch(function () {});
+  all.addEventListener("change", function () { picks.forEach(function (c) { c.checked = all.checked; }); fill(); });
+  picks.forEach(function (c) { c.addEventListener("change", fill); });
 
   name.addEventListener("input", refresh);
   email.addEventListener("input", refresh);
@@ -71,8 +122,10 @@
       if (a.classList.contains("is-soon")) { e.preventDefault(); return; }
       if (!refresh()) { e.preventDefault(); nag(); return; }
       // Feedback typed but not sent yet goes along with the download.
-      var text = note.value.trim();
-      send({ kind: "download", platform: LABEL[a.dataset.betaPlatform], version: a.dataset.betaVersion || "", message: text });
+      var text = note.value.trim(), sel = chosen();
+      var suite = a.getAttribute("href") !== "#";
+      if (!suite) { e.preventDefault(); many(a.dataset.betaPlatform); }
+      send({ kind: "download", platform: LABEL[a.dataset.betaPlatform], version: a.dataset.betaVersion || "", plugins: suite ? "Full suite" : sel.join(", "), message: text });
       if (text) { note.value = ""; sent.hidden = false; }
     });
   });

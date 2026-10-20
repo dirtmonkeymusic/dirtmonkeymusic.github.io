@@ -3328,3 +3328,17 @@ kbd {
 .beta-welcome .beta-who { margin-top: 18px; }
 @media (max-width: 480px) { .beta-buttons { flex-direction: column; align-items: stretch; } .beta-dl-col .btn { width: 100%; } }
 .beta-noshare { margin: 14px 0 0; font-size: .85rem; color: var(--neon-pink, #ff4fd8); }
+.beta-plugins { margin: 20px auto 0; max-width: 520px; text-align: left; border: 1px solid rgba(0,255,224,.25); border-radius: 14px; padding: 14px 16px; background: rgba(0,0,0,.25); }
+.beta-pl-title { margin: 0 0 8px; text-align: center; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--neon-cyan, #00ffe0); }
+.beta-pl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.beta-pl-list li { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; font-size: .8rem; line-height: 1.4; }
+.beta-pl-name { color: var(--neon-pink, #ff4fd8); font-weight: 700; }
+.beta-pl-desc { color: rgba(255,255,255,.75); }
+@media (max-width: 480px) { .beta-pl-list li { grid-template-columns: 1fr; gap: 1px; } }
+.beta-pick { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; }
+.beta-pick input { accent-color: #00ffe0; margin: 2px 0 0; width: 15px; height: 15px; flex: none; }
+.beta-pick-all { justify-content: center; margin: 0 0 10px; font-size: .8rem; color: #fff; }
+.beta-files { margin: 14px auto 0; max-width: 520px; font-size: .8rem; }
+.beta-files-note { margin: 0 0 6px; color: rgba(255,255,255,.75); }
+.beta-files-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; }
+.beta-files-list .soon { color: rgba(255,255,255,.45); }

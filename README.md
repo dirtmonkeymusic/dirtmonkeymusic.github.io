@@ -372,7 +372,12 @@ That copies the installer over `~/Dropbox/DM Beta Builds/Dirt Monkey Beta (Mac).
 Dropbox link never changes), writes the version, date and size into `beta/latest.json`, commits it, and
 pushes. Use `--platform pc` for the PC build. The first time for each platform, make a Dropbox share link
 for its file and run `node dev/beta-publish.js --platform mac --url "<link>"` once. `node dev/beta-publish.js list`
-shows what is up. Installers never go in this repo (GitHub blocks files over 100 MB and Pages sites over 1 GB).
+shows what is up.
+
+Per-plugin installers: add `--plugin "Punch"` (any of the nine) to the same commands, e.g.
+`node dev/beta-publish.js --platform mac --plugin "Punch" Punch.pkg --version 1.0.3 --push`, plus a one-time
+`--plugin "Punch" --url "<link>"`. They land in `beta/latest.json` under `mac.plugins` / `pc.plugins`; the suite entry stays.
+Testers with every plugin ticked get the suite; otherwise one download per ticked plugin. Installers never go in this repo (GitHub blocks files over 100 MB and Pages sites over 1 GB).
 
 Each download (name, email, Mac or PC, version, time) and each "Send feedback" note goes to the log Worker
 in `dev/beta-log-worker/` (set `LOG_URL` in `js/beta.js` once it is deployed). Test it all on the Mac with

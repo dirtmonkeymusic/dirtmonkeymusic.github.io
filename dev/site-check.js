@@ -468,9 +468,10 @@ async function open(b, url, viewport) {
       name: !!document.querySelector("[data-beta-name][required]"), email: !!document.querySelector("[data-beta-email][type=email][required]"),
       privacy: (document.querySelector(".beta-privacy") || {}).textContent || "", feedback: !!document.querySelector("[data-beta-feedback]") && !!document.querySelector("[data-beta-send]"),
       buttons: [...document.querySelectorAll("[data-beta-platform]")].map((a) => [a.textContent.trim(), a.getAttribute("aria-disabled")]),
+      plugins: [...document.querySelectorAll(".beta-pl-name")].map((e) => e.textContent),
       vers: [...document.querySelectorAll("[data-beta-ver]")].map((e) => e.textContent.trim())
     }));
-    ok("/beta/: name, email, privacy line, Mac and PC buttons with versions, feedback", form.name && form.email && /never share/.test(form.privacy) && form.feedback && JSON.stringify(form.buttons.map((x) => x[0])) === JSON.stringify(["Download for Mac", "Download for PC"]) && form.buttons.every((x) => x[1] === "true") && form.vers.length === 2 && form.vers.every((v) => /^(v\d+\.\d+\.\d+|Coming soon)/.test(v)), form);
+    ok("/beta/: name, email, privacy line, Mac and PC buttons with versions, feedback", form.name && form.email && /never share/.test(form.privacy) && form.feedback && JSON.stringify(form.buttons.map((x) => x[0])) === JSON.stringify(["Download for Mac", "Download for PC"]) && form.buttons.every((x) => x[1] === "true") && form.plugins.join() === "Punch,Updown,Wonk Factory,Spaces,Dip,Meter,Frequalizer,Fizz,Slammer" && form.vers.length === 2 && form.vers.every((v) => /^(v\d+\.\d+\.\d+|Coming soon)/.test(v)), form);
     await bp.close();
   }
 
