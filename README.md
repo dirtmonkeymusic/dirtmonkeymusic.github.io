@@ -374,7 +374,7 @@ pushes. Use `--platform pc` for the PC build. The first time for each platform, 
 for its file and run `node dev/beta-publish.js --platform mac --url "<link>"` once. `node dev/beta-publish.js list`
 shows what is up.
 
-Per-plugin installers: add `--plugin "Punch"` (any of the nine) to the same commands, e.g.
+Per-plugin installers: add `--plugin "Punch"` (any of the ten) to the same commands, e.g.
 `node dev/beta-publish.js --platform mac --plugin "Punch" Punch.pkg --version 1.0.3 --push`, plus a one-time
 `--plugin "Punch" --url "<link>"`. They land in `beta/latest.json` under `mac.plugins` / `pc.plugins`; the suite entry stays.
 Testers with every plugin ticked get the suite; otherwise one download per ticked plugin. Installers never go in this repo (GitHub blocks files over 100 MB and Pages sites over 1 GB).

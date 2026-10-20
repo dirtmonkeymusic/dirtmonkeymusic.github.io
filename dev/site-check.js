@@ -471,7 +471,7 @@ async function open(b, url, viewport) {
       plugins: [...document.querySelectorAll(".beta-pl-name")].map((e) => e.textContent),
       vers: [...document.querySelectorAll("[data-beta-ver]")].map((e) => e.textContent.trim())
     }));
-    ok("/beta/: name, email, privacy line, Mac and PC buttons with versions, feedback", form.name && form.email && /never share/.test(form.privacy) && form.feedback && JSON.stringify(form.buttons.map((x) => x[0])) === JSON.stringify(["Download for Mac", "Download for PC"]) && form.buttons.every((x) => x[1] === "true") && form.plugins.join() === "Punch,Updown,Wonk Factory,Spaces,Dip,Meter,Frequalizer,Fizz,Slammer" && form.vers.length === 2 && form.vers.every((v) => /^(v\d+\.\d+\.\d+|Coming soon)/.test(v)), form);
+    ok("/beta/: name, email, privacy line, Mac and PC buttons with versions, feedback", form.name && form.email && /never share/.test(form.privacy) && form.feedback && JSON.stringify(form.buttons.map((x) => x[0])) === JSON.stringify(["Download for Mac", "Download for PC"]) && form.buttons.every((x) => x[1] === "true") && form.plugins.join() === "Wonk Factory,Updown,Slammer,Punch,Spaces,Dip,Meter,Frequalizer,Fizz,Dub-It" && form.vers.length === 2 && form.vers.every((v) => /^(v\d+\.\d+\.\d+|Coming soon)/.test(v)), form);
     await bp.close();
   }
 

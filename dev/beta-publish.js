@@ -22,7 +22,7 @@ const ROOT = path.join(__dirname, "..");
 const LATEST = process.env.DM_BETA_LATEST || path.join(ROOT, "beta", "latest.json");
 const DIR = process.env.DM_BETA_DIR || path.join(os.homedir(), "Dropbox", "DM Beta Builds");
 const NAMES = { mac: "Mac", pc: "PC" };
-const PLUGINS = ["Punch", "Updown", "Wonk Factory", "Spaces", "Dip", "Meter", "Frequalizer", "Fizz", "Slammer"];
+const PLUGINS = ["Punch", "Updown", "Wonk Factory", "Spaces", "Dip", "Meter", "Frequalizer", "Fizz", "Slammer", "Dub-It"];
 
 function arg(n) { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : null; }
 function directLink(url) {
