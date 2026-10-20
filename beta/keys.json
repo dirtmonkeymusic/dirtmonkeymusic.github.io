@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "iterations": 200000,
+  "lookupSalt": "mvEBqPhdFTm1gLiD0baXdg==",
+  "keys": {
+    "c0afcec013a63c24a03ee2c1bf9998a6": {
+      "salt": "3oXxBhJqcfGWzykZPIyPdQ==",
+      "iv": "TkCDaR5B+Tni9kml",
+      "key": "k3Zy2AX/3W6E2xa5jEzyoHykhJJRRYeJc4XC4mL9t0lpBFFjjn1L5rp4SAlENVLs"
+    }
+  }
+}

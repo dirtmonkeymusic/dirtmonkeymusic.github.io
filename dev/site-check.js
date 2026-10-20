@@ -19,9 +19,9 @@ const ok = (name, cond, extra) => {
 const PAGES = fs.readFileSync(path.join(ROOT, "sitemap.xml"), "utf8")
   .match(/<loc>[^<]+<\/loc>/g)
   .map((l) => new URL(l.slice(5, -6)).pathname)
-  .concat(["/404.html", "/tools/beatmap/", "/signup/", "/merch/"]);
+  .concat(["/404.html", "/tools/beatmap/", "/signup/", "/merch/", "/beta/"]);
 // Live but not linked for now (Merch links open the Bass Threads store instead of /merch/). The launch pages must not show a link to any of them.
-const HIDDEN = ["/merch/", "/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/"];
+const HIDDEN = ["/merch/", "/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/", "/beta/"];
 const STORE = "https://dirtmonkey.bassthreadsmerch.com/";
 const LAUNCH_PAGES = ["/", "/shows/", "/privacy/"];
 const DESKTOP = { width: 1440, height: 900, deviceScaleFactor: 1 };
@@ -84,7 +84,7 @@ async function open(b, url, viewport) {
     }
     ok(`local links resolve (${links.size})`, broken.length === 0, broken.length ? broken : undefined);
     // Launch: every nav is just Merch and Shows, and the launch pages show no link to a hidden page.
-    for (const url of PAGES.filter((u) => u !== "/404.html" && u !== "/privacy/" && u !== "/tools/beatmap/")) {
+    for (const url of PAGES.filter((u) => u !== "/404.html" && u !== "/privacy/" && u !== "/tools/beatmap/" && u !== "/beta/")) {
       const p = await open(b, url, DESKTOP);
       const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
       // Home has no top links (its Merch and Shows buttons sit under Pong).
@@ -166,6 +166,21 @@ async function open(b, url, viewport) {
     ok("hidden name: no served file mentions it", hushText.length === 0, hushText.length ? hushText : undefined);
     const allNames = (function walk(dir) { return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => [".git", "node_modules", "tmp-audio", "uploads"].includes(e.name) ? [] : e.isDirectory() ? walk(path.join(dir, e.name)) : [path.relative(ROOT, path.join(dir, e.name))]); })(ROOT);
     const hushNames = allNames.filter((n) => tracked.has(n) && HUSH.test(n));
+    // Beta tester page: exists, noindex, out of the sitemap, and no other file links to it.
+    {
+      const betaHtml = fs.existsSync(path.join(ROOT, "beta", "index.html")) ? fs.readFileSync(path.join(ROOT, "beta", "index.html"), "utf8") : "";
+      ok("/beta/: exists and is noindex", /<meta name="robots" content="noindex">/.test(betaHtml), betaHtml.length);
+      ok("/beta/: not in the sitemap", !/\/beta\//.test(sitemap));
+      const linkers = files.filter((f) => tracked.has(path.relative(ROOT, f)) && !path.relative(ROOT, f).startsWith("beta/") && !path.relative(ROOT, f).startsWith("dev/") && path.relative(ROOT, f) !== "js/beta.js").filter((f) => /["'(=]\/beta\/?["')#?]|dirtmonkey\.music\/beta/.test(fs.readFileSync(f, "utf8"))).map((f) => path.relative(ROOT, f));
+      ok("/beta/: nothing links to it", linkers.length === 0, linkers.length ? linkers : undefined);
+      // Locked: the served page and its script carry none of the beta content, and the blob is not plain text.
+      const betaJs = fs.readFileSync(path.join(ROOT, "js", "beta.js"), "utf8");
+      const blob = fs.readFileSync(path.join(ROOT, "assets", "beta", "content.enc"));
+      const leaks = [betaHtml, betaJs, blob.toString("latin1")].filter((t) => /Download coming soon|FILL-IN|data-beta-download|What to tell us|Welcome to the beta|dropbox\.com|Wonk Factory|Frequalizer/i.test(t)).length;
+      ok("/beta/: locked page shows no beta content, footer is Privacy only", leaks === 0 && /enter your invite code/.test(betaHtml) && /<footer[\s\S]*<a href="\/privacy\/">Privacy<\/a>[\s\S]*<\/footer>/.test(betaHtml) && (betaHtml.split("<footer")[1].match(/<a /g) || []).length === 1, leaks);
+      const keys = JSON.parse(fs.readFileSync(path.join(ROOT, "beta", "keys.json"), "utf8"));
+      ok("/beta/: keys.json holds no names or codes", keys.iterations >= 200000 && Object.keys(keys.keys).length > 0 && !/MONKEY-|"name"|Test/.test(JSON.stringify(keys)), Object.keys(keys.keys).length);
+    }
     // App Store pages: one contact email, and the progress tip says what lives where.
     const contact = ["support/index.html", "support.html", "privacy/index.html"].map((f) => [f, fs.readFileSync(path.join(ROOT, f), "utf8")]);
     ok("support and privacy: one contact email", contact.every(([f, t]) => t.includes("dirtmonkey@mail.grokbot.com") && !/gmail\.com/i.test(t)) && contact.filter(([f]) => f.startsWith("support")).every(([f, t]) => (t.match(/mailto:([^"]+)"/g) || []).every((m) => m === 'mailto:dirtmonkey@mail.grokbot.com"') && /saved on your phone/.test(t) && /stored in iCloud/.test(t)), contact.map(([f]) => f));
@@ -446,6 +461,32 @@ async function open(b, url, viewport) {
       await f.close();
     }
     await r.close();
+  }
+
+  // Beta: a wrong code is turned away, the Test code (from the local, gitignored code list) unlocks the
+  // nine plugin cards, and the next visit gets straight in.
+  if (only === "all" || only === "beta") {
+    const localCodes = path.join(__dirname, "beta-codes.local.json");
+    const test = fs.existsSync(localCodes) ? (JSON.parse(fs.readFileSync(localCodes, "utf8")).testers || []).find((t) => t.name === "Test") : null;
+    const bp = await open(b, "/beta/", PHONE);
+    await bp.type("[data-beta-code]", "MONKEY-WRONG1");
+    await bp.click("[data-beta-unlock]");
+    await bp.waitForFunction(() => !document.querySelector("[data-beta-error]").hidden, { timeout: 15000 }).catch(() => {});
+    const wrong = await bp.evaluate(() => ({ err: document.querySelector("[data-beta-error]").hidden ? "" : document.querySelector("[data-beta-error]").textContent, shown: !document.querySelector("[data-beta-content]").hidden }));
+    ok("/beta/: a wrong code is turned away", wrong.err === "That code didn't work. Check it and try again." && !wrong.shown, wrong);
+    if (!test) ok("/beta/: Test code unlocks (needs dev/beta-codes.local.json)", false);
+    else {
+      await bp.$eval("[data-beta-code]", (e) => { e.value = ""; });
+      await bp.type("[data-beta-code]", test.code.toLowerCase());
+      await bp.click("[data-beta-unlock]");
+      await bp.waitForFunction(() => !document.querySelector("[data-beta-content]").hidden, { timeout: 20000 }).catch(() => {});
+      const got = await bp.evaluate(() => ({ shown: !document.querySelector("[data-beta-content]").hidden, locked: !document.querySelector("[data-beta-lock]").hidden, cards: [...document.querySelectorAll("[data-beta-download]")].map((a) => a.dataset.betaDownload), text: document.querySelector("[data-beta-content]").innerText, mail: [...document.querySelectorAll("[data-beta-content] a[href^=mailto]")].map((a) => a.href) }));
+      ok("/beta/: Test code unlocks the content", got.shown && !got.locked && got.cards.join() === "Punch,Updown,Wonk Factory,Spaces,Dip,Meter,Frequalizer,Fizz,Slammer" && !/The End/.test(got.text) && /What to tell us/.test(got.text) && got.mail.every((m) => m === "mailto:dirtmonkey@mail.grokbot.com") && !got.text.includes("\u2014"), { cards: got.cards, mail: got.mail });
+      await bp.goto(BASE + "/beta/", { waitUntil: "networkidle0" });
+      await bp.waitForFunction(() => !document.querySelector("[data-beta-content]").hidden, { timeout: 20000 }).catch(() => {});
+      ok("/beta/: a returning tester gets straight in", await bp.evaluate(() => !document.querySelector("[data-beta-content]").hidden));
+    }
+    await bp.close();
   }
 
   await b.close();

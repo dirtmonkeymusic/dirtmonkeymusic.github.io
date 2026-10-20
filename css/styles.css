@@ -3281,3 +3281,30 @@ kbd {
   .play-btn.is-loading .play-ring { animation: none; }
   .pill:hover { transform: none; }
 }
+
+
+/* Beta tester page (/beta/, hidden): logo header, welcome card, steps, plugin cards, footer with Privacy only. */
+.beta-header { display: flex; justify-content: center; padding: 28px 16px 0; }
+.beta-header .logo-mark { width: min(300px, 72vw); }
+.beta-welcome { text-align: center; }
+.beta-monkey { display: block; width: 120px; margin: 0 auto 10px; }
+.beta-monkey img { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 12px rgba(61, 255, 242, 0.5)); }
+.beta-h2 { text-align: center; font-size: clamp(1.25rem, 2.6vw, 1.6rem); text-shadow: 0 0 12px rgba(255, 43, 214, 0.35); }
+.beta-steps, .beta-list { max-width: 520px; margin: 0 auto; padding-left: 1.4em; color: var(--muted); line-height: 1.8; }
+.beta-steps strong { color: var(--cyan); }
+.beta-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+.beta-card { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 14px; border-radius: 20px; border: 1px solid rgba(61, 255, 242, 0.35); background: var(--card); box-shadow: 0 0 18px rgba(61, 255, 242, 0.08); }
+.beta-card:nth-child(even) { border-color: rgba(255, 43, 214, 0.4); }
+.beta-card-name { margin: 0; font-size: 1.05rem; color: var(--ink); }
+.beta-download.is-soon { opacity: 0.6; pointer-events: none; }
+.beta-mail { text-align: center; margin-top: 16px; }
+.beta-footer .footer-inner { justify-content: center; }
+.beta-lock-title { margin: 6px 0 18px; font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: var(--ink); text-shadow: 0 0 12px rgba(255, 43, 214, 0.35); }
+.beta-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; }
+.beta-input { flex: 1; min-width: 0; min-height: 48px; padding: 0 18px; border-radius: 999px; border: 1.5px solid rgba(61, 255, 242, 0.55); background: #0b0710; color: var(--ink); font: inherit; font-size: 0.95rem; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 0 0 14px rgba(61, 255, 242, 0.12); }
+.beta-input:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 18px rgba(61, 255, 242, 0.35); }
+.beta-input::placeholder { color: var(--dim); }
+.beta-unlock[disabled] { opacity: 0.6; }
+.beta-error { margin: 14px 0 0; color: var(--magenta); font-size: 0.85rem; }
+.beta-error[hidden] { display: none; }
+@media (max-width: 480px) { .beta-form { flex-direction: column; } }
