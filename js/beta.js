@@ -7,7 +7,7 @@
   var WHO = "dm-beta-who";
   // EDIT: where downloads and feedback are logged (dev/beta-log-worker/README.md). Empty means no logging yet.
   // It will look like "https://dm-beta-log.<you>.workers.dev/log".
-  var LOG_URL = "";
+  var LOG_URL = "https://dm-beta-log.dirtmonkeymusic.workers.dev/log";
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var LABEL = { mac: "Mac", pc: "PC" };
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
