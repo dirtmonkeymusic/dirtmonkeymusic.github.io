@@ -3,7 +3,4 @@ node_modules/
 tmp-audio/
 uploads/
 app/README-releases.md
-dev/beta-codes.local.json
-dev/beta-content.local.html
-dev/beta-builds.local.json
 dev/beta-log.local.jsonl

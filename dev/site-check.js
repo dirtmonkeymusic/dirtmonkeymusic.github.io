@@ -173,13 +173,9 @@ async function open(b, url, viewport) {
       ok("/beta/: not in the sitemap", !/\/beta\//.test(sitemap));
       const linkers = files.filter((f) => tracked.has(path.relative(ROOT, f)) && !path.relative(ROOT, f).startsWith("beta/") && !path.relative(ROOT, f).startsWith("dev/") && path.relative(ROOT, f) !== "js/beta.js").filter((f) => /["'(=]\/beta\/?["')#?]|dirtmonkey\.music\/beta/.test(fs.readFileSync(f, "utf8"))).map((f) => path.relative(ROOT, f));
       ok("/beta/: nothing links to it", linkers.length === 0, linkers.length ? linkers : undefined);
-      // Locked: the served page and its script carry none of the beta content, and the blob is not plain text.
-      const betaJs = fs.readFileSync(path.join(ROOT, "js", "beta.js"), "utf8");
-      const blob = fs.readFileSync(path.join(ROOT, "assets", "beta", "content.enc"));
-      const leaks = [betaHtml, betaJs, blob.toString("latin1")].filter((t) => /Download coming soon|FILL-IN|data-beta-download|What to tell us|Welcome to the beta|dropbox\.com|Wonk Factory|Frequalizer/i.test(t)).length;
-      ok("/beta/: locked page shows no beta content, footer is Privacy only", leaks === 0 && /enter your invite code/.test(betaHtml) && /<footer[\s\S]*<a href="\/privacy\/">Privacy<\/a>[\s\S]*<\/footer>/.test(betaHtml) && (betaHtml.split("<footer")[1].match(/<a /g) || []).length === 1, leaks);
-      const keys = JSON.parse(fs.readFileSync(path.join(ROOT, "beta", "keys.json"), "utf8"));
-      ok("/beta/: keys.json holds no names or codes", keys.iterations >= 200000 && Object.keys(keys.keys).length > 0 && !/MONKEY-|"name"|Test/.test(JSON.stringify(keys)), Object.keys(keys.keys).length);
+      const latest = JSON.parse(fs.readFileSync(path.join(ROOT, "beta", "latest.json"), "utf8"));
+      const shapeOk = ["mac", "pc"].every((p) => latest[p] && typeof latest[p].version === "string" && typeof latest[p].url === "string" && (!latest[p].version || /^\d+\.\d+\.\d+$/.test(latest[p].version)));
+      ok("/beta/: latest.json has a Mac and a PC entry, footer is Privacy only", shapeOk && /<footer[\s\S]*<a href="\/privacy\/">Privacy<\/a>[\s\S]*<\/footer>/.test(betaHtml) && (betaHtml.split("<footer")[1].match(/<a /g) || []).length === 1, latest);
     }
     // App Store pages: one contact email, and the progress tip says what lives where.
     const contact = ["support/index.html", "support.html", "privacy/index.html"].map((f) => [f, fs.readFileSync(path.join(ROOT, f), "utf8")]);
@@ -463,29 +459,18 @@ async function open(b, url, viewport) {
     await r.close();
   }
 
-  // Beta: a wrong code is turned away, the Test code (from the local, gitignored code list) unlocks the
-  // nine plugin cards, and the next visit gets straight in.
+  // Beta: the form is there, and with no name and email the downloads stay shut. The full flow
+  // (fake builds, the log, feedback) is dev/beta-flow-test.js.
   if (only === "all" || only === "beta") {
-    const localCodes = path.join(__dirname, "beta-codes.local.json");
-    const test = fs.existsSync(localCodes) ? (JSON.parse(fs.readFileSync(localCodes, "utf8")).testers || []).find((t) => t.name === "Test") : null;
     const bp = await open(b, "/beta/", PHONE);
-    await bp.type("[data-beta-code]", "MONKEY-WRONG1");
-    await bp.click("[data-beta-unlock]");
-    await bp.waitForFunction(() => !document.querySelector("[data-beta-error]").hidden, { timeout: 15000 }).catch(() => {});
-    const wrong = await bp.evaluate(() => ({ err: document.querySelector("[data-beta-error]").hidden ? "" : document.querySelector("[data-beta-error]").textContent, shown: !document.querySelector("[data-beta-content]").hidden }));
-    ok("/beta/: a wrong code is turned away", wrong.err === "That code didn't work. Check it and try again." && !wrong.shown, wrong);
-    if (!test) ok("/beta/: Test code unlocks (needs dev/beta-codes.local.json)", false);
-    else {
-      await bp.$eval("[data-beta-code]", (e) => { e.value = ""; });
-      await bp.type("[data-beta-code]", test.code.toLowerCase());
-      await bp.click("[data-beta-unlock]");
-      await bp.waitForFunction(() => !document.querySelector("[data-beta-content]").hidden, { timeout: 20000 }).catch(() => {});
-      const got = await bp.evaluate(() => ({ shown: !document.querySelector("[data-beta-content]").hidden, locked: !document.querySelector("[data-beta-lock]").hidden, cards: [...document.querySelectorAll("[data-beta-download]")].map((a) => a.dataset.betaDownload), text: document.querySelector("[data-beta-content]").innerText, mail: [...document.querySelectorAll("[data-beta-content] a[href^=mailto]")].map((a) => a.href), who: !!document.querySelector("[data-beta-name][required]") && !!document.querySelector("[data-beta-email][required]") && !!document.querySelector(".beta-privacy") && !!document.querySelector("[data-beta-feedback]") && !!document.querySelector("[data-beta-send]") }));
-      ok("/beta/: Test code unlocks the content", got.shown && !got.locked && got.cards.join() === "Punch,Updown,Wonk Factory,Spaces,Dip,Meter,Frequalizer,Fizz,Slammer" && !/The End/.test(got.text) && /What to tell us/.test(got.text) && got.mail.every((m) => m === "mailto:dirtmonkey@mail.grokbot.com") && !got.text.includes("\u2014") && got.who, { cards: got.cards, mail: got.mail, who: got.who });
-      await bp.goto(BASE + "/beta/", { waitUntil: "networkidle0" });
-      await bp.waitForFunction(() => !document.querySelector("[data-beta-content]").hidden, { timeout: 20000 }).catch(() => {});
-      ok("/beta/: a returning tester gets straight in", await bp.evaluate(() => !document.querySelector("[data-beta-content]").hidden));
-    }
+    await wait(500);
+    const form = await bp.evaluate(() => ({
+      name: !!document.querySelector("[data-beta-name][required]"), email: !!document.querySelector("[data-beta-email][type=email][required]"),
+      privacy: (document.querySelector(".beta-privacy") || {}).textContent || "", feedback: !!document.querySelector("[data-beta-feedback]") && !!document.querySelector("[data-beta-send]"),
+      buttons: [...document.querySelectorAll("[data-beta-platform]")].map((a) => [a.textContent.trim(), a.getAttribute("aria-disabled")]),
+      vers: [...document.querySelectorAll("[data-beta-ver]")].map((e) => e.textContent.trim())
+    }));
+    ok("/beta/: name, email, privacy line, Mac and PC buttons with versions, feedback", form.name && form.email && /never share/.test(form.privacy) && form.feedback && JSON.stringify(form.buttons.map((x) => x[0])) === JSON.stringify(["Download for Mac", "Download for PC"]) && form.buttons.every((x) => x[1] === "true") && form.vers.length === 2 && form.vers.every((v) => /^(v\d+\.\d+\.\d+|Coming soon)/.test(v)), form);
     await bp.close();
   }
 

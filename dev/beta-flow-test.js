@@ -1,7 +1,7 @@
-// End-to-end test of /beta/ downloads, on the Mac only (changes nothing that gets committed).
-// Builds a throwaway copy of the content with one fake Wonk Factory build (DM_BETA_BUILDS = a temp file),
-// unlocks with the Test code, checks the name and email gate, the log rows (dev/beta-log-server.js on a
-// spare port) and the feedback box, takes screenshots, then rebuilds the real content again.
+// End-to-end test of /beta/, on the Mac only (changes nothing that gets committed).
+// Serves a fake beta/latest.json (Mac v1.0.3, PC v1.0.2), checks the name and email gate, the log rows
+// (dev/beta-log-server.js on a spare port) and the feedback box, and takes screenshots.
+// Also runs dev/beta-publish.js against temp copies to check it writes the manifest right.
 // node dev/beta-flow-test.js [screenshot.png]
 const fs = require("fs");
 const os = require("os");
@@ -13,18 +13,27 @@ const { LAUNCH } = require("./env");
 const BASE = process.env.BASE || "http://127.0.0.1:47321";
 const LOGPORT = 47331;
 const SHOT = process.argv[2] || path.join(os.tmpdir(), "beta-flow.png");
-const tmpBuilds = path.join(os.tmpdir(), "beta-builds.test.json");
 const logFile = path.join(__dirname, "beta-log.local.jsonl");
-const FAKE = "https://www.dropbox.com/scl/fi/TESTONLY/Wonk%20Factory.pkg?dl=1";
+const MAC = "https://www.dropbox.com/scl/fi/TESTONLY/Dirt%20Monkey%20Beta%20(Mac).pkg?dl=1";
+const PC = "https://www.dropbox.com/scl/fi/TESTONLY/Dirt%20Monkey%20Beta%20(PC).zip?dl=1";
+const FAKE = { mac: { version: "1.0.3", url: MAC.replace("dl=1", "dl=0"), size: 142889782, date: "2026-10-20" }, pc: { version: "1.0.2", url: PC, size: 98000000, date: "2026-10-19" } };
 const results = [];
 const ok = (n, c, x) => { results.push([n, !!c]); console.log((c ? "PASS " : "FAIL ") + n + (x !== undefined ? " " + JSON.stringify(x) : "")); };
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const node = process.execPath;
 
 (async () => {
-  const code = JSON.parse(fs.readFileSync(path.join(__dirname, "beta-codes.local.json"), "utf8")).testers.find((t) => t.name === "Test").code;
-  fs.writeFileSync(tmpBuilds, JSON.stringify({ "Wonk Factory": { version: "1.0.3", url: FAKE, size: 142889782, date: "2026-10-20" } }));
-  execFileSync(node, [path.join(__dirname, "beta-codes.js"), "rebuild"], { env: { ...process.env, DM_BETA_BUILDS: tmpBuilds }, stdio: "inherit" });
+  // beta-publish.js on temp copies
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "betapub-"));
+  const man = path.join(tmp, "latest.json"), inst = path.join(tmp, "build.pkg");
+  fs.copyFileSync(path.join(__dirname, "..", "beta", "latest.json"), man);
+  fs.writeFileSync(inst, Buffer.alloc(2e6));
+  const env = { ...process.env, DM_BETA_LATEST: man, DM_BETA_DIR: path.join(tmp, "dropbox") };
+  execFileSync(node, [path.join(__dirname, "beta-publish.js"), "--platform", "mac", inst, "--version", "2.0.1"], { env, stdio: "ignore" });
+  execFileSync(node, [path.join(__dirname, "beta-publish.js"), "--platform", "mac", "--url", "https://www.dropbox.com/scl/fi/x/a.pkg?rlkey=k&dl=0"], { env, stdio: "ignore" });
+  const m = JSON.parse(fs.readFileSync(man, "utf8"));
+  ok("beta-publish writes version, size, date, dl=1 link, and copies to Dropbox", m.mac.version === "2.0.1" && m.mac.size === 2e6 && /dl=1/.test(m.mac.url) && !m.pc.version && fs.existsSync(path.join(tmp, "dropbox", "Dirt Monkey Beta (Mac).pkg")), m.mac);
+
   const before = fs.existsSync(logFile) ? fs.readFileSync(logFile, "utf8") : null;
   if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
   const log = spawn(node, [path.join(__dirname, "beta-log-server.js"), String(LOGPORT)], { stdio: "ignore" });
@@ -32,68 +41,63 @@ const node = process.execPath;
   const b = await puppeteer.launch(LAUNCH);
   try {
     for (const [label, vp, shot] of [["desktop", { width: 1440, height: 900 }, SHOT], ["phone", { width: 390, height: 844, deviceScaleFactor: 3, isMobile: true, hasTouch: true }, SHOT.replace(/\.png$/, "-mobile.png")]]) {
+      if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
       const ctx = await b.createBrowserContext();
       const p = await ctx.newPage();
       await p.setViewport(vp);
       await p.evaluateOnNewDocument((u) => { window.DM_BETA_LOG_URL = u; }, "http://127.0.0.1:" + LOGPORT + "/log");
       await p.setRequestInterception(true);
       const hits = [];
-      p.on("request", (r) => { if (r.url().startsWith("https://www.dropbox.com/scl/fi/TESTONLY")) { hits.push(r.url()); r.respond({ status: 200, contentType: "text/plain", body: "test" }); } else r.continue(); });
+      p.on("request", (r) => {
+        if (r.url().endsWith("/beta/latest.json")) return r.respond({ status: 200, contentType: "application/json", body: JSON.stringify(FAKE) });
+        if (r.url().startsWith("https://www.dropbox.com/")) { hits.push(r.url()); return r.respond({ status: 204, body: "" }); }
+        r.continue();
+      });
       await p.goto(BASE + "/beta/", { waitUntil: "networkidle0" });
-      await p.type("[data-beta-code]", code);
-      await p.click("[data-beta-unlock]");
-      await p.waitForFunction(() => !document.querySelector("[data-beta-content]").hidden, { timeout: 20000 });
-      const cards = await p.$$eval(".beta-card", (els) => els.map((e) => [e.querySelector(".beta-card-name").textContent, e.querySelector(".beta-download").textContent.trim(), (e.querySelector(".beta-card-ver") || {}).textContent || ""]));
-      const wf = cards.find((c) => c[0] === "Wonk Factory");
-      ok(label + ": Wonk Factory shows its build, the rest are coming soon", wf[1] === "Download" && /v1\.0\.3 · Oct 20, 2026 · 143 MB/.test(wf[2]) && cards.filter((c) => c[1] === "Download coming soon").length === 8, wf);
-      const sel = '.beta-download[data-beta-download="Wonk Factory"]';
-      ok(label + ": download starts gated", await p.$eval(sel, (a) => a.classList.contains("is-gated") && a.getAttribute("aria-disabled") === "true"));
-      await p.click(sel);
+      const vers = await p.$$eval("[data-beta-ver]", (e) => e.map((x) => x.textContent));
+      ok(label + ": versions shown by the buttons", /^v1\.0\.3/.test(vers[0]) && /^v1\.0\.2/.test(vers[1]), vers);
+      await p.click('[data-beta-platform="mac"]');
       await wait(300);
-      ok(label + ": no name or email, so no download and a hint", hits.length === 0 && await p.$eval("[data-beta-who-error]", (e) => !e.hidden));
+      ok(label + ": no name or email, Mac download blocked with a message", hits.length === 0 && await p.$eval("[data-beta-who-error]", (e) => !e.hidden));
       await p.type("[data-beta-name]", "Test Tester");
       await p.type("[data-beta-email]", "not-an-email");
-      ok(label + ": a bad email keeps it gated", await p.$eval(sel, (a) => a.classList.contains("is-gated")));
-      await p.$eval("[data-beta-email]", (e) => { e.value = ""; });
-      await p.type("[data-beta-email]", "tester@example.com");
-      ok(label + ": name and email open the download", await p.$eval(sel, (a) => !a.classList.contains("is-gated")));
-      if (label === "desktop") {
-        await p.type("[data-beta-feedback]", "Love the wobble. Can we get a darker preset?");
-        await p.click("[data-beta-send]");
-        await wait(300);
-        ok(label + ": feedback sends and says thanks", await p.$eval("[data-beta-sent]", (e) => !e.hidden && e.textContent === "Thanks! We got it."));
-        await p.$eval("[data-beta-sent]", (e) => { e.hidden = true; });
-        await p.$eval("[data-beta-name]", (e) => e.scrollIntoView({ block: "start" }));
-        await p.screenshot({ path: shot, fullPage: true });
-      }
-      await Promise.all([p.waitForRequest((r) => r.url().startsWith("https://www.dropbox.com/scl/fi/TESTONLY"), { timeout: 5000 }).catch(() => null), p.click(sel)]);
-      await wait(800);
-      ok(label + ": the download link was followed", hits.length === 1, hits);
-      if (label === "phone") {
-        await p.goto(BASE + "/beta/", { waitUntil: "networkidle0" });
-        await p.waitForFunction(() => !document.querySelector("[data-beta-content]").hidden, { timeout: 20000 });
-        const kept = await p.evaluate(() => [document.querySelector("[data-beta-name]").value, document.querySelector("[data-beta-email]").value]);
-        ok(label + ": name and email are remembered", kept[0] === "Test Tester" && kept[1] === "tester@example.com", kept);
-        await p.$eval("[data-beta-name]", (e) => e.scrollIntoView({ block: "start" }));
-        await p.screenshot({ path: shot, fullPage: true });
-      }
+      await p.click('[data-beta-platform="pc"]');
+      await wait(300);
+      ok(label + ": bad email still blocked", hits.length === 0);
+      await p.click("[data-beta-email]", { clickCount: 3 });
+      await p.type("[data-beta-email]", "test@example.com");
+      await p.type("[data-beta-feedback]", "Love the knobs.");
+      await p.click("[data-beta-send]");
+      await wait(300);
+      ok(label + ": feedback before download says thanks and clears", await p.$eval("[data-beta-sent]", (e) => !e.hidden) && await p.$eval("[data-beta-feedback]", (e) => e.value === ""));
+      const pagesBefore = (await ctx.pages()).length;
+      const attrs = await p.$$eval("[data-beta-platform]", (e) => e.map((a) => [a.href, a.target, a.hasAttribute("download")]));
+      ok(label + ": buttons are direct dl=1 links, same tab", attrs.every((x) => /[?&]dl=1(&|$)/.test(x[0]) && !x[1] && x[2]), attrs);
+      ok(label + ": note says Please don't share this link.", await p.$eval(".beta-noshare", (e) => e.textContent.trim() === "Please don't share this link." && e.offsetParent !== null));
+      await p.click('[data-beta-platform="mac"]');
+      await wait(400);
+      await p.click('[data-beta-platform="pc"]');
+      await wait(400);
+      await p.type("[data-beta-feedback]", "PC install was smooth.");
+      await p.click("[data-beta-send]");
+      await wait(600);
+      ok(label + ": both downloads go to their Dropbox links", hits.includes(MAC) && hits.includes(PC), hits);
+      ok(label + ": no new tab or window opened", (await ctx.pages()).length === pagesBefore);
+      const rows = fs.existsSync(logFile) ? fs.readFileSync(logFile, "utf8").trim().split("\n").map((l) => JSON.parse(l)) : [];
+      const dl = rows.filter((r) => r.kind === "download");
+      ok(label + ": log has name, email, platform, version, time per download", dl.length === 2 && dl[0].platform === "Mac" && dl[0].version === "1.0.3" && dl[1].platform === "PC" && dl[1].version === "1.0.2" && dl.every((r) => r.name === "Test Tester" && r.email === "test@example.com" && r.ts), dl);
+      ok(label + ": both feedback notes logged with name and email", rows.filter((r) => r.kind === "feedback").map((r) => r.message).join("|") === "Love the knobs.|PC install was smooth.", rows);
+      await p.evaluate(() => { document.querySelector("[data-beta-sent]").hidden = true; window.scrollTo(0, 0); });
+      await p.screenshot({ path: shot, fullPage: true });
       await ctx.close();
     }
-    await wait(500);
-    const csv = execFileSync("curl", ["-s", "http://127.0.0.1:" + LOGPORT + "/export.csv?token=local"]).toString();
-    console.log(csv);
-    const lines = csv.trim().split("\n");
-    ok("log: header, 2 downloads and 1 feedback", lines[0] === "timestamp,kind,name,email,plugin,version,message" && lines.filter((l) => l.includes('"download","Test Tester","tester@example.com","Wonk Factory","1.0.3"')).length === 2 && lines.filter((l) => l.includes('"feedback","Test Tester","tester@example.com","",""') && l.includes("darker preset")).length === 1, lines.length);
-    ok("log: no access without the token", execFileSync("curl", ["-s", "-o", "/dev/null", "-w", "%{http_code}", "http://127.0.0.1:" + LOGPORT + "/export.csv"]).toString() === "403");
   } finally {
     await b.close();
     log.kill();
-    fs.unlinkSync(tmpBuilds);
-    if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
-    if (before !== null) fs.writeFileSync(logFile, before);
-    execFileSync(node, [path.join(__dirname, "beta-codes.js"), "rebuild"], { stdio: "inherit" });
+    if (before !== null) fs.writeFileSync(logFile, before); else if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
+    fs.rmSync(tmp, { recursive: true, force: true });
   }
-  const bad = results.filter((r) => !r[1]);
-  console.log(bad.length ? "FAILED: " + bad.map((r) => r[0]).join(", ") : "ALL PASS (" + results.length + " checks)");
-  process.exit(bad.length ? 1 : 0);
+  const fails = results.filter((r) => !r[1]).length;
+  console.log(results.length - fails + "/" + results.length + " passed");
+  process.exit(fails ? 1 : 0);
 })();

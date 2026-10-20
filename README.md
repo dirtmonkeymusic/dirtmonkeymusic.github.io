@@ -363,17 +363,17 @@ Some content is off the site for now. A branch and a tag hold the site exactly a
 
 ## Beta page: new builds
 
-Hidden, invite-only (codes: `node dev/beta-codes.js`). To give testers a new build:
+Hidden, unlinked and noindex. Testers enter a name and email, then Download for Mac or Download for PC.
+To give testers a new build:
 
-    node dev/beta-publish.js "Wonk Factory" path/to/WonkFactory.pkg --version 1.0.3 --push
+    node dev/beta-publish.js --platform mac path/to/DirtMonkeyBeta.pkg --version 1.0.3 --push
 
-That copies the installer over `~/Dropbox/DM Beta Builds/Wonk Factory.pkg` (same file, so its Dropbox link
-never changes), records the version in `dev/beta-builds.local.json` (local only), re-encrypts the beta content
-with the new version on the card, commits `assets/beta/content.enc`, and pushes. The first time for each plugin,
-make a Dropbox share link for its file and run `node dev/beta-publish.js "Plugin" --url "<link>"` once.
-`node dev/beta-publish.js list` shows what is up. Installers never go in this repo (GitHub blocks files over
-100 MB and Pages sites over 1 GB; Wonk Factory alone is 143 MB).
+That copies the installer over `~/Dropbox/DM Beta Builds/Dirt Monkey Beta (Mac).pkg` (same file, so its
+Dropbox link never changes), writes the version, date and size into `beta/latest.json`, commits it, and
+pushes. Use `--platform pc` for the PC build. The first time for each platform, make a Dropbox share link
+for its file and run `node dev/beta-publish.js --platform mac --url "<link>"` once. `node dev/beta-publish.js list`
+shows what is up. Installers never go in this repo (GitHub blocks files over 100 MB and Pages sites over 1 GB).
 
-Downloads need a name and email, and each download or "Send feedback" note goes to the log Worker in
-`dev/beta-log-worker/` (set `LOG_URL` in `js/beta.js` once it is deployed). Test it all on the Mac with
+Each download (name, email, Mac or PC, version, time) and each "Send feedback" note goes to the log Worker
+in `dev/beta-log-worker/` (set `LOG_URL` in `js/beta.js` once it is deployed). Test it all on the Mac with
 `node dev/beta-flow-test.js`.
