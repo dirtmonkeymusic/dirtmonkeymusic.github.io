@@ -3308,3 +3308,17 @@ kbd {
 .beta-error { margin: 14px 0 0; color: var(--magenta); font-size: 0.85rem; }
 .beta-error[hidden] { display: none; }
 @media (max-width: 480px) { .beta-form { flex-direction: column; } }
+.beta-who { max-width: 560px; margin: 0 auto 22px; text-align: center; }
+.beta-who-title { margin: 0 0 12px; color: var(--ink); font-weight: 700; }
+.beta-who-fields { display: flex; gap: 10px; }
+.beta-who .beta-input { text-transform: none; letter-spacing: 0; }
+.beta-privacy { margin: 10px 0 0; color: var(--dim); font-size: 0.72rem; line-height: 1.5; opacity: 0.85; }
+.beta-card-ver { margin: -4px 0 0; color: var(--dim); font-size: 0.72rem; }
+.beta-card.is-ready { border-color: rgba(214, 255, 74, 0.5); }
+.beta-download.is-gated { opacity: 0.45; cursor: not-allowed; }
+@media (max-width: 480px) { .beta-who-fields { flex-direction: column; } }
+.beta-feedback-label { display: block; margin: 16px 0 6px; color: var(--muted); font-size: 0.8rem; }
+.beta-feedback { width: 100%; min-height: 84px; padding: 12px 18px; border-radius: 20px; resize: vertical; font-size: 0.85rem; }
+.beta-send { margin-top: 10px; min-height: 40px; padding: 8px 16px; font-size: 0.78rem; }
+.beta-sent { margin: 8px 0 0; color: var(--mint); font-size: 0.8rem; }
+.beta-sent[hidden] { display: none; }

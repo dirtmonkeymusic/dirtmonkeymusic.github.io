@@ -5,6 +5,11 @@
 (function () {
   "use strict";
   var STORE = "dm-beta-code";
+  var WHO = "dm-beta-who";
+  // EDIT: where each download is logged (name, email, plugin, version, time). Empty means no logging yet.
+  // See dev/beta-log-worker/README.md. It will look like "https://dm-beta-log.<you>.workers.dev/log".
+  var LOG_URL = "";
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var form = document.querySelector("[data-beta-form]");
   var input = document.querySelector("[data-beta-code]");
   var button = document.querySelector("[data-beta-unlock]");
@@ -71,6 +76,66 @@
     out.hidden = false;
     lock.hidden = true;
     document.body.classList.add("is-unlocked");
+    gateDownloads();
+  }
+
+  // Downloads need a name and a working email. Each download is logged (when LOG_URL is set).
+  function gateDownloads() {
+    var who = out.querySelector("[data-beta-who]");
+    if (!who) return;
+    var name = who.querySelector("[data-beta-name]");
+    var email = who.querySelector("[data-beta-email]");
+    var err = who.querySelector("[data-beta-who-error]");
+    var links = out.querySelectorAll(".beta-download:not(.is-soon)");
+    try {
+      var saved = JSON.parse(localStorage.getItem(WHO) || "null");
+      if (saved) { name.value = saved.name || ""; email.value = saved.email || ""; }
+    } catch (e) {}
+    function good() { return name.value.trim().length > 0 && EMAIL.test(email.value.trim()); }
+    function refresh() {
+      var ok = good();
+      for (var i = 0; i < links.length; i++) {
+        links[i].classList.toggle("is-gated", !ok);
+        links[i].setAttribute("aria-disabled", ok ? "false" : "true");
+      }
+      if (ok) err.hidden = true;
+      return ok;
+    }
+    name.addEventListener("input", refresh);
+    email.addEventListener("input", refresh);
+    var note = who.querySelector("[data-beta-feedback]");
+    var sent = who.querySelector("[data-beta-sent]");
+    function send(row) {
+      try { localStorage.setItem(WHO, JSON.stringify({ name: row.name, email: row.email })); } catch (x) {}
+      var to = window.DM_BETA_LOG_URL || LOG_URL;
+      if (to && navigator.sendBeacon) navigator.sendBeacon(to, new Blob([JSON.stringify(row)], { type: "text/plain" }));
+    }
+    // Send feedback: works before or after a download, and never blocks the downloads.
+    who.addEventListener("submit", function (e) {
+      e.preventDefault();
+      sent.hidden = true;
+      if (!refresh()) { err.hidden = false; (name.value.trim() ? email : name).focus(); return; }
+      var text = note.value.trim();
+      if (!text) { note.focus(); return; }
+      send({ kind: "feedback", name: name.value.trim(), email: email.value.trim(), message: text, ts: new Date().toISOString() });
+      note.value = "";
+      sent.hidden = false;
+    });
+    Array.prototype.forEach.call(links, function (a) {
+      a.addEventListener("click", function (e) {
+        if (!refresh()) {
+          e.preventDefault();
+          err.hidden = false;
+          (name.value.trim() ? email : name).focus();
+          return;
+        }
+        // Any feedback typed but not sent yet rides along with the download.
+        var text = note.value.trim();
+        send({ kind: "download", name: name.value.trim(), email: email.value.trim(), plugin: a.dataset.betaDownload, version: a.dataset.betaVersion || "", message: text, ts: new Date().toISOString() });
+        if (text) { note.value = ""; sent.hidden = false; }
+      });
+    });
+    refresh();
   }
 
   function attempt(code, quiet) {

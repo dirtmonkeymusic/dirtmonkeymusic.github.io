@@ -18,7 +18,6 @@ const subtle = webcrypto.subtle;
 
 const ROOT = path.join(__dirname, "..");
 const LOCAL = path.join(__dirname, "beta-codes.local.json");
-const SOURCE = path.join(__dirname, "beta-content.local.html");
 const KEYS = path.join(ROOT, "beta", "keys.json");
 const BLOB = path.join(ROOT, "assets", "beta", "content.enc");
 const ITER = 200000;
@@ -68,13 +67,8 @@ async function entryFor(code, contentKey, keys) {
 }
 
 async function rebuild(local) {
-  if (!fs.existsSync(SOURCE)) throw new Error("Missing " + SOURCE);
-  const iv = rand(12);
-  const key = await aes(unb64(local.contentKey), "encrypt");
-  const ct = new Uint8Array(await subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(fs.readFileSync(SOURCE, "utf8"))));
-  fs.mkdirSync(path.dirname(BLOB), { recursive: true });
-  fs.writeFileSync(BLOB, Buffer.concat([Buffer.from(iv), Buffer.from(ct)]));
-  console.log("Encrypted the beta content to assets/beta/content.enc");
+  // The cards and the encryption live in dev/beta-render.js (shared with dev/beta-publish.js).
+  await require("./beta-render").rebuild(local.contentKey);
 }
 
 function newCode(taken) {
