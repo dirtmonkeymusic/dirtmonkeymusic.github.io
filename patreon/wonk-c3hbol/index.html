@@ -31,7 +31,7 @@
       <div class="wrap wrap-narrow">
         <div class="suite-card beta-welcome">
           <picture class="beta-monkey">
-            <source type="image/webp" srcset="/assets/monkey-cyan.webp">
+            <source type="image/webp" srcset="/assets/monkey-cyan-256.webp 256w, /assets/monkey-cyan-400.webp 400w, /assets/monkey-cyan.webp 512w" sizes="120px">
             <img src="/assets/monkey-cyan.png" alt="" width="512" height="512" decoding="async">
           </picture>
           <p class="eyebrow">For Patreon supporters</p>
@@ -39,13 +39,13 @@
           <p class="lede">The flagship monophonic synth, with three wavetable oscillators. Thanks for supporting on Patreon. Add your name, then grab your download. Found a bug? Email <a class="text-link" href="mailto:beta@dirtmonkey.music">beta@dirtmonkey.music</a>.</p>
           <form class="beta-who" data-pw-who novalidate>
             <div class="beta-who-fields">
-              <label class="visually-hidden" for="pw-name">Your name</label>
-              <input id="pw-name" class="beta-input" name="name" type="text" autocomplete="name" placeholder="Your name" required data-pw-name>
+              <label class="visually-hidden" for="pw-name">Your name (required)</label>
+              <input id="pw-name" class="beta-input" name="name" type="text" autocomplete="name" placeholder="Your name (required)" required aria-required="true" aria-describedby="pw-who-error" data-pw-name>
               <label class="visually-hidden" for="pw-email">Gimme your email if you want to stay up to date</label>
-              <input id="pw-email" class="beta-input" name="email" type="email" autocomplete="email" placeholder="Gimme your email if you want to stay up to date" data-pw-email>
+              <input id="pw-email" class="beta-input" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="pw-who-error" placeholder="Gimme your email if you want to stay up to date" data-pw-email>
             </div>
             <p class="beta-privacy">We only use this to follow up on bugs and send updates.</p>
-            <p class="beta-error" role="alert" data-pw-error hidden>Add your name first, and check your email if you added one.</p>
+            <p class="beta-error" id="pw-who-error" role="alert" data-pw-error hidden>Add your name first, and check your email if you added one.</p>
             <div class="beta-buttons">
               <div class="beta-dl-col">
                 <a class="btn btn-demo beta-download is-soon" href="#" aria-disabled="true" download data-pw-platform="mac">Download for Mac</a>

@@ -1,12 +1,11 @@
 // /merch-shop/ (hidden page). Draws the Bass Threads products: photo, name, price, and a SOLD OUT
-// or PRESALE badge. Tries the store's Store API live first; the store sends no CORS header today,
-// so browsers fall back to the saved list in /merch/products.json (node dev/merch-sync.js).
+// or PRESALE badge, from the saved list in /merch/products.json (node dev/merch-sync.js refreshes it).
+// The store's API sends no CORS header, so the page does not ask it live (that only logged an error).
 // Buy: in-stock simple items add straight to the Bass Threads cart (?add-to-cart=<id>);
 // items with sizes or options, and sold-out items, open the product page.
 (function () {
   "use strict";
   var STORE = "https://dirtmonkey.bassthreadsmerch.com/";
-  var API = STORE + "wp-json/wc/store/v1/products?per_page=100";
   var SNAPSHOT = "/merch/products.json";
   // Products left off this page: the "exclude" list in /merch/products.json (from merch/exclude.json).
   var skip = {};
@@ -43,13 +42,14 @@
     var name = full.replace(/\s*\*?\s*presale\s*\*?\s*/gi, " ").replace(/\s+/g, " ").trim() || full;
     var soldout = !p.is_in_stock;
     var img = (p.images || [])[0] || {};
-    var src = https(img.src || img.thumbnail);
+    var src = https(img.thumbnail || img.src);
+    var set = String(img.thumbnail_srcset || "").split(",").map(function (x) { return x.trim(); }).filter(function (x) { return /^https:\/\/\S+ \d+w$/.test(x); }).join(", ");
     var buy = buyLink(p);
     if (!buy.href) return "";
     var badge = presale ? '<span class="shop-badge shop-badge-presale">Presale</span>' : soldout ? '<span class="shop-badge shop-badge-soldout">Sold out</span>' : "";
     var pr = price(p.prices);
     return '<li><div class="plugin-card merch-card shop-card accent-' + ACCENTS[i % ACCENTS.length] + (soldout ? " is-soldout" : "") + '" data-id="' + esc(p.id) + '">' +
-      '<div class="plugin-art merch-art">' + badge + (src ? '<img src="' + esc(src) + '" width="600" height="600" loading="lazy" decoding="async" alt="' + esc(name) + '">' : '<span class="merch-noimg" aria-hidden="true">Dirt Monkey</span>') + "</div>" +
+      '<div class="plugin-art merch-art">' + badge + (src ? '<img src="' + esc(src) + '"' + (set ? ' srcset="' + esc(set) + '" sizes="(max-width: 720px) 45vw, 240px"' : "") + ' width="600" height="600" loading="lazy" decoding="async" alt="' + esc(name) + '">' : '<span class="merch-noimg" aria-hidden="true">Dirt Monkey</span>') + "</div>" +
       '<div class="plugin-body"><div class="plugin-heading"><h2 class="merch-name">' + esc(name) + "</h2>" + (pr ? '<p class="price">' + esc(pr) + "</p>" : "") + "</div>" +
       '<a class="btn btn-demo merch-go shop-buy" href="' + esc(buy.href) + '" target="_blank" rel="noopener noreferrer">' + esc(buy.text) + '<span class="visually-hidden"> ' + esc(name) + " (opens the Bass Threads store in a new tab)</span></a>" +
       "</div></div></li>";
@@ -65,24 +65,15 @@
   function giveUp() {
     grid.innerHTML = '<li class="shop-error merch-error">The merch list did not load. <a href="' + STORE + '" target="_blank" rel="noopener noreferrer">Open the Bass Threads store</a> to see everything.</li>';
   }
-  // Load the saved list first (it carries the exclude list), then try the store live.
-  // products.json: { saved, exclude: [{id, name}], products: [...] }. A bare array still works.
+  // The saved list carries the exclude list: { saved, exclude: [{id, name}], products: [...] }.
+  // A bare array still works.
   function shape(d) { return Array.isArray(d) ? { products: d, exclude: [] } : (d || {}); }
-  var saved = null;
-  function live() {
-    var ctl = "AbortController" in window ? new AbortController() : null;
-    var t = setTimeout(function () { if (ctl) ctl.abort(); }, 5000);
-    return fetch(API, { credentials: "omit", headers: { Accept: "application/json" }, signal: ctl ? ctl.signal : undefined })
-      .then(function (r) { clearTimeout(t); if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) { if (!Array.isArray(d) || !render(d, "live")) throw 0; });
-  }
   fetch(SNAPSHOT, { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-    .then(function (d) { saved = shape(d); (saved.exclude || []).forEach(function (x) { skip[String(x.id)] = 1; }); })
-    .catch(function () {})
-    .then(function () {
-      return live().catch(function () {
-        if (!saved || !render(saved.products, "snapshot", saved.saved)) giveUp();
-      });
-    });
+    .then(function (d) {
+      var saved = shape(d);
+      (saved.exclude || []).forEach(function (x) { skip[String(x.id)] = 1; });
+      if (!render(saved.products, "snapshot", saved.saved)) giveUp();
+    })
+    .catch(giveUp);
 })();

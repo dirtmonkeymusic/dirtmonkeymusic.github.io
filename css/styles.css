@@ -3353,3 +3353,47 @@ kbd {
 .shop-card.is-soldout .merch-art img { filter: grayscale(.6) brightness(.7); }
 .shop-buy { margin-top: auto; text-align: center; }
 .shop-card .merch-art .shop-badge { top: 24px; left: 18px; }
+
+/* Audit fixes (Oct 21, 2026). Same look and fonts; readability, tap size, focus and layout stability. */
+/* Readable SMS consent under RSVP (wording unchanged). */
+.home-signup-legal { font-size: 12px; opacity: 1; color: #b4a9c4; }
+@media (max-width: 720px) { .home-signup-legal { font-size: 12px; max-width: 340px; } }
+/* A 12px floor for small labels. */
+.eyebrow, .chip, .flag-badge, .kit-placeholder-label, .beta-card-ver, .beta-privacy, .beta-pl-title { font-size: max(12px, 0.72rem); }
+.site-nav a { font-size: max(12px, 0.76rem); }
+.beta-privacy, .beta-card-ver { opacity: 1; }
+/* Inline email links are big enough to tap (24px or more). */
+.lede a[href^="mailto:"], .legal-doc a { display: inline-block; padding-block: 3px; }
+/* Beta plugin picks: each row is a comfortable tap target. */
+.beta-pl-list .beta-pick { min-height: 40px; align-items: center; }
+.beta-pl-list li { align-items: center; }
+/* Keyboard focus shows around the Laylo RSVP frame. */
+.home-signup-frame:focus-within { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 999px; }
+/* Hold space for blocks drawn by JavaScript so the page doesn't jump (only while they're empty). */
+#plugin-grid:empty { min-height: 1900px; }
+#suite-root:empty { min-height: 480px; }
+#founders-root:empty { min-height: 880px; }
+#pack-grid:empty { min-height: 1050px; }
+#shop-grid:empty { min-height: 390px; }
+@media (max-width: 980px) {
+  #plugin-grid:empty { min-height: 2600px; }
+  #suite-root:empty { min-height: 700px; }
+  #founders-root:empty { min-height: 1100px; }
+  #pack-grid:empty { min-height: 1750px; }
+  #shop-grid:empty { min-height: 1050px; }
+}
+@media (max-width: 720px) {
+  #plugin-grid:empty { min-height: 4400px; }
+  #suite-root:empty { min-height: 620px; }
+  #founders-root:empty { min-height: 780px; }
+  #pack-grid:empty { min-height: 0; }
+  #shop-grid:empty { min-height: 620px; }
+}
+/* /privacy/ and /support/ on the site template. */
+.legal-doc { line-height: 1.65; }
+.legal-doc h1 { font-size: clamp(1.5rem, 5vw, 2.2rem); line-height: 1.2; }
+.legal-doc h2 { margin: 1.6em 0 0.5em; font-size: 1.1rem; color: var(--cyan); }
+.legal-doc p, .legal-doc li { max-width: 68ch; color: var(--ink); }
+.legal-doc ul { padding-left: 1.2em; display: grid; gap: 0.5em; }
+.legal-doc a { color: var(--cyan); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.legal-doc strong { color: #fff; }

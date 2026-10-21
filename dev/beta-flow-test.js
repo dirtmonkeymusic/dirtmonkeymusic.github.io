@@ -29,6 +29,7 @@ const node = process.execPath;
   const man = path.join(tmp, "latest.json"), inst = path.join(tmp, "build.pkg");
   fs.copyFileSync(path.join(__dirname, "..", "beta", "latest.json"), man);
   fs.writeFileSync(inst, Buffer.alloc(2e6));
+  const pcBefore = JSON.stringify(JSON.parse(fs.readFileSync(man, "utf8")).pc || {});
   const env = { ...process.env, DM_BETA_LATEST: man, DM_BETA_DIR: path.join(tmp, "dropbox") };
   execFileSync(node, [path.join(__dirname, "beta-publish.js"), "--platform", "mac", inst, "--version", "2.0.1"], { env, stdio: "ignore" });
   execFileSync(node, [path.join(__dirname, "beta-publish.js"), "--platform", "mac", "--url", "https://www.dropbox.com/scl/fi/x/a.pkg?rlkey=k&dl=0"], { env, stdio: "ignore" });
@@ -37,7 +38,7 @@ const node = process.execPath;
   const m = JSON.parse(fs.readFileSync(man, "utf8"));
   const wf = m.mac.plugins["Wonk Factory"] || {};
   ok("beta-publish --plugin adds a per-plugin entry and keeps the suite", wf.version === "2.0.2" && /dl=1/.test(wf.url) && m.mac.version === "2.0.1" && fs.existsSync(path.join(tmp, "dropbox", "Wonk Factory Beta (Mac).pkg")), m.mac.plugins);
-  ok("beta-publish writes version, size, date, dl=1 link, and copies to Dropbox", m.mac.version === "2.0.1" && m.mac.size === 2e6 && /dl=1/.test(m.mac.url) && !m.pc.version && fs.existsSync(path.join(tmp, "dropbox", "Dirt Monkey Beta (Mac).pkg")), m.mac);
+  ok("beta-publish writes version, size, date, dl=1 link, and copies to Dropbox", m.mac.version === "2.0.1" && m.mac.size === 2e6 && /dl=1/.test(m.mac.url) && JSON.stringify(m.pc || {}) === pcBefore && fs.existsSync(path.join(tmp, "dropbox", "Dirt Monkey Beta (Mac).pkg")), m.mac);
 
   const before = fs.existsSync(logFile) ? fs.readFileSync(logFile, "utf8") : null;
   if (fs.existsSync(logFile)) fs.unlinkSync(logFile);

@@ -39,10 +39,16 @@
       a.classList.toggle("is-gated", ready && !ok);
       a.setAttribute("aria-disabled", ready && ok ? "false" : "true");
     });
-    if (ok) err.hidden = true;
+    if (ok) { err.hidden = true; name.removeAttribute("aria-invalid"); email.removeAttribute("aria-invalid"); }
     return ok;
   }
-  function nag() { err.hidden = false; (name.value.trim() ? email : name).focus(); }
+  function nag() {
+    err.hidden = false;
+    var noName = !name.value.trim();
+    name.setAttribute("aria-invalid", noName ? "true" : "false");
+    email.setAttribute("aria-invalid", noName ? "false" : "true");
+    (noName ? name : email).focus();
+  }
   function send(row) {
     row.name = name.value.trim();
     row.email = email.value.trim();

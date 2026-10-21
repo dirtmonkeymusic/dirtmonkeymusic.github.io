@@ -19,7 +19,7 @@ const OUT = path.join(__dirname, "..", "merch", "products.json");
   const keep = kept.map((p) => ({
     id: p.id, name: p.name, type: p.type, permalink: p.permalink,
     prices: { price: p.prices.price, currency_prefix: p.prices.currency_prefix, currency_suffix: p.prices.currency_suffix, currency_minor_unit: p.prices.currency_minor_unit, price_range: p.prices.price_range },
-    images: (p.images || []).slice(0, 1).map((i) => ({ src: i.src, thumbnail: i.thumbnail, alt: i.alt })),
+    images: (p.images || []).slice(0, 1).map((i) => ({ src: i.src, thumbnail: i.thumbnail, thumbnail_srcset: i.thumbnail_srcset, alt: i.alt })),
     is_in_stock: p.is_in_stock, is_purchasable: p.is_purchasable, has_options: p.has_options
   }));
   const now = new Date();

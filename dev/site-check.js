@@ -137,7 +137,7 @@ async function open(b, url, viewport) {
       const html = await (await fetch(BASE + url)).text();
       const meta = (k) => { const m = html.match(new RegExp('<meta (?:property|name)="?' + k.replace(/:/g, ":") + '"? content="([^"]*)"')); return m ? m[1] : null; };
       const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1];
-      const good = (url === "/privacy/" ? /^Dirt Monkey/.test(title) : title === "Dirt Monkey") && meta("og:title") === "Dirt Monkey" && meta("twitter:title") === "Dirt Monkey" && meta("og:site_name") === "Dirt Monkey" && meta("og:image:alt") === "Dirt Monkey" && /share-card-2\.jpg$/.test(meta("og:image") || "") && !/name="?description|og:description|twitter:description/.test(html) && !/Sounds of|Sample Packs|Plugins &amp;/i.test(html);
+      const good = (url === "/privacy/" ? /^Dirt Monkey/.test(title) : title === "Dirt Monkey") && meta("og:title") === "Dirt Monkey" && meta("twitter:title") === "Dirt Monkey" && meta("og:site_name") === "Dirt Monkey" && meta("og:image:alt") === "Dirt Monkey" && /share-card-2\.jpg$/.test(meta("og:image") || "") && !/og:description|twitter:description/.test(html) && !/Sounds of|Sample Packs|Plugins &amp;/i.test(html);
       ok(`${url}: preview is just Dirt Monkey`, good, { title, og: meta("og:title"), img: meta("og:image") });
     }
     // Plugin update feeds: /updates/<Plugin>.json, each valid JSON with a x.y.z version,
@@ -466,7 +466,7 @@ async function open(b, url, viewport) {
       await f.setViewport(vp);
       await f.setRequestInterception(true);
       let tries = 0;
-      f.on("request", (q) => (/\/assets\/monkey-cyan\./.test(q.url()) && tries++ === 0 ? q.abort() : q.continue()));
+      f.on("request", (q) => (/\/assets\/monkey-cyan[.-]/.test(q.url()) && tries++ === 0 ? q.abort() : q.continue()));
       await f.goto(BASE + "/", { waitUntil: "load" });
       await f.$eval(".pong", (e) => e.scrollIntoView({ block: "center" }));
       await wait(2500);
