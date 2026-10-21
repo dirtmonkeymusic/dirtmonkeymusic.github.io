@@ -1,5 +1,27 @@
 {
-  "saved": "October 20, 2026",
+  "saved": "October 21, 2026",
+  "exclude": [
+    {
+      "id": 569,
+      "name": "Dirt Monkey Can't Kickflip Trucker Beanie *Presale*"
+    },
+    {
+      "id": 563,
+      "name": "Dirt Monkey Can't Kickflip Sweatpants *Presale*"
+    },
+    {
+      "id": 517,
+      "name": "Dirt Monkey Can't Kickflip T-Shirt *Presale*"
+    },
+    {
+      "id": 598,
+      "name": "Dirt Monkey Stomping Ground Pin"
+    },
+    {
+      "id": 590,
+      "name": "Dirt Monkey Space Bender Baseball Jersey"
+    }
+  ],
   "products": [
     {
       "id": 710,
@@ -67,29 +89,6 @@
         }
       ],
       "is_in_stock": true,
-      "is_purchasable": true,
-      "has_options": true
-    },
-    {
-      "id": 590,
-      "name": "Dirt Monkey Space Bender Baseball Jersey",
-      "type": "variable",
-      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/dirt-monkey-space-bender-baseball-jersey/",
-      "prices": {
-        "price": "9500",
-        "currency_prefix": "$",
-        "currency_suffix": "",
-        "currency_minor_unit": 2,
-        "price_range": null
-      },
-      "images": [
-        {
-          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/248961f1-d4a8-4397-9a04-0bc0800e647a.jpeg",
-          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/248961f1-d4a8-4397-9a04-0bc0800e647a-600x600.jpeg",
-          "alt": ""
-        }
-      ],
-      "is_in_stock": false,
       "is_purchasable": true,
       "has_options": true
     }

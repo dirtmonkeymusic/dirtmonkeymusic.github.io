@@ -8,8 +8,8 @@
   var STORE = "https://dirtmonkey.bassthreadsmerch.com/";
   var API = STORE + "wp-json/wc/store/v1/products?per_page=100";
   var SNAPSHOT = "/merch/products.json";
-  // EXCLUDE: products left off this page (same rule as dev/merch-sync.js).
-  var EXCLUDE = [/can'?t\s+kickflip/i, /stomping\s+ground\s+pin/i];
+  // Products left off this page: the "exclude" list in /merch/products.json (from merch/exclude.json).
+  var skip = {};
   var ACCENTS = ["cyan", "magenta", "mint"];
   var grid = document.getElementById("shop-grid");
   var note = document.getElementById("shop-note");
@@ -38,7 +38,7 @@
   }
   function card(p, i) {
     var full = decode(p.name).trim();
-    if (EXCLUDE.some(function (re) { return re.test(full.replace(/\u2019/g, "'")); })) return "";
+    if (skip[String(p.id)]) return "";
     var presale = /presale/i.test(full);
     var name = full.replace(/\s*\*?\s*presale\s*\*?\s*/gi, " ").replace(/\s+/g, " ").trim() || full;
     var soldout = !p.is_in_stock;
@@ -65,14 +65,24 @@
   function giveUp() {
     grid.innerHTML = '<li class="shop-error merch-error">The merch list did not load. <a href="' + STORE + '" target="_blank" rel="noopener noreferrer">Open the Bass Threads store</a> to see everything.</li>';
   }
-  function snapshot() {
-    return fetch(SNAPSHOT, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) { if (!render(d.products, "snapshot", d.saved)) giveUp(); }).catch(giveUp);
+  // Load the saved list first (it carries the exclude list), then try the store live.
+  // products.json: { saved, exclude: [{id, name}], products: [...] }. A bare array still works.
+  function shape(d) { return Array.isArray(d) ? { products: d, exclude: [] } : (d || {}); }
+  var saved = null;
+  function live() {
+    var ctl = "AbortController" in window ? new AbortController() : null;
+    var t = setTimeout(function () { if (ctl) ctl.abort(); }, 5000);
+    return fetch(API, { credentials: "omit", headers: { Accept: "application/json" }, signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { clearTimeout(t); if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) { if (!Array.isArray(d) || !render(d, "live")) throw 0; });
   }
-  var ctl = "AbortController" in window ? new AbortController() : null;
-  var t = setTimeout(function () { if (ctl) ctl.abort(); }, 5000);
-  fetch(API, { credentials: "omit", headers: { Accept: "application/json" }, signal: ctl ? ctl.signal : undefined })
+  fetch(SNAPSHOT, { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-    .then(function (d) { clearTimeout(t); if (!Array.isArray(d) || !render(d, "live")) return snapshot(); })
-    .catch(function () { clearTimeout(t); return snapshot(); });
+    .then(function (d) { saved = shape(d); (saved.exclude || []).forEach(function (x) { skip[String(x.id)] = 1; }); })
+    .catch(function () {})
+    .then(function () {
+      return live().catch(function () {
+        if (!saved || !render(saved.products, "snapshot", saved.saved)) giveUp();
+      });
+    });
 })();

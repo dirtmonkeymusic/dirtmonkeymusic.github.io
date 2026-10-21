@@ -5,14 +5,16 @@
 const fs = require("fs");
 const path = require("path");
 const API = "https://dirtmonkey.bassthreadsmerch.com/wp-json/wc/store/v1/products?per_page=100";
-// EXCLUDE: products left off /merch-shop/ (matched on the name). js/merch-shop.js has the same rule for live loads.
-const EXCLUDE = [/can(?:'|\u2019|&#8217;|&#039;)?t\s+kickflip/i, /stomping\s+ground\s+pin/i];
+// EXCLUDE: merch/exclude.json is the one list of products left off /merch-shop/ (and the iOS app).
+// Edit that file, then run this script. It copies the list into products.json as "exclude".
+const EXCLUDE = JSON.parse(require("fs").readFileSync(require("path").join(__dirname, "..", "merch", "exclude.json"), "utf8"));
+const SKIP = new Set(EXCLUDE.map((x) => Number(x.id)));
 const OUT = path.join(__dirname, "..", "merch", "products.json");
 (async () => {
   const r = await fetch(API, { headers: { Accept: "application/json" } });
   if (!r.ok) throw new Error("Store answered " + r.status);
   const list = await r.json();
-  const kept = list.filter((p) => !EXCLUDE.some((re) => re.test(p.name)));
+  const kept = list.filter((p) => !SKIP.has(Number(p.id)));
   console.log("Left off: " + (list.length - kept.length));
   const keep = kept.map((p) => ({
     id: p.id, name: p.name, type: p.type, permalink: p.permalink,
@@ -22,7 +24,9 @@ const OUT = path.join(__dirname, "..", "merch", "products.json");
   }));
   const now = new Date();
   const saved = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" });
-  const out = { saved, products: keep };
+  const missing = EXCLUDE.filter((x) => !list.some((p) => Number(p.id) === Number(x.id)));
+  if (missing.length) console.log("Note: excluded IDs not in the store anymore: " + missing.map((x) => x.id).join(", "));
+  const out = { saved, exclude: EXCLUDE.map((x) => ({ id: Number(x.id), name: x.name })), products: keep };
   fs.writeFileSync(OUT, JSON.stringify(out, null, 2) + "\n");
   console.log("Saved " + keep.length + " products to merch/products.json");
 })().catch((e) => { console.error(e.message); process.exit(1); });

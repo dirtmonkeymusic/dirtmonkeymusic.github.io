@@ -82,10 +82,13 @@ async function open(b, url, viewport) {
               cards: cards.map((c) => ({ id: c.dataset.id, name: c.querySelector(".merch-name").textContent, price: (c.querySelector(".price") || {}).textContent || "", img: !!c.querySelector("img"), badge: (c.querySelector(".shop-badge") || {}).textContent || "", buy: c.querySelector(".shop-buy").getAttribute("href") }))
             };
           });
-          const snap = JSON.parse(fs.readFileSync(path.join(ROOT, "merch", "products.json"), "utf8")).products;
+          const snapFile = JSON.parse(fs.readFileSync(path.join(ROOT, "merch", "products.json"), "utf8"));
+          const snap = snapFile.products;
+          const exFile = JSON.parse(fs.readFileSync(path.join(ROOT, "merch", "exclude.json"), "utf8"));
+          ok(`${url} ${name}: products.json exclude list matches merch/exclude.json and none are in products`, JSON.stringify(snapFile.exclude) === JSON.stringify(exFile.map((x) => ({ id: Number(x.id), name: x.name }))) && JSON.stringify(exFile.map((x) => x.id).sort()) === JSON.stringify([517, 563, 569, 590, 598]) && !snap.some((q) => exFile.some((x) => x.id === q.id)) && !shop.cards.some((c) => exFile.some((x) => String(x.id) === c.id)), snapFile.exclude);
           const buyOk = shop.cards.every((c) => { const q = snap.find((x) => String(x.id) === c.id); if (!q) return false; const simple = q.type === "simple" && !q.has_options && q.is_in_stock; return simple ? c.buy === STORE + "?add-to-cart=" + q.id : c.buy === q.permalink; });
           ok(`${url} ${name}: noindex, ${snap.length} cards with photo, name, price`, /noindex/.test(shop.robots) && shop.cards.length === snap.length && shop.cards.every((c) => c.img && c.name && /^\$\d/.test(c.price) || /^From \$/.test(c.price)), shop);
-          ok(`${url} ${name}: names decoded, no entities, no presale tag, no Can't Kickflip or Pin`, shop.cards.length === 4 && shop.cards.every((c) => !/&#|&amp;|\*|presale|kickflip|stomping ground pin/i.test(c.name)), shop.cards.map((c) => c.name));
+          ok(`${url} ${name}: names decoded, no entities, no presale tag, none of the excluded items`, shop.cards.length === 3 && shop.cards.every((c) => !/&#|&amp;|\*|presale|kickflip|stomping ground pin|space bender/i.test(c.name)), shop.cards.map((c) => c.name));
           ok(`${url} ${name}: badges match stock and presale, Buy links right`, buyOk && shop.cards.every((c) => { const q = snap.find((x) => String(x.id) === c.id); const pre = /presale/i.test(q.name); return c.badge === (pre ? "Presale" : !q.is_in_stock ? "Sold out" : ""); }), shop.cards.map((c) => [c.id, c.badge, c.buy]));
         }
         ok(`${url} ${name}: loads clean`, p.errors.length === 0 && p.bad.length === 0, p.errors.length || p.bad.length ? { errors: p.errors, bad: p.bad } : undefined);
