@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const API = "https://dirtmonkey.bassthreadsmerch.com/wp-json/wc/store/v1/products?per_page=100";
 // EXCLUDE: products left off /merch-shop/ (matched on the name). js/merch-shop.js has the same rule for live loads.
-const EXCLUDE = [/can(?:'|\u2019|&#8217;|&#039;)?t\s+kickflip/i];
+const EXCLUDE = [/can(?:'|\u2019|&#8217;|&#039;)?t\s+kickflip/i, /stomping\s+ground\s+pin/i];
 const OUT = path.join(__dirname, "..", "merch", "products.json");
 (async () => {
   const r = await fetch(API, { headers: { Accept: "application/json" } });

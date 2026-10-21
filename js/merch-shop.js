@@ -9,7 +9,7 @@
   var API = STORE + "wp-json/wc/store/v1/products?per_page=100";
   var SNAPSHOT = "/merch/products.json";
   // EXCLUDE: products left off this page (same rule as dev/merch-sync.js).
-  var EXCLUDE = [/can'?t\s+kickflip/i];
+  var EXCLUDE = [/can'?t\s+kickflip/i, /stomping\s+ground\s+pin/i];
   var ACCENTS = ["cyan", "magenta", "mint"];
   var grid = document.getElementById("shop-grid");
   var note = document.getElementById("shop-note");

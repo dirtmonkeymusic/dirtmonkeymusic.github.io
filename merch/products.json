@@ -71,29 +71,6 @@
       "has_options": true
     },
     {
-      "id": 598,
-      "name": "Dirt Monkey Stomping Ground Pin",
-      "type": "simple",
-      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/dirt-monkey-stomping-ground-pin/",
-      "prices": {
-        "price": "1500",
-        "currency_prefix": "$",
-        "currency_suffix": "",
-        "currency_minor_unit": 2,
-        "price_range": null
-      },
-      "images": [
-        {
-          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/966d2101-5f3f-49c4-8f00-3786bd971a06.jpeg",
-          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/966d2101-5f3f-49c4-8f00-3786bd971a06-600x600.jpeg",
-          "alt": ""
-        }
-      ],
-      "is_in_stock": true,
-      "is_purchasable": true,
-      "has_options": false
-    },
-    {
       "id": 590,
       "name": "Dirt Monkey Space Bender Baseball Jersey",
       "type": "variable",
