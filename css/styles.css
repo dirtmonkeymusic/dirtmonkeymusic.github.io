@@ -3352,4 +3352,4 @@ kbd {
 .shop-badge-presale { color: #00ffe0; border: 1px solid #00ffe0; box-shadow: 0 0 10px rgba(0,255,224,.45); }
 .shop-card.is-soldout .merch-art img { filter: grayscale(.6) brightness(.7); }
 .shop-buy { margin-top: auto; text-align: center; }
-.shop-card .merch-art .shop-badge { top: 14px; left: 14px; }
+.shop-card .merch-art .shop-badge { top: 24px; left: 18px; }

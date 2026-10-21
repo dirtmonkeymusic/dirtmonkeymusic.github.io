@@ -85,7 +85,7 @@ async function open(b, url, viewport) {
           const snap = JSON.parse(fs.readFileSync(path.join(ROOT, "merch", "products.json"), "utf8")).products;
           const buyOk = shop.cards.every((c) => { const q = snap.find((x) => String(x.id) === c.id); if (!q) return false; const simple = q.type === "simple" && !q.has_options && q.is_in_stock; return simple ? c.buy === STORE + "?add-to-cart=" + q.id : c.buy === q.permalink; });
           ok(`${url} ${name}: noindex, ${snap.length} cards with photo, name, price`, /noindex/.test(shop.robots) && shop.cards.length === snap.length && shop.cards.every((c) => c.img && c.name && /^\$\d/.test(c.price) || /^From \$/.test(c.price)), shop);
-          ok(`${url} ${name}: names decoded, no entities, no presale tag in names`, shop.cards.every((c) => !/&#|&amp;|\*|presale/i.test(c.name)), shop.cards.map((c) => c.name));
+          ok(`${url} ${name}: names decoded, no entities, no presale tag, no Can't Kickflip`, shop.cards.length === 5 && shop.cards.every((c) => !/&#|&amp;|\*|presale|kickflip/i.test(c.name)), shop.cards.map((c) => c.name));
           ok(`${url} ${name}: badges match stock and presale, Buy links right`, buyOk && shop.cards.every((c) => { const q = snap.find((x) => String(x.id) === c.id); const pre = /presale/i.test(q.name); return c.badge === (pre ? "Presale" : !q.is_in_stock ? "Sold out" : ""); }), shop.cards.map((c) => [c.id, c.badge, c.buy]));
         }
         ok(`${url} ${name}: loads clean`, p.errors.length === 0 && p.bad.length === 0, p.errors.length || p.bad.length ? { errors: p.errors, bad: p.bad } : undefined);

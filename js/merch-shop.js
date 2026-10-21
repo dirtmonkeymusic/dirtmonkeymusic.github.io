@@ -8,6 +8,8 @@
   var STORE = "https://dirtmonkey.bassthreadsmerch.com/";
   var API = STORE + "wp-json/wc/store/v1/products?per_page=100";
   var SNAPSHOT = "/merch/products.json";
+  // EXCLUDE: products left off this page (same rule as dev/merch-sync.js).
+  var EXCLUDE = [/can'?t\s+kickflip/i];
   var ACCENTS = ["cyan", "magenta", "mint"];
   var grid = document.getElementById("shop-grid");
   var note = document.getElementById("shop-note");
@@ -36,6 +38,7 @@
   }
   function card(p, i) {
     var full = decode(p.name).trim();
+    if (EXCLUDE.some(function (re) { return re.test(full.replace(/\u2019/g, "'")); })) return "";
     var presale = /presale/i.test(full);
     var name = full.replace(/\s*\*?\s*presale\s*\*?\s*/gi, " ").replace(/\s+/g, " ").trim() || full;
     var soldout = !p.is_in_stock;

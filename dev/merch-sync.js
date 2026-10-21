@@ -5,12 +5,16 @@
 const fs = require("fs");
 const path = require("path");
 const API = "https://dirtmonkey.bassthreadsmerch.com/wp-json/wc/store/v1/products?per_page=100";
+// EXCLUDE: products left off /merch-shop/ (matched on the name). js/merch-shop.js has the same rule for live loads.
+const EXCLUDE = [/can(?:'|\u2019|&#8217;|&#039;)?t\s+kickflip/i];
 const OUT = path.join(__dirname, "..", "merch", "products.json");
 (async () => {
   const r = await fetch(API, { headers: { Accept: "application/json" } });
   if (!r.ok) throw new Error("Store answered " + r.status);
   const list = await r.json();
-  const keep = list.map((p) => ({
+  const kept = list.filter((p) => !EXCLUDE.some((re) => re.test(p.name)));
+  console.log("Left off: " + (list.length - kept.length));
+  const keep = kept.map((p) => ({
     id: p.id, name: p.name, type: p.type, permalink: p.permalink,
     prices: { price: p.prices.price, currency_prefix: p.prices.currency_prefix, currency_suffix: p.prices.currency_suffix, currency_minor_unit: p.prices.currency_minor_unit, price_range: p.prices.price_range },
     images: (p.images || []).slice(0, 1).map((i) => ({ src: i.src, thumbnail: i.thumbnail, alt: i.alt })),
