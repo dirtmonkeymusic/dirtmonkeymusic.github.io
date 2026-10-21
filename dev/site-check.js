@@ -19,9 +19,9 @@ const ok = (name, cond, extra) => {
 const PAGES = fs.readFileSync(path.join(ROOT, "sitemap.xml"), "utf8")
   .match(/<loc>[^<]+<\/loc>/g)
   .map((l) => new URL(l.slice(5, -6)).pathname)
-  .concat(["/404.html", "/tools/beatmap/", "/signup/", "/merch/", "/merch-shop/", "/beta/"]);
+  .concat(["/404.html", "/tools/beatmap/", "/signup/", "/merch/", "/merch-shop/", "/beta/", "/patreon/wonk-c3hbol/"]);
 // Live but not linked for now (Merch links open the Bass Threads store instead of /merch/). The launch pages must not show a link to any of them.
-const HIDDEN = ["/merch/", "/merch-shop/", "/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/", "/beta/"];
+const HIDDEN = ["/merch/", "/merch-shop/", "/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/", "/beta/", "/patreon/wonk-c3hbol/"];
 const STORE = "https://dirtmonkey.bassthreadsmerch.com/";
 const LAUNCH_PAGES = ["/", "/shows/", "/privacy/"];
 const DESKTOP = { width: 1440, height: 900, deviceScaleFactor: 1 };
@@ -105,7 +105,7 @@ async function open(b, url, viewport) {
     }
     ok(`local links resolve (${links.size})`, broken.length === 0, broken.length ? broken : undefined);
     // Launch: every nav is just Merch and Shows, and the launch pages show no link to a hidden page.
-    for (const url of PAGES.filter((u) => u !== "/404.html" && u !== "/privacy/" && u !== "/tools/beatmap/" && u !== "/beta/")) {
+    for (const url of PAGES.filter((u) => u !== "/404.html" && u !== "/privacy/" && u !== "/tools/beatmap/" && u !== "/beta/" && u !== "/patreon/wonk-c3hbol/")) {
       const p = await open(b, url, DESKTOP);
       const nav = await p.$$eval(".site-nav a", (as) => as.map((a) => a.getAttribute("href")));
       // Home has no top links (its Merch and Shows buttons sit under Pong).
@@ -194,6 +194,11 @@ async function open(b, url, viewport) {
       ok("/beta/: not in the sitemap", !/\/beta\//.test(sitemap));
       const linkers = files.filter((f) => tracked.has(path.relative(ROOT, f)) && !path.relative(ROOT, f).startsWith("beta/") && !path.relative(ROOT, f).startsWith("dev/") && path.relative(ROOT, f) !== "js/beta.js").filter((f) => /["'(=]\/beta\/?["')#?]|dirtmonkey\.music\/beta/.test(fs.readFileSync(f, "utf8"))).map((f) => path.relative(ROOT, f));
       ok("/beta/: nothing links to it", linkers.length === 0, linkers.length ? linkers : undefined);
+      // Patreon Wonk page: hidden, noindex, out of the sitemap, nothing links to it.
+      const PW = "/patreon/wonk-c3hbol/";
+      const pwHtml = fs.readFileSync(path.join(ROOT, "patreon", "wonk-c3hbol", "index.html"), "utf8");
+      const pwLinkers = files.filter((f) => tracked.has(path.relative(ROOT, f)) && !path.relative(ROOT, f).startsWith("patreon/") && !path.relative(ROOT, f).startsWith("dev/") && path.relative(ROOT, f) !== "js/patreon-wonk.js").filter((f) => /wonk-c3hbol|["'(=]\/patreon\/?["')#?]/.test(fs.readFileSync(f, "utf8"))).map((f) => path.relative(ROOT, f));
+      ok(PW + ": noindex, not in the sitemap, nothing links to it", /<meta name="robots" content="noindex/.test(pwHtml) && !/patreon/.test(sitemap) && pwLinkers.length === 0, pwLinkers.length ? pwLinkers : undefined);
       const latest = JSON.parse(fs.readFileSync(path.join(ROOT, "beta", "latest.json"), "utf8"));
       const shapeOk = ["mac", "pc"].every((p) => latest[p] && typeof latest[p].version === "string" && typeof latest[p].url === "string" && (!latest[p].version || /^\d+\.\d+\.\d+$/.test(latest[p].version)));
       ok("/beta/: latest.json has a Mac and a PC entry, footer is Privacy only", shapeOk && /<footer[\s\S]*<a href="\/privacy\/">Privacy<\/a>[\s\S]*<\/footer>/.test(betaHtml) && (betaHtml.split("<footer")[1].match(/<a /g) || []).length === 1, latest);
@@ -495,6 +500,24 @@ async function open(b, url, viewport) {
     }));
     ok("/beta/: name, email, privacy line, Mac and PC buttons with versions, feedback", form.name && form.email && /follow up on bugs/.test(form.privacy) && !/never share/.test(form.privacy) && form.mail.length > 0 && form.mail.every((m) => m === "mailto:beta@dirtmonkey.music") && form.feedback && JSON.stringify(form.buttons.map((x) => x[0])) === JSON.stringify(["Download for Mac", "Download for PC"]) && form.buttons.every((x) => x[1] === "true") && form.plugins.join() === "Wonk Factory,Updown,Slammer,Punch,Dip,Frequalizer,Dub-It,Spaces,Fizz,Meter" && form.vers.length === 2 && form.vers.every((v) => /^(v\d+\.\d+\.\d+|Coming soon)/.test(v)), form);
     await bp.close();
+    // Patreon Wonk page: Wonk Factory only, Mac and PC with version, date, size; the full flow is dev/patreon-flow-test.js.
+    const pp = await open(b, "/patreon/wonk-c3hbol/", PHONE);
+    await wait(600);
+    const pw = await pp.evaluate(() => ({
+      head: document.querySelector(".eyebrow").textContent + " | " + document.querySelector("h1").textContent,
+      name: !!document.querySelector("[data-pw-name][required]"), email: !!document.querySelector("[data-pw-email]:not([required])") && /stay up to date/.test(document.querySelector("[data-pw-email]").placeholder),
+      noshare: (document.querySelector(".beta-noshare") || {}).textContent, mail: [...document.querySelectorAll("a[href^='mailto:']")].map((a) => a.getAttribute("href")),
+      feedback: !!document.querySelector("[data-pw-feedback]") && !!document.querySelector("[data-pw-send]"),
+      buttons: [...document.querySelectorAll("[data-pw-platform]")].map((a) => [a.textContent.trim(), a.getAttribute("href"), a.getAttribute("aria-disabled")]),
+      vers: [...document.querySelectorAll("[data-pw-ver]")].map((e) => e.textContent.trim()),
+      others: /Punch|Updown|Slammer|Spaces|Frequalizer|Fizz|Dub-It|Meter|Full suite|\bDip\b/.test(document.body.innerText)
+    }));
+    const lj = JSON.parse(fs.readFileSync(path.join(ROOT, "beta", "latest.json"), "utf8"));
+    const wf = (p) => ((lj[p] || {}).plugins || {})["Wonk Factory"] || {};
+    const verOk = ["mac", "pc"].every((p, i) => wf(p).url ? pw.vers[i].startsWith("v" + wf(p).version + " · ") && / MB$/.test(pw.vers[i]) && /[?&]dl=1/.test(pw.buttons[i][1]) : pw.vers[i] === "Coming soon");
+    ok("/patreon/wonk-c3hbol/: Patreon header, Wonk Factory only, name required, email optional, no-share note, bug email, feedback", /Patreon/.test(pw.head) && /Wonk Factory/.test(pw.head) && pw.name && pw.email && pw.noshare === "Please don't share this link." && JSON.stringify(pw.mail) === '["mailto:beta@dirtmonkey.music"]' && pw.feedback && !pw.others, pw);
+    ok("/patreon/wonk-c3hbol/: Mac and PC buttons use the Wonk Factory entries in beta/latest.json, version, date and size shown, locked until a name", JSON.stringify(pw.buttons.map((x) => x[0])) === '["Download for Mac","Download for PC"]' && pw.buttons.every((x) => x[2] === "true") && verOk, pw.buttons.concat(pw.vers));
+    await pp.close();
   }
 
   await b.close();
