@@ -1,0 +1,189 @@
+{
+  "saved": "October 20, 2026",
+  "products": [
+    {
+      "id": 710,
+      "name": "Monkey Matrix Reversible Bucket Hat",
+      "type": "simple",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/monkey-matrix-reversible-bucket-hat/",
+      "prices": {
+        "price": "4500",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/09/26349cf8-7d6f-4d9e-ae0b-10e6db2dd1e4.jpeg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/09/26349cf8-7d6f-4d9e-ae0b-10e6db2dd1e4-600x600.jpeg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": true,
+      "is_purchasable": true,
+      "has_options": false
+    },
+    {
+      "id": 700,
+      "name": "Monkey Matrix Woven Pashmina",
+      "type": "simple",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/monkey-matrix-woven-pashmina/",
+      "prices": {
+        "price": "5000",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/08/Monkey_Matrix_pash-scaled.jpg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/08/Monkey_Matrix_pash-600x600.jpg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": true,
+      "is_purchasable": true,
+      "has_options": false
+    },
+    {
+      "id": 606,
+      "name": "Dirt Monkey Neon Void Baseball Jersey",
+      "type": "variable",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/dirt-monkey-neon-void-baseball-jersey/",
+      "prices": {
+        "price": "9500",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/28893161-2b46-4013-9ffb-7c91f889804e.jpeg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/28893161-2b46-4013-9ffb-7c91f889804e-600x600.jpeg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": true,
+      "is_purchasable": true,
+      "has_options": true
+    },
+    {
+      "id": 598,
+      "name": "Dirt Monkey Stomping Ground Pin",
+      "type": "simple",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/dirt-monkey-stomping-ground-pin/",
+      "prices": {
+        "price": "1500",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/966d2101-5f3f-49c4-8f00-3786bd971a06.jpeg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/966d2101-5f3f-49c4-8f00-3786bd971a06-600x600.jpeg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": true,
+      "is_purchasable": true,
+      "has_options": false
+    },
+    {
+      "id": 590,
+      "name": "Dirt Monkey Space Bender Baseball Jersey",
+      "type": "variable",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/dirt-monkey-space-bender-baseball-jersey/",
+      "prices": {
+        "price": "9500",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/248961f1-d4a8-4397-9a04-0bc0800e647a.jpeg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/248961f1-d4a8-4397-9a04-0bc0800e647a-600x600.jpeg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": false,
+      "is_purchasable": true,
+      "has_options": true
+    },
+    {
+      "id": 569,
+      "name": "Dirt Monkey Can&#8217;t Kickflip Trucker Beanie *Presale*",
+      "type": "simple",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/dirt-monkey-cant-kickflip-trucker-beanie/",
+      "prices": {
+        "price": "3500",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/DirtMonkey_Thrasher_Beanie_Mockup.jpg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/DirtMonkey_Thrasher_Beanie_Mockup-600x600.jpg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": false,
+      "is_purchasable": true,
+      "has_options": false
+    },
+    {
+      "id": 563,
+      "name": "Dirt Monkey Can&#8217;t Kickflip Sweatpants *Presale*",
+      "type": "variable",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/dirt-monkey-cant-kickflip-sweatpants-presale/",
+      "prices": {
+        "price": "5500",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/DirtMonkey_Thrasher_Sweatpants_Mockup-scaled.jpg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2026/01/DirtMonkey_Thrasher_Sweatpants_Mockup-600x600.jpg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": false,
+      "is_purchasable": true,
+      "has_options": true
+    },
+    {
+      "id": 517,
+      "name": "Dirt Monkey Can&#8217;t Kickflip T-Shirt *Presale*",
+      "type": "variable",
+      "permalink": "https://dirtmonkey.bassthreadsmerch.com/product/king-tvt-pyramid-long-sleeve/",
+      "prices": {
+        "price": "3500",
+        "currency_prefix": "$",
+        "currency_suffix": "",
+        "currency_minor_unit": 2,
+        "price_range": null
+      },
+      "images": [
+        {
+          "src": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2025/01/DirtMonkey_Thrasher_T-Shirt_Mockup-scaled.jpg",
+          "thumbnail": "https://dirtmonkey.bassthreadsmerch.com/wp-content/uploads/sites/36/2025/01/DirtMonkey_Thrasher_T-Shirt_Mockup-600x600.jpg",
+          "alt": ""
+        }
+      ],
+      "is_in_stock": false,
+      "is_purchasable": true,
+      "has_options": true
+    }
+  ]
+}

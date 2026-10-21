@@ -3344,3 +3344,12 @@ kbd {
 .beta-files-list .soon { color: rgba(255,255,255,.45); }
 .beta-pl-list li { grid-template-columns: 9.5em 1fr; } @media (max-width: 480px) { .beta-pl-list li { grid-template-columns: 1fr; } }
 .beta-who-fields { display: grid; grid-template-columns: 1fr; gap: 10px; } .beta-who-fields .beta-input { width: 100%; min-width: 0; box-sizing: border-box; }
+/* /merch-shop/ (hidden): cards with a Buy button and a SOLD OUT or PRESALE badge. */
+.shop-card { position: relative; flex-direction: column; width: 100%; }
+.shop-card .merch-art { position: relative; }
+.shop-badge { position: absolute; top: 10px; left: 10px; z-index: 2; padding: 4px 9px; border-radius: 999px; font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; background: rgba(7,6,10,.82); }
+.shop-badge-soldout { color: #ff4fd8; border: 1px solid #ff4fd8; box-shadow: 0 0 10px rgba(255,79,216,.45); }
+.shop-badge-presale { color: #00ffe0; border: 1px solid #00ffe0; box-shadow: 0 0 10px rgba(0,255,224,.45); }
+.shop-card.is-soldout .merch-art img { filter: grayscale(.6) brightness(.7); }
+.shop-buy { margin-top: auto; text-align: center; }
+.shop-card .merch-art .shop-badge { top: 14px; left: 14px; }

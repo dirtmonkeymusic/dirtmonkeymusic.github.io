@@ -19,9 +19,9 @@ const ok = (name, cond, extra) => {
 const PAGES = fs.readFileSync(path.join(ROOT, "sitemap.xml"), "utf8")
   .match(/<loc>[^<]+<\/loc>/g)
   .map((l) => new URL(l.slice(5, -6)).pathname)
-  .concat(["/404.html", "/tools/beatmap/", "/signup/", "/merch/", "/beta/"]);
+  .concat(["/404.html", "/tools/beatmap/", "/signup/", "/merch/", "/merch-shop/", "/beta/"]);
 // Live but not linked for now (Merch links open the Bass Threads store instead of /merch/). The launch pages must not show a link to any of them.
-const HIDDEN = ["/merch/", "/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/", "/beta/"];
+const HIDDEN = ["/merch/", "/merch-shop/", "/plugins/", "/music/", "/app/", "/play/", "/signup/", "/tools/", "/beta/"];
 const STORE = "https://dirtmonkey.bassthreadsmerch.com/";
 const LAUNCH_PAGES = ["/", "/shows/", "/privacy/"];
 const DESKTOP = { width: 1440, height: 900, deviceScaleFactor: 1 };
@@ -69,6 +69,24 @@ async function open(b, url, viewport) {
           p.errors = p.errors.filter((e) => !/bassthreadsmerch\.com.*CORS|net::ERR_FAILED/.test(e));
           const cards = await p.$$eval("[data-source] > *", (els) => els.length).catch(() => 0);
           ok(`${url} ${name}: merch cards from snapshot`, cards > 0, cards);
+        }
+        // /merch-shop/: hidden shop grid. The store sends no CORS header, so cards come from merch/products.json.
+        if (url === "/merch-shop/") {
+          p.errors = p.errors.filter((e) => !/bassthreadsmerch\.com|CORS|net::ERR_FAILED/.test(e));
+          await p.waitForSelector("#shop-grid[data-source]", { timeout: 8000 }).catch(() => {});
+          const shop = await p.evaluate(() => {
+            const cards = [...document.querySelectorAll(".shop-card")];
+            return {
+              robots: (document.querySelector('meta[name=robots]') || {}).content || "",
+              source: document.querySelector("#shop-grid").dataset.source,
+              cards: cards.map((c) => ({ id: c.dataset.id, name: c.querySelector(".merch-name").textContent, price: (c.querySelector(".price") || {}).textContent || "", img: !!c.querySelector("img"), badge: (c.querySelector(".shop-badge") || {}).textContent || "", buy: c.querySelector(".shop-buy").getAttribute("href") }))
+            };
+          });
+          const snap = JSON.parse(fs.readFileSync(path.join(ROOT, "merch", "products.json"), "utf8")).products;
+          const buyOk = shop.cards.every((c) => { const q = snap.find((x) => String(x.id) === c.id); if (!q) return false; const simple = q.type === "simple" && !q.has_options && q.is_in_stock; return simple ? c.buy === STORE + "?add-to-cart=" + q.id : c.buy === q.permalink; });
+          ok(`${url} ${name}: noindex, ${snap.length} cards with photo, name, price`, /noindex/.test(shop.robots) && shop.cards.length === snap.length && shop.cards.every((c) => c.img && c.name && /^\$\d/.test(c.price) || /^From \$/.test(c.price)), shop);
+          ok(`${url} ${name}: names decoded, no entities, no presale tag in names`, shop.cards.every((c) => !/&#|&amp;|\*|presale/i.test(c.name)), shop.cards.map((c) => c.name));
+          ok(`${url} ${name}: badges match stock and presale, Buy links right`, buyOk && shop.cards.every((c) => { const q = snap.find((x) => String(x.id) === c.id); const pre = /presale/i.test(q.name); return c.badge === (pre ? "Presale" : !q.is_in_stock ? "Sold out" : ""); }), shop.cards.map((c) => [c.id, c.badge, c.buy]));
         }
         ok(`${url} ${name}: loads clean`, p.errors.length === 0 && p.bad.length === 0, p.errors.length || p.bad.length ? { errors: p.errors, bad: p.bad } : undefined);
         ok(`${url} ${name}: no sideways scroll`, info.overflow <= 0, info.overflow || undefined);
