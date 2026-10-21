@@ -179,7 +179,10 @@ async function open(b, url, viewport) {
     // Only what gets pushed (and so served): files git tracks or has staged.
     const tracked = new Set(require("child_process").execFileSync("git", ["ls-files"], { cwd: ROOT }).toString().split("\n").filter(Boolean));
     const hushText = files.filter((f) => tracked.has(path.relative(ROOT, f))).filter((f) => {
-      const t = fs.readFileSync(f, "utf8");
+      let t = fs.readFileSync(f, "utf8");
+      // Approved exception: the App Store pages may use the app name (that exact two-word name only).
+      const APP_PAGES = ["privacy/index.html", "support/index.html", "support.html"];
+      if (APP_PAGES.includes(path.relative(ROOT, f))) t = t.split(["S", "k", "w", "i", "s", "h"].join("") + " Run").join("");
       const rec = ["a", "l", "b", "u", "m"].join("");
       const links = new RegExp("https://(music\\.apple\\.com/us|[a-z0-9-]+\\.bandcamp\\.com)/" + rec + "/", "gi");
       return HUSH.test(t) || new RegExp("no" + "v(ember)?\\.? 1" + "3", "i").test(t) || new RegExp(rec, "i").test(t.replace(links, ""));
