@@ -519,6 +519,15 @@ async function open(b, url, viewport) {
     const wf = (p) => ((lj[p] || {}).plugins || {})["Wonk Factory"] || {};
     const verOk = ["mac", "pc"].every((p, i) => wf(p).url ? pw.vers[i].startsWith("v" + wf(p).version + " · ") && / MB$/.test(pw.vers[i]) && /[?&]dl=1/.test(pw.buttons[i][1]) : pw.vers[i] === "Coming soon");
     ok("/patreon/wonk-c3hbol/: Patreon header, Wonk Factory only, name required, email optional, no-share note, bug email, feedback", /Patreon/.test(pw.head) && /Wonk Factory/.test(pw.head) && pw.name && pw.email && pw.noshare === "Please don't share this link." && JSON.stringify(pw.mail) === '["mailto:beta@dirtmonkey.music"]' && pw.feedback && !pw.others, pw);
+    {
+      const want = (wf("mac").notes && wf("mac").notes.length ? wf("mac") : wf("pc")).notes || [];
+      const notesOn = async (pg) => pg.evaluate(() => { const b = document.querySelector("[data-wonk-notes]"); return b ? { shown: !b.hidden && b.offsetHeight > 0, items: [...b.querySelectorAll("li")].map((l) => l.textContent) } : null; });
+      const bp = await open(b, "/beta/", PHONE); await new Promise((r) => setTimeout(r, 600));
+      const nb = await notesOn(bp), np = await notesOn(pp); await bp.close();
+      const good = (n) => n && (want.length ? n.shown && JSON.stringify(n.items) === JSON.stringify(want) : !n.shown);
+      const clean = want.every((t) => !/\u2014/.test(t) && !new RegExp(["s", "k", "w", "i", "s", "h"].join(""), "i").test(t) && t.length <= 110);
+      ok("Wonk Factory What's new: same notes on /beta/ and /patreon/wonk-c3hbol/ from beta/latest.json (hidden when empty), short, no em dashes", good(nb) && good(np) && clean, { want: want.length, beta: nb, patreon: np });
+    }
     ok("/patreon/wonk-c3hbol/: Mac and PC buttons use the Wonk Factory entries in beta/latest.json, version, date and size shown, locked until a name", JSON.stringify(pw.buttons.map((x) => x[0])) === '["Download for Mac","Download for PC"]' && pw.buttons.every((x) => x[2] === "true") && verOk, pw.buttons.concat(pw.vers));
     await pp.close();
   }

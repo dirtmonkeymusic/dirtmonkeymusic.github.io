@@ -5,6 +5,7 @@
 //   node dev/beta-publish.js --platform mac --url "<Dropbox share link>"   (once per platform)
 //   node dev/beta-publish.js --platform mac --plugin "Punch" path/to/Punch.pkg --version 1.0.3 --push
 //   node dev/beta-publish.js --platform mac --plugin "Punch" --url "<Dropbox share link>"
+//   node dev/beta-publish.js --platform mac --plugin "Wonk Factory" --notes "First note; Second note"   (What's new)
 //   node dev/beta-publish.js list
 // Without --plugin it is the full suite installer. With --plugin it is that one plugin's installer,
 // saved as "Punch Beta (Mac).pkg"; testers who untick some plugins get one installer per ticked plugin.
@@ -44,7 +45,7 @@ if (process.argv[2] === "list" || process.argv.length <= 2) {
 }
 const platform = (arg("--platform") || "").toLowerCase();
 if (!NAMES[platform]) { console.error("Use --platform mac or --platform pc"); process.exit(1); }
-const known = new Set(["--platform", "--version", "--url", "--plugin"]);
+const known = new Set(["--platform", "--version", "--url", "--plugin", "--notes"]);
 const pluginArg = arg("--plugin");
 const plugin = pluginArg && PLUGINS.find((n) => n.toLowerCase() === pluginArg.toLowerCase());
 if (pluginArg && !plugin) { console.error("Unknown plugin. Use one of: " + PLUGINS.join(", ")); process.exit(1); }
@@ -68,6 +69,14 @@ if (file) {
   if (b.url) console.log("Wait for Dropbox to finish syncing before you tell testers.");
 }
 if (url) b.url = directLink(url);
+const notesArg = arg("--notes");
+if (notesArg !== null) {
+  // "What's new" bullets, split on ";". --notes "" clears them (the section hides).
+  const notes = notesArg.split(";").map((n) => n.trim()).filter(Boolean);
+  if (notes.some((n) => /\u2014/.test(n))) { console.error("No em dashes in notes, please."); process.exit(1); }
+  if (notes.length) b.notes = notes; else delete b.notes;
+  console.log("Notes: " + (notes.length ? notes.length + " bullets" : "cleared"));
+}
 if (plugin) plat.plugins[plugin] = b;
 latest[platform] = plat;
 fs.writeFileSync(LATEST, JSON.stringify(latest, null, 2) + "\n");

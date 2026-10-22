@@ -39,6 +39,11 @@ const node = process.execPath;
   const wf = m.mac.plugins["Wonk Factory"] || {};
   ok("beta-publish --plugin adds a per-plugin entry and keeps the suite", wf.version === "2.0.2" && /dl=1/.test(wf.url) && m.mac.version === "2.0.1" && fs.existsSync(path.join(tmp, "dropbox", "Wonk Factory Beta (Mac).pkg")), m.mac.plugins);
   ok("beta-publish writes version, size, date, dl=1 link, and copies to Dropbox", m.mac.version === "2.0.1" && m.mac.size === 2e6 && /dl=1/.test(m.mac.url) && JSON.stringify(m.pc || {}) === pcBefore && fs.existsSync(path.join(tmp, "dropbox", "Dirt Monkey Beta (Mac).pkg")), m.mac);
+  execFileSync(node, [path.join(__dirname, "beta-publish.js"), "--platform", "mac", "--plugin", "Wonk Factory", "--notes", "New delay; Four reverbs ;  "], { env, stdio: "ignore" });
+  const n1 = (JSON.parse(fs.readFileSync(man, "utf8")).mac.plugins["Wonk Factory"] || {}).notes;
+  execFileSync(node, [path.join(__dirname, "beta-publish.js"), "--platform", "mac", "--plugin", "Wonk Factory", "--notes", ""], { env, stdio: "ignore" });
+  const n2 = (JSON.parse(fs.readFileSync(man, "utf8")).mac.plugins["Wonk Factory"] || {}).notes;
+  ok("beta-publish --notes sets What's new bullets (split on ;) and --notes \"\" clears them", JSON.stringify(n1) === '["New delay","Four reverbs"]' && n2 === undefined, { n1, n2 });
 
   const before = fs.existsSync(logFile) ? fs.readFileSync(logFile, "utf8") : null;
   if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
