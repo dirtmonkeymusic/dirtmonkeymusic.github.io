@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dirt Monkey Members</title>
+  <!-- PATREON MEMBERS (hidden, unlinked, noindex): Patreon login and member downloads. Not in sitemap.xml. Also the OAuth redirect URI. -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#07060a">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    /* Only what styles.css lacks, built from its own variables. */
+    .member-list { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 14px; }
+    .member-item { padding: 18px; }
+    .member-name { margin: 0 0 12px; font-size: 1.05rem; color: var(--ink); }
+    .member-soon { margin-top: 22px; padding: 18px; }
+    .member-soon h2 { margin: 0 0 8px; font-size: 1.05rem; color: var(--cyan); }
+    .member-soon p { margin: 0; color: var(--muted); }
+    .member-note { margin: 0 0 12px; color: var(--muted); font-size: .9rem; }
+    .member-err { color: var(--magenta); }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body class="beta-page">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="beta-header">
+    <span class="logo-mark logo-mark-small">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey" width="1360" height="264">
+      </span>
+  </header>
+
+  <main id="main">
+    <section class="section section-first" aria-labelledby="members-title">
+      <div class="wrap wrap-narrow">
+        <div class="suite-card beta-welcome">
+          <p class="eyebrow">Patreon members</p>
+          <h1 id="members-title" class="page-title">Members</h1>
+          <div id="login">
+            <p class="lede">Patreon members at the $15 tier and up get every Dirt Monkey plugin as it drops. Log in to get your downloads.</p>
+            <div class="beta-buttons"><a class="btn btn-demo" id="go" href="#">Log in with Patreon</a></div>
+          </div>
+          <div id="member" hidden>
+            <p class="lede" id="hello">You're in. Grab your plugins below, then open any plugin and choose Activate.</p>
+            <ul class="member-list" id="downloads"></ul>
+            <div class="suite-card member-soon" id="soon" hidden>
+              <h2>First drop coming soon</h2>
+              <p>New plugins land here for members first, one at a time. Your membership is active, so you'll get each one the day it drops. Check back soon.</p>
+            </div>
+            <div id="wip" hidden>
+              <p class="eyebrow" style="margin-top:28px">WIP Club</p>
+              <h2 class="member-name">Wonk Factory beta</h2>
+              <p class="lede">Early Wonk Factory builds for WIP Club members. Expect rough edges and tell us what breaks.</p>
+              <ul class="member-list" id="wipdl"></ul>
+            </div>
+          </div>
+          <p class="lede member-err" id="err" hidden></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer beta-footer">
+    <div class="wrap footer-inner">
+      <ul class="footer-links">
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul>
+    </div>
+  </footer>
+<script>
+const API = "https://license.dirtmonkey.music";
+const $ = (id) => document.getElementById(id);
+$("go").href = API + "/oauth/login";
+const q = new URLSearchParams(location.search);
+function show(data) {
+  $("login").hidden = true; $("member").hidden = false;
+  if (data.name) $("hello").textContent = "Hey " + data.name + ", you're in. Grab your plugins below, then open any plugin and choose Activate.";
+  $("downloads").innerHTML = "";
+  const empty = !(data.downloads || []).length;
+  $("soon").hidden = !empty; $("downloads").hidden = empty;
+  if (empty) $("hello").textContent = (data.name ? "Hey " + data.name + ", you're in." : "You're in.");
+  render(data.downloads || [], "downloads");
+  const wip = data.wip_beta || [];
+  $("wip").hidden = !wip.length; $("wipdl").innerHTML = ""; render(wip, "wipdl");
+}
+function render(list, target) {
+  for (const d of list) {
+    const li = document.createElement("li"); li.className = "suite-card member-item";
+    const h = document.createElement("h2"); h.className = "member-name"; h.textContent = d.name + (d.version ? " " + d.version : ""); li.append(h);
+    if (d.note) { const n = document.createElement("p"); n.className = "member-note"; n.textContent = d.note; li.append(n); }
+    const row = document.createElement("div"); row.className = "beta-buttons"; li.append(row);
+    for (const [k, label] of [["mac", "Mac"], ["pc", "PC"]]) if (d[k]) { const a = document.createElement("a"); a.className = "btn btn-demo"; a.href = d[k]; a.textContent = "Download for " + label; row.append(a); }
+    $(target).append(li);
+  }
+}
+if (q.get("code") && q.get("state")) {
+  fetch(API + "/oauth/callback?" + new URLSearchParams({ code: q.get("code"), state: q.get("state") }))
+    .then((r) => r.json().then((j) => ({ r, j })))
+    .then(({ r, j }) => {
+      history.replaceState(null, "", location.pathname);
+      if (r.ok) { sessionStorage.setItem("dm-session", j.session); show(j); }
+      else { $("err").hidden = false; $("err").textContent = r.status === 402 ? "We couldn't find an active $15+ Patreon membership on that account." : "Login didn't work. Try again."; }
+    })
+    .catch(() => { $("err").hidden = false; $("err").textContent = "Couldn't reach the server. Try again soon."; });
+}
+// Local previews: ?preview (sample list) or ?preview=empty
+if (q.get("preview") === "empty") show({ name: "Tester", downloads: [] });
+else if (q.has("preview")) show({ name: "Tester", downloads: [{ name: "Updown", version: "0.2.0", mac: "#", pc: "#", note: "Note: AU sessions saved with an older Updown won't reload it (the AU code changed). Re-add Updown in those sessions." }], wip_beta: q.get("preview") === "wip" ? [{ name: "Wonk Factory", version: "1.2 beta 1", mac: "#", pc: "#" }] : [] });
+</script>
+</body>
+</html>
