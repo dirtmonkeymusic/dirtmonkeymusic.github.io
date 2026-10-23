@@ -1,4 +1,4 @@
-// "What's new" for Wonk Factory on /beta/ and /patreon/wonk-c3hbol/.
+// "What's new" for Wonk Factory on the beta page and the hidden Patreon page.
 // Reads the notes array on the Wonk Factory entries in /beta/latest.json (mac first, then pc).
 // beta-publish.js --plugin "Wonk Factory" --notes "a; b; c" sets it. No notes: the block stays hidden.
 (function () {
