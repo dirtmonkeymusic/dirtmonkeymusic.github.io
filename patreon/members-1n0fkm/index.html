@@ -83,17 +83,23 @@ function show(data) {
   const empty = !(data.downloads || []).length;
   $("soon").hidden = !empty; $("downloads").hidden = empty;
   if (empty) $("hello").textContent = (data.name ? "Hey " + data.name + ", you're in." : "You're in.");
-  render(data.downloads || [], "downloads");
+  render(data.downloads || [], "downloads", "drip");
   const wip = data.wip_beta || [];
-  $("wip").hidden = !wip.length; $("wipdl").innerHTML = ""; render(wip, "wipdl");
+  $("wip").hidden = !wip.length; $("wipdl").innerHTML = ""; render(wip, "wipdl", "wip-beta");
 }
-function render(list, target) {
+// Buttons go through the license server's /v1/dl (logs the download, then 302s to the members-list URL).
+function dlHref(d, k, sec) {
+  const s = sessionStorage.getItem("dm-session");
+  if (!s || d[k] === "#") return d[k];
+  return API + "/v1/dl?" + new URLSearchParams({ s, p: d.name, f: k, ...(sec === "wip-beta" ? { sec } : {}) });
+}
+function render(list, target, sec) {
   for (const d of list) {
     const li = document.createElement("li"); li.className = "suite-card member-item";
     const h = document.createElement("h2"); h.className = "member-name"; h.textContent = d.name + (d.version ? " " + d.version : ""); li.append(h);
     if (d.note) { const n = document.createElement("p"); n.className = "member-note"; n.textContent = d.note; li.append(n); }
     const row = document.createElement("div"); row.className = "beta-buttons"; li.append(row);
-    for (const [k, label] of [["mac", "Mac"], ["pc", "PC"]]) if (d[k]) { const a = document.createElement("a"); a.className = "btn btn-demo"; a.href = d[k]; a.textContent = "Download for " + label; row.append(a); }
+    for (const [k, label] of [["mac", "Mac"], ["pc", "PC"]]) if (d[k]) { const a = document.createElement("a"); a.className = "btn btn-demo"; a.href = dlHref(d, k, sec); a.textContent = "Download for " + label; row.append(a); }
     $(target).append(li);
   }
 }
