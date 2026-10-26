@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dirt Monkey Golden Key</title>
+  <!-- GOLDEN KEY DOWNLOADS (hidden, unlinked except from the members page, noindex): paste a golden key to get every plugin's latest build. Not in sitemap.xml. -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#07060a">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    /* Only what styles.css lacks, built from its own variables. */
+    .member-key { margin-bottom: 1.5rem; }
+    .key-row { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+    .key-code { font-family: "JetBrains Mono", monospace; flex: 1 1 16rem; min-width: 0; overflow-wrap: anywhere; padding: .6rem .8rem; border: 1px solid currentColor; border-radius: 6px; user-select: all; }
+    .member-list { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 14px; }
+    .member-item { padding: 18px; }
+    .member-name { margin: 0 0 12px; font-size: 1.05rem; color: var(--ink); }
+    .member-soon { margin-top: 22px; padding: 18px; }
+    .member-soon h2 { margin: 0 0 8px; font-size: 1.05rem; color: var(--cyan); }
+    .member-soon p { margin: 0; color: var(--muted); }
+    .member-note { margin: 0 0 12px; color: var(--muted); font-size: .9rem; }
+    .member-err { color: var(--magenta); }
+    .key-input { font-family: "JetBrains Mono", monospace; width: 100%; box-sizing: border-box; min-height: 5.5rem; padding: .6rem .8rem; background: transparent; color: var(--ink); border: 1px solid var(--cyan); border-radius: 6px; resize: vertical; overflow-wrap: anywhere; }
+    .key-remember { display: flex; gap: .5rem; align-items: center; margin: 12px 0 16px; color: var(--muted); font-size: .9rem; }
+    .key-forget { color: var(--muted); font-size: .85rem; margin-top: 18px; }
+    .key-forget button { background: none; border: 0; color: var(--cyan); font: inherit; text-decoration: underline; cursor: pointer; padding: 0; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body class="beta-page">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="beta-header">
+    <span class="logo-mark logo-mark-small">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" alt="Dirt Monkey" width="1360" height="264">
+      </span>
+  </header>
+
+  <main id="main">
+    <section class="section section-first" aria-labelledby="keys-title">
+      <div class="wrap wrap-narrow">
+        <div class="suite-card beta-welcome">
+          <p class="eyebrow">Golden key</p>
+          <h1 id="keys-title" class="page-title">Golden Key Downloads</h1>
+          <form id="lock">
+            <p class="lede">Paste your golden key to get the latest build of every Dirt Monkey plugin, Mac and PC.</p>
+            <label class="sr-only" for="key">Golden key</label>
+            <textarea class="key-input" id="key" spellcheck="false" autocomplete="off" placeholder="Paste your golden key"></textarea>
+            <label class="key-remember"><input type="checkbox" id="remember"> Remember my key in this browser</label>
+            <div class="beta-buttons"><button type="submit" class="btn btn-demo" id="unlock">Unlock downloads</button></div>
+          </form>
+          <div id="open" hidden>
+            <p class="lede">You're in. Grab any plugin below. Your golden key also activates every plugin: paste it in the plugin's license screen and press ACTIVATE.</p>
+            <ul class="member-list" id="downloads"></ul>
+            <div class="suite-card member-soon" id="soon" hidden><h2>Nothing here yet</h2><p>New builds land here as they're ready. Check back soon.</p></div>
+            <p class="key-forget" id="forgetrow" hidden>Your key is remembered in this browser. <button type="button" id="forget">Forget it</button></p>
+          </div>
+          <p class="lede member-err" id="err" hidden></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer beta-footer">
+    <div class="wrap footer-inner">
+      <ul class="footer-links">
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul>
+    </div>
+  </footer>
+<script>
+const API = "https://license.dirtmonkey.music";
+const $ = (id) => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const STORE = "dm-golden-key";
+let token = "";
+function fail(msg) { $("err").hidden = false; $("err").textContent = msg; }
+function show(data) {
+  $("lock").hidden = true; $("open").hidden = false; $("err").hidden = true;
+  $("forgetrow").hidden = !localStorage.getItem(STORE);
+  const list = data.downloads || [];
+  $("soon").hidden = !!list.length; $("downloads").hidden = !list.length; $("downloads").innerHTML = "";
+  for (const d of list) {
+    const li = document.createElement("li"); li.className = "suite-card member-item";
+    const h = document.createElement("h2"); h.className = "member-name"; h.textContent = d.name + (d.version ? " " + d.version : ""); li.append(h);
+    if (d.note) { const n = document.createElement("p"); n.className = "member-note"; n.textContent = d.note; li.append(n); }
+    const row = document.createElement("div"); row.className = "beta-buttons"; li.append(row);
+    for (const [k, label] of [["mac", "Mac"], ["pc", "PC"]]) if (d[k]) {
+      const a = document.createElement("a"); a.className = "btn btn-demo"; a.textContent = "Download for " + label;
+      a.href = d[k] === "#" ? "#" : API + "/v1/dl?" + new URLSearchParams({ g: token, p: d.name, f: k });
+      row.append(a);
+    }
+    $("downloads").append(li);
+  }
+}
+function unlock(key, remember) {
+  $("unlock").disabled = true;
+  fetch(API + "/v1/golden", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key }) })
+    .then((r) => r.json().then((j) => ({ r, j })))
+    .then(({ r, j }) => {
+      $("unlock").disabled = false;
+      if (r.ok && j.token) { token = j.token; if (remember) localStorage.setItem(STORE, key); show(j); return; }
+      if (r.status === 401 || r.status === 403) localStorage.removeItem(STORE);
+      $("lock").hidden = false; $("open").hidden = true;
+      fail(j.error === "revoked" ? "That key has been turned off." : j.error === "not a golden key" ? "That key works in a plugin but isn't a golden key." : j.error === "expired" ? "That key has expired." : "That doesn't look like a golden key. Check you pasted all of it.");
+    })
+    .catch(() => { $("unlock").disabled = false; fail("Couldn't reach the server. Try again soon."); });
+}
+$("lock").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const key = $("key").value.replace(/\s+/g, "");
+  if (!key) return fail("Paste your golden key first.");
+  unlock(key, $("remember").checked);
+});
+$("forget").addEventListener("click", () => { localStorage.removeItem(STORE); $("forgetrow").hidden = true; });
+// Local previews: ?preview (unlocked sample list, fake data) or ?preview=locked
+if (q.get("preview") === "locked") { $("key").value = "FAKE-GOLDEN-KEY-not-a-real-key"; $("remember").checked = true; }
+else if (q.has("preview")) { localStorage.setItem(STORE, "FAKE"); show({ downloads: ["Slammer 1.0.2", "Updown 0.2.2", "Punch 1.0.5", "Dip 0.1.5", "Frequalizer 0.3.3", "Dub-It 0.1.1", "Spaces 0.1.5", "Fizz 0.2.1", "Meter 1.0.2"].map((s) => { const i = s.lastIndexOf(" "); return { name: s.slice(0, i), version: s.slice(i + 1), mac: "#", pc: "#" }; }) }); localStorage.removeItem(STORE); $("forgetrow").hidden = false; }
+else if (localStorage.getItem(STORE)) unlock(localStorage.getItem(STORE), true);
+</script>
+</body>
+</html>
