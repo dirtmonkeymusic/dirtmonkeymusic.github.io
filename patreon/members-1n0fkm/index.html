@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="/css/styles.css">
   <style>
     /* Only what styles.css lacks, built from its own variables. */
+    .member-key { margin-bottom: 1.5rem; }
+    .key-row { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+    .key-code { font-family: "JetBrains Mono", monospace; flex: 1 1 16rem; min-width: 0; overflow-wrap: anywhere; padding: .6rem .8rem; border: 1px solid currentColor; border-radius: 6px; user-select: all; }
     .member-list { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 14px; }
     .member-item { padding: 18px; }
     .member-name { margin: 0 0 12px; font-size: 1.05rem; color: var(--ink); }
@@ -46,6 +49,11 @@
           </div>
           <div id="member" hidden>
             <p class="lede" id="hello">You're in. Grab your plugins below, then open any plugin and choose Activate.</p>
+            <div class="suite-card member-key" id="keybox" hidden>
+              <h2 class="member-name">Your session code</h2>
+              <p class="member-note">Open Slammer (or any plugin), choose Activate, paste this code and press ACTIVATE. Activate within 24 hours on each computer; after that the plugin stays activated. Log in again anytime for a fresh code.</p>
+              <div class="key-row"><code class="key-code" id="keycode"></code><button type="button" class="btn btn-demo" id="copykey">Copy</button></div>
+            </div>
             <ul class="member-list" id="downloads"></ul>
             <div class="suite-card member-soon" id="soon" hidden>
               <h2>First drop coming soon</h2>
@@ -78,6 +86,8 @@ $("go").href = API + "/oauth/login";
 const q = new URLSearchParams(location.search);
 function show(data) {
   $("login").hidden = true; $("member").hidden = false;
+  const code = data.session || "";
+  $("keybox").hidden = !code; $("keycode").textContent = code;
   if (data.name) $("hello").textContent = "Hey " + data.name + ", you're in. Grab your plugins below, then open any plugin and choose Activate.";
   $("downloads").innerHTML = "";
   const empty = !(data.downloads || []).length;
@@ -103,19 +113,25 @@ function render(list, target, sec) {
     $(target).append(li);
   }
 }
+$("copykey").addEventListener("click", () => {
+  const t = $("keycode").textContent, b = $("copykey");
+  const done = () => { b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy"), 1500); };
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, () => { getSelection().selectAllChildren($("keycode")); });
+  else { getSelection().selectAllChildren($("keycode")); document.execCommand("copy"); done(); }
+});
 if (q.get("code") && q.get("state")) {
   fetch(API + "/oauth/callback?" + new URLSearchParams({ code: q.get("code"), state: q.get("state") }))
     .then((r) => r.json().then((j) => ({ r, j })))
     .then(({ r, j }) => {
       history.replaceState(null, "", location.pathname);
-      if (r.ok) { sessionStorage.setItem("dm-session", j.session); show(j); }
+      if (r.ok && j.session) { sessionStorage.setItem("dm-session", j.session); show(j); }
       else { $("err").hidden = false; $("err").textContent = r.status === 402 ? "We couldn't find an active $15+ Patreon membership on that account." : "Login didn't work. Try again."; }
     })
     .catch(() => { $("err").hidden = false; $("err").textContent = "Couldn't reach the server. Try again soon."; });
 }
 // Local previews: ?preview (sample list) or ?preview=empty
 if (q.get("preview") === "empty") show({ name: "Tester", downloads: [] });
-else if (q.has("preview")) show({ name: "Tester", downloads: [{ name: "Updown", version: "0.2.0", mac: "#", pc: "#", note: "Note: AU sessions saved with an older Updown won't reload it (the AU code changed). Re-add Updown in those sessions." }], wip_beta: q.get("preview") === "wip" ? [{ name: "Wonk Factory", version: "1.2 beta 1", mac: "#", pc: "#" }] : [] });
+else if (q.has("preview")) show({ name: "Tester", session: "FAKE-PREVIEW-0000-not-a-real-code", downloads: [{ name: "Updown", version: "0.2.0", mac: "#", pc: "#", note: "Note: AU sessions saved with an older Updown won't reload it (the AU code changed). Re-add Updown in those sessions." }], wip_beta: q.get("preview") === "wip" ? [{ name: "Wonk Factory", version: "1.2 beta 1", mac: "#", pc: "#" }] : [] });
 </script>
 </body>
 </html>
