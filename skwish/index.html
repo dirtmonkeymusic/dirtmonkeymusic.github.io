@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Skwish Stack</title>
+  <meta name="description" content="Skwish Stack. One tap drops the swinging Skwish. Land dead center, build the drop, and do not tip the stack.">
+  <!-- Hidden for now. Not linked from any other page and not in the sitemap. Share the address by hand. -->
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#100816">
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <div class="stage" id="stage">
+    <canvas id="view" aria-hidden="true"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <div class="hud-score">
+        <span class="hud-label">Height</span>
+        <strong id="height">0</strong>
+      </div>
+      <div class="hud-mid">
+        <img class="hud-cover" id="hud-cover" alt="" width="1080" height="1080">
+        <div>
+          <p class="hud-track" id="track"></p>
+          <p class="hud-streak" id="streak"></p>
+          <p class="pips" id="pips" aria-hidden="true"></p>
+        </div>
+      </div>
+      <div class="hud-side">
+        <p class="hud-best">Best <strong id="best">0</strong></p>
+        <button type="button" class="mute" id="mute" aria-pressed="false">Sound</button>
+      </div>
+    </div>
+
+    <p class="banner" id="banner" role="status" hidden></p>
+
+    <div class="screen" id="screen-start">
+      <div class="panel">
+        <img class="cover" id="cover" alt="Skwish album cover" width="1080" height="1080">
+        <p class="eyebrow">Dirt Monkey</p>
+        <h1 id="title">Skwish Stack</h1>
+        <p class="lede">He swings from the top. Tap to drop him. Land dead center and the beat builds. Lean too far and the stack tips.</p>
+        <p class="hint">Tap, click, or press space.</p>
+        <p class="best-line">Best <strong id="best-start">0</strong></p>
+        <button type="button" class="btn btn-primary" id="start">Tap to stack</button>
+        <p class="note">Blob and beats are placeholders. This cover is the real Skwish art.</p>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-over" hidden>
+      <div class="panel panel-over">
+        <p class="eyebrow" id="over-kicker">The stack tipped</p>
+        <h2 id="over-title">Stack height <span id="over-height">0</span></h2>
+        <p class="best-line">Best <strong id="over-best">0</strong> <span class="pill" id="new-best" hidden>New best</span></p>
+        <canvas id="card" class="card" width="1200" height="630" aria-label="Share card"></canvas>
+        <div class="actions">
+          <button type="button" class="btn btn-line" id="download">Download share card</button>
+          <button type="button" class="btn btn-pink" id="share" hidden>Share</button>
+          <a class="beat" id="beat" href="https://dirtmonkey.music/skwish/">Beat my stack</a>
+          <button type="button" class="btn btn-primary" id="again">Play again</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="live" id="live" aria-live="polite"></p>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

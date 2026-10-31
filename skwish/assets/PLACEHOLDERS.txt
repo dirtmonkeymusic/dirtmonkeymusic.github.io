@@ -1,0 +1,22 @@
+Skwish Stack assets. Paths are also listed in CONFIG at the top of game.js.
+
+album-art.jpg
+  Final SKWISH cover. 1080x1080 JPG. Used on the page and the share card.
+
+blob.png
+  Placeholder sprite. Skwish (sunglasses and chain) cut out of the cover.
+  Swap in dedicated art when it arrives. Transparent PNG.
+
+blob-squish.png
+  Placeholder squashed pose of blob.png. Swap in a real squish drawing later.
+
+golden.png
+  Placeholder. Gold tint of blob.png, until a real golden Skwish arrives.
+
+bg.jpg
+  Not included. Drop a background here and the game will use it.
+  Until then the background is drawn in code.
+
+tracks/*.mp3
+  Not included. CONFIG.tracks lists file, bpm, and title.
+  Until a file loads, a synthesized beat plays at that bpm.
