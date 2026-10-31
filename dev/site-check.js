@@ -278,18 +278,18 @@ async function open(b, url, viewport) {
     });
     await wait(1100);
     const cd2 = await p.evaluate(() => window.homeCountdown.state());
-    ok("home: countdown shows between the logo and the signup", !cd.st.hidden && cd.top >= cd.logo && cd.bottom <= cd.btns && /JetBrains Mono/.test(cd.font) && cd.st.target === "2026-11-02T12:00:00-05:00", cd);
+    ok("home: countdown shows between the logo and the signup", !cd.st.hidden && cd.top >= cd.logo && cd.bottom <= cd.btns && /JetBrains Mono/.test(cd.font) && cd.st.target === "2026-11-06T00:00:00-05:00", cd);
     ok("home: countdown ticks", cd2.seconds !== cd.st.seconds || cd2.minutes !== cd.st.minutes, { cd: cd.st, cd2 });
     // ?now= previews another moment. Loading takes a few seconds, so allow for that.
     const secs = (st) => ((+st.days * 24 + +st.hours) * 60 + +st.minutes) * 60 + +st.seconds;
-    for (const [at, want] of [["2026-11-01T12:00:00-05:00", 86400], ["2026-11-02T11:59:50-05:00", 10], ["2026-11-02T12:00:00-05:00", 0], ["2026-12-01T00:00:00-05:00", 0]]) {
+    for (const [at, want] of [["2026-11-05T00:00:00-05:00", 86400], ["2026-11-05T23:59:50-05:00", 10], ["2026-11-06T00:00:00-05:00", 0], ["2026-12-01T00:00:00-05:00", 0]]) {
       const q = await open(b, "/?now=" + encodeURIComponent(at), PHONE);
       const qs = await q.evaluate(() => ({ st: window.homeCountdown.state(), shown: document.querySelector("[data-home-countdown]").offsetHeight > 0, overflow: document.documentElement.scrollWidth - innerWidth }));
       const left = secs(qs.st);
       ok(`home: countdown at ${at} ${want ? "shows about " + want + "s left" : "is hidden"}`, want ? !qs.st.hidden && qs.shown && left <= want && left > want - 6 && qs.overflow <= 0 : qs.st.hidden && !qs.shown, qs);
       await q.close();
     }
-    const z = await open(b, "/?now=" + encodeURIComponent("2026-11-02T11:59:57-05:00"), DESKTOP);
+    const z = await open(b, "/?now=" + encodeURIComponent("2026-11-05T23:59:57-05:00"), DESKTOP);
     await wait(3500);
     const zs = await z.evaluate(() => ({ st: window.homeCountdown.state(), shown: document.querySelector("[data-home-countdown]").offsetHeight > 0 }));
     ok("home: countdown hides itself when it reaches zero", zs.st.hidden && !zs.shown, zs);

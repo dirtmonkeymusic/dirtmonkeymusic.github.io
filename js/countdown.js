@@ -4,9 +4,9 @@
 //   COUNTDOWN_TARGET  The moment it counts down to. Keep the time zone on the end
 //                     (-05:00 is US Eastern in winter, EST; -04:00 is summer, EDT).
 // When the moment passes, the countdown hides itself.
-// Preview another moment with ?now=, for example /?now=2026-11-02T11:59:50-05:00
+// Preview another moment with ?now=, for example /?now=2026-11-05T23:59:50-05:00
 var COUNTDOWN_LABEL = "";
-var COUNTDOWN_TARGET = "2026-11-02T12:00:00-05:00";
+var COUNTDOWN_TARGET = "2026-11-06T00:00:00-05:00";
 
 (function () {
   var root = document.querySelector("[data-home-countdown]");

@@ -18,7 +18,7 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 
 ## Launch page: done
 
-- 2026-10-17: the home page is the launch page: the bubble logo, the Nov 2 noon ET countdown, Merch and Shows buttons, Monkey Pong, and the Laylo signup embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent`, not minimal).
+- 2026-10-17: the home page is the launch page: the bubble logo, the Nov 6 midnight ET countdown (was Nov 2 noon), Merch and Shows buttons, Monkey Pong, and the Laylo signup embed (`https://laylo.com/dirtmonkey/profile/embed?theme=dark&background=transparent`, not minimal).
 - Every nav is just Merch and Shows. Sign up left the nav and the home buttons since the signup is on the home page; its links wait in the `NAV3` comments with Plugins, Music, App, and Play.
 - `/signup/` is a page of its own with the same embed. It works but nothing links to it, and it is not in the sitemap. `/privacy/` stays linked in every footer.
 - Added 2026-10-17: every Merch link (home button and every nav) opens https://dirtmonkey.bassthreadsmerch.com/ in a new tab. /merch/ still works but is unlinked and out of the sitemap; to bring it back, point the Merch links at `/merch/` again and re-add its sitemap entry.
@@ -28,7 +28,7 @@ Open http://127.0.0.1:47321/ (home) and http://127.0.0.1:47321/play/ (the game).
 
 ## Home countdown: done
 
-- Added 2026-10-17: big neon days, hours, minutes, seconds between the logo and the buttons, counting down to 2026-11-02 12:00 PM US Eastern (EST). `js/countdown.js` runs it; `COUNTDOWN_LABEL` (empty for now) and `COUNTDOWN_TARGET` are at the top of that file. It hides itself when the time passes. Preview with `/?now=2026-11-02T11:59:50-05:00`. Reduced motion turns off the glow pulse. `site-check.js` covers it; `dev/countdown-shots.js` takes the screenshots.
+- Added 2026-10-17: big neon days, hours, minutes, seconds between the logo and the buttons, counting down to 2026-11-06 12:00 AM (midnight) US Eastern (EST); moved from Nov 2 noon on 2026-10-31. `js/countdown.js` runs it; `COUNTDOWN_LABEL` (empty for now) and `COUNTDOWN_TARGET` are at the top of that file. It hides itself when the time passes. Preview with `/?now=2026-11-02T11:59:50-05:00`. Reduced motion turns off the glow pulse. `site-check.js` covers it; `dev/countdown-shots.js` takes the screenshots.
 
 ## Nav trimmed to three: done
 
