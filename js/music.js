@@ -4,11 +4,11 @@
   "use strict";
 
   // EDIT: SKWISH release day (local time) and where "Listen" goes once it is out.
-  var RELEASE = { year: 2026, month: 11, day: 13 };
+  var RELEASE = { year: 2026, month: 11, day: 20 };
   var LISTEN_URL = "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH";
   var LOOKUP_TIMEOUT_MS = 15000;
 
-  // ?now=2026-11-13T09:00:00 shows the page as it looks on another day.
+  // ?now=2026-11-20T09:00:00 shows the page as it looks on another day.
   function now() {
     var param = new URLSearchParams(location.search).get("now");
     var at = param ? new Date(param) : new Date();

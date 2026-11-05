@@ -93,7 +93,7 @@ async function open(b, url, vp, opts = {}) {
       connect: document.querySelectorAll(".connect-link").length
     }));
     if (name === "desktop") console.log(JSON.stringify(info, null, 1));
-    ok("music countdown " + name, /^Nov 13 · 19K · \d+ days? to go$/.test(info.meta) && info.cta === "Pre-save", info.meta);
+    ok("music countdown " + name, /^Nov 20 · 19K · \d+ days? to go$/.test(info.meta) && info.cta === "Pre-save", info.meta);
     ok("music tracks in order " + name, info.titles.join("|") === "Try Again|Candy|Heads Will Roll|YKDR|Y2K DUB|ARROWS");
     ok("music apple link " + name, info.apple === "https://music.apple.com/us/album/6814886982?i=6814886983");
     ok("music connect links " + name, info.connect === 10);
@@ -128,9 +128,9 @@ async function open(b, url, vp, opts = {}) {
 
   // Release day.
   {
-    const p = await open(b, "/music/?now=2026-11-13T09:00:00", PHONE);
+    const p = await open(b, "/music/?now=2026-11-20T09:00:00", PHONE);
     const info = await p.evaluate(() => [document.querySelector(".upcoming-meta").textContent, document.querySelector("[data-album-cta]").textContent, document.querySelector("[data-album-kicker]").textContent]);
-    ok("music release day", info[0] === "Nov 13 · 19K · Out now" && info[1] === "Listen", info);
+    ok("music release day", info[0] === "Nov 20 · 19K · Out now" && info[1] === "Listen", info);
     await p.ctx.close();
   }
 
