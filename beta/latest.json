@@ -1,44 +1,144 @@
 {
   "mac": {
-    "version": "1.0.0",
-    "url": "https://www.dropbox.com/scl/fi/hs7llvpbbvw2telzhk8li/Dirt-Monkey-Beta-Mac.pkg?rlkey=04upde00e9609jujfj2oe6i1d&st=0fz3d77y&dl=1",
-    "size": 344718627,
-    "date": "2026-10-20",
     "plugins": {
       "Wonk Factory": {
-        "version": "1.0.0",
-        "size": 142905213,
-        "date": "2026-10-20",
-        "url": "https://www.dropbox.com/scl/fi/p80cuqg98dltzcwwg966l/Wonk-Factory-Beta-Mac.pkg?rlkey=b6vz6oj48u6xec6bmcxlbtwj4&st=f3be95na&dl=1",
+        "version": "1.1.6",
+        "size": 144821708,
+        "date": "2026-11-05",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AC9-a7_dU7zAJogFAs9Db9Y/Wonk%20Factory/Wonk%20Factory%20Mac%2011-4-26%20v1.1.6.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1",
         "notes": [
-          "Space is now a separate Delay and Reverb, side by side, each with a draggable XY tail point.",
-          "Reverb types: Room, Spring, Plate and Hall. Delay adds Ping Pong, Stereo and Mono.",
-          "New HAAS stereo-width slider on each oscillator.",
-          "Scream filter is now a formant yell. Old sessions keep the classic Scream.",
-          "Master can now be modulated, and the preset bar has a new menu (Init, Save, Load)."
+          "One-click updates from inside the plugin (UPDATE button in the top bar)."
         ]
+      },
+      "Updown": {
+        "version": "0.2.4",
+        "size": 24272051,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/ADvxq45LuvmueSR-JKct6ZU/Updown/Updown-Mac-0.2.4.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Slammer": {
+        "version": "1.0.3",
+        "size": 18275180,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AIk1vktmKA8vhBBvjwGd51k/Slammer/Slammer-Mac-1.0.3.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Punch": {
+        "version": "1.0.6",
+        "size": 27417786,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AIDKhkR4SW1WEHEDPnvMQnc/Punch/Punch-Mac-1.0.6.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Dip": {
+        "version": "0.1.7",
+        "size": 22644537,
+        "date": "2026-10-30",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AKwwGmwgHPWpK78xvG6d3Fo/Dip/Dip-Mac-0.1.7.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Frequalizer": {
+        "version": "0.3.7",
+        "size": 23014596,
+        "date": "2026-11-02",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/APhyqLbVJEcPBsVNAweF7j0/Frequalizer/Frequalizer-Mac-0.3.7.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Dub-It": {
+        "version": "0.1.2",
+        "size": 21186232,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/ANbLra_LA6fwwUrQkdRSeYo/Dub-It/Dub-It-Mac-0.1.2.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Spaces": {
+        "version": "0.1.6",
+        "size": 21051622,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AK0OtnSGostTgQX_kiwpqqg/Spaces/Spaces-Mac-0.1.6.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Fizz": {
+        "version": "0.2.3",
+        "size": 22526604,
+        "date": "2026-10-30",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AKGa1Q5vGw8TOHXkUhV4UJY/Fizz/Fizz-Mac-0.2.3.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Meter": {
+        "version": "1.0.4",
+        "size": 16753746,
+        "date": "2026-11-04",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AGagGqhWogHFExuJaSoZbb0/Meter/Meter-Mac-1.0.4.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
       }
-    }
+    },
+    "version": "2026.11.05",
+    "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AFnlTycMIlKNBmAzXbzV1C4/Suite/Dirt%20Monkey%20Suite-Mac-2026.11.05.pkg?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1",
+    "size": 362881295,
+    "date": "2026-11-05"
   },
   "pc": {
-    "version": "1.0.0",
-    "url": "https://www.dropbox.com/scl/fi/b8vl9n9j4djomdxxur7iw/Dirt-Monkey-Beta-PC.exe?rlkey=w1ibru9em3m1wp1qx15ya46bs&st=osvojmt8&dl=1",
-    "size": 72216456,
-    "date": "2026-10-20",
     "plugins": {
       "Wonk Factory": {
-        "version": "1.0.0",
-        "size": 130930889,
-        "date": "2026-10-20",
-        "url": "https://www.dropbox.com/scl/fi/euh17qly0kj41n02db15v/Wonk-Factory-Beta-PC.zip?rlkey=0d76fkgco3b4rnig58n0wb1lr&st=oy5vw35h&dl=1",
+        "version": "1.1.6",
+        "size": 133340397,
+        "date": "2026-11-05",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AF3O1v7vl49qfxB5PmLy83s/Wonk%20Factory/Windows/Wonk%20Factory%20PC%2011-4-26%20v1.1.6.zip?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1",
         "notes": [
-          "Space is now a separate Delay and Reverb, side by side, each with a draggable XY tail point.",
-          "Reverb types: Room, Spring, Plate and Hall. Delay adds Ping Pong, Stereo and Mono.",
-          "New HAAS stereo-width slider on each oscillator.",
-          "Scream filter is now a formant yell. Old sessions keep the classic Scream.",
-          "Master can now be modulated, and the preset bar has a new menu (Init, Save, Load)."
+          "One-click updates from inside the plugin (UPDATE button in the top bar)."
         ]
+      },
+      "Updown": {
+        "version": "0.2.4",
+        "size": 5338855,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AEfntFJsFEzcMSjuM-fxv40/Updown/Windows/Updown-Win-0.2.4-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Slammer": {
+        "version": "1.0.3",
+        "size": 4344262,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/APK2MO586KPKxVqkxsGjFus/Slammer/Windows/Slammer-Win-1.0.3-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Punch": {
+        "version": "1.0.6",
+        "size": 5935881,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AJhK5_5uzz41gQBvtUCm150/Punch/Windows/Punch-Win-1.0.6-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Dip": {
+        "version": "0.1.7",
+        "size": 4711292,
+        "date": "2026-10-30",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AEInDE07nXJN4r_AM8EH2EM/Dip/Windows/Dip-Win-0.1.7-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Frequalizer": {
+        "version": "0.3.7",
+        "size": 4797922,
+        "date": "2026-11-02",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AOmHI9zQ-zSDokWPeco22xw/Frequalizer/Windows/Frequalizer-Win-0.3.7-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Dub-It": {
+        "version": "0.1.2",
+        "size": 4365202,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/ACDx2o5xQEcGkJoP7U7HZ_w/Dub-It/Windows/Dub-It-Win-0.1.2-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Spaces": {
+        "version": "0.1.6",
+        "size": 4349598,
+        "date": "2026-10-29",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/ALoNKQvoJMOGJdTbi2tJ4Kk/Spaces/Windows/Spaces-Win-0.1.6-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Fizz": {
+        "version": "0.2.3",
+        "size": 4575320,
+        "date": "2026-10-30",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/AJntmu3Il0K5j4Ih5M3FuqE/Fizz/Windows/Fizz-Win-0.2.3-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
+      },
+      "Meter": {
+        "version": "1.0.4",
+        "size": 3525222,
+        "date": "2026-11-04",
+        "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/ANqV334tAvzeeXGNapbPQ1s/Meter/Windows/Meter-Win-1.0.4-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1"
       }
-    }
+    },
+    "version": "2026.11.05",
+    "url": "https://www.dropbox.com/scl/fo/u57ac2vnlxxgn6s2em1rq/ACQwRxUHSBlH7x6o8rQae4A/Suite/Dirt%20Monkey%20Suite-Win-2026.11.05-Setup.exe?rlkey=71gjxfnb9ba0vihshbjflbp3x&dl=1",
+    "size": 75091811,
+    "date": "2026-11-05"
   }
 }
