@@ -673,7 +673,7 @@
   }
 
   function pauseHeroOffscreen() {
-    var stage = document.querySelector(".monkey-stage");
+    var stage = document.querySelector(".skwish-stage");
     if (!stage || !("IntersectionObserver" in window)) return;
     new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
