@@ -53,10 +53,11 @@
 
     SITE MAP: each page is a folder with an index.html inside.
       /            This page, the launch page. The logo, the countdown
-                   (js/countdown.js), the Laylo signup, Monkey Pong
+                   (js/countdown.js), the SKWISH pre-save card, the Get the Dirt Monkey App section
+                   card, the Laylo signup, Skwish Pong
                    (js/pong.js), then the Merch and Shows buttons.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
-      /music/      Releases.
+      /music/      Albums and releases.
       /shows/      Tour dates.
       /merch/      Merch cards from the Bass Threads store (js/merch.js). Not
                    linked for now: every Merch link opens the store itself.
@@ -112,32 +113,66 @@
       </div>
 
       <!--
-        SIGNUP: Laylo's minimal embed of the "Dirt Monkey Website" Drop, so Laylo
-        counts the signups that come from this site. Just the number field and the RSVP button.
-        js/laylo-drop.js loads Laylo's SDK, then starts the frame (data-drop-src).
-        The frame is clipped to the field (.home-signup in css/styles.css), so
-        Laylo's own fine print is cut off. Laylo requires the line under it
-        when minimal=true is on: keep it.
+        SKWISH: album cover + Pre-save only. Same cover files as /music/.
+        Styles: .home-skwish in css/styles.css. The App Store CTA is its own section below.
       -->
-      <div id="signup" class="home-signup">
+      <article class="home-skwish" aria-labelledby="home-skwish-title">
+        <picture class="home-skwish-art">
+          <source type="image/webp" srcset="/assets/music/skwish-cover-500.webp 500w, /assets/music/skwish-cover-1000.webp 1000w" sizes="(max-width: 720px) 116px, 200px">
+          <img src="/assets/music/skwish-cover-1000.jpg" srcset="/assets/music/skwish-cover-500.jpg 500w, /assets/music/skwish-cover-1000.jpg 1000w" sizes="(max-width: 720px) 116px, 200px" alt="SKWISH album cover" width="1000" height="1000" decoding="async">
+        </picture>
+        <div class="home-skwish-copy">
+          <p class="home-skwish-kicker">New album</p>
+          <h2 id="home-skwish-title" class="home-skwish-title">SKWISH</h2>
+          <p class="home-skwish-meta">Out Nov 20 on 19K</p>
+        </div>
+        <div class="home-skwish-actions">
+          <a class="home-cta home-cta-presave" href="https://laylo.com/dirtmonkey/SKWISH?ref=website" target="_blank" rel="noopener noreferrer">Pre-save</a>
+        </div>
+      </article>
+
+      <!--
+        MERCH GIVEAWAY SIGNUP: big neon headline + Laylo embed for the
+        "DIRT MONKEY - SKWISH - MERCH GIVEAWAY" Drop
+        (laylo.com/dirtmonkey/SKWISH, dropId 30445aab-970d-4b40-a8cf-73222ab16d3c).
+        js/laylo-drop.js starts the frame. .home-signup clips to the field; keep the legal line.
+      -->
+      <div id="signup" class="home-signup home-giveaway">
+        <h2 class="home-giveaway-title">Enter the Merch Giveaway</h2>
+        <p class="home-giveaway-sub">Text your number to enter. Win the banana bag, bucket hat, or pashmina.</p>
         <div class="home-signup-frame">
-          <iframe id="laylo-drop-01b4e6e5-95f4-49a2-90f8-6c67811d9a8c" data-drop-src="https://embed.laylo.com/?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c&amp;color=3dfff2&amp;minimal=true&amp;theme=dark&amp;customTitle=&amp;background=transparent&amp;emailPlusSms=false" title="Sign up for Dirt Monkey on Laylo" width="100%" height="300" frameborder="0" scrolling="no" allowtransparency="true" data-laylo-embed></iframe>
+          <iframe id="laylo-drop-30445aab-970d-4b40-a8cf-73222ab16d3c" data-drop-src="https://embed.laylo.com/?dropId=30445aab-970d-4b40-a8cf-73222ab16d3c&amp;color=3dfff2&amp;minimal=true&amp;theme=dark&amp;customTitle=&amp;background=transparent&amp;emailPlusSms=false" title="Enter the Dirt Monkey merch giveaway on Laylo" width="100%" height="300" frameborder="0" scrolling="no" allowtransparency="true" data-laylo-embed></iframe>
         </div>
         <script src="/js/laylo-drop.js"></script>
         <p class="home-signup-legal">By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg &amp; data rates may apply. Reply STOP to cancel.</p>
       </div>
 
+
       <!--
-        MONKEY PONG. js/pong.js runs it.
-        Two paddles bounce the monkey back and forth on their own. Click or tap
-        the monkey (or Play Pong) for a quick game, first to 3. Esc or X stops it.
+        APP: its own section, apart from the SKWISH pre-save card.
+        Styles: .home-app in css/styles.css. Icon is the site apple-touch-icon.
+      -->
+      <section class="home-app" aria-labelledby="home-app-title">
+        <img class="home-app-icon" src="/assets/apple-touch-icon.png" alt="" width="180" height="180" decoding="async">
+        <div class="home-app-copy">
+          <p class="home-app-kicker">For iPhone</p>
+          <h2 id="home-app-title" class="home-app-title">Dirt Monkey App</h2>
+          <p class="home-app-meta">Skwish Run, music, merch, and shows. Out now.</p>
+        </div>
+        <a class="home-cta home-cta-app" href="https://apps.apple.com/us/app/dirt-monkey/id6818653132" target="_blank" rel="noopener noreferrer">Get the Dirt Monkey App</a>
+      </section>
+
+      <!--
+        SKWISH PONG. js/pong.js runs it.
+        Two paddles bounce Skwish back and forth on their own. Click or tap
+        Skwish (or Play Pong) for a quick game, first to 3. Esc or X stops it.
         Win and FREAK plays (only on a win).
       -->
       <div class="pong" data-pong tabindex="-1">
         <canvas class="pong-canvas" aria-hidden="true"></canvas>
-        <picture class="pong-monkey">
-          <source type="image/webp" srcset="/assets/monkey-cyan-256.webp 256w, /assets/monkey-cyan-400.webp 400w, /assets/monkey-cyan.webp 512w" sizes="(max-width: 720px) 100px, 200px">
-          <img src="/assets/monkey-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
+        <picture class="pong-skwish">
+          <source type="image/webp" srcset="/assets/skwish-cyan-256.webp 256w, /assets/skwish-cyan-400.webp 400w, /assets/skwish-cyan.webp 512w" sizes="(max-width: 720px) 100px, 200px">
+          <img src="/assets/skwish-cyan.png" alt="" width="512" height="512" fetchpriority="high" draggable="false">
         </picture>
         <p class="pong-score" aria-live="polite" data-pong-score hidden><span class="visually-hidden">You</span><span class="pong-you" data-pong-you>0</span><span class="visually-hidden">, computer</span><span class="pong-cpu" data-pong-cpu>0</span></p>
         <p class="pong-msg" role="status" data-pong-msg hidden></p>
