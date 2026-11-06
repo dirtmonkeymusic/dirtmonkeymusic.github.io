@@ -53,7 +53,8 @@
 
     SITE MAP: each page is a folder with an index.html inside.
       /            This page, the launch page. The logo, the countdown
-                   (js/countdown.js), the Laylo signup, Skwish Pong
+                   (js/countdown.js), the SKWISH pre-save and Get the App
+                   card, the Laylo signup, Skwish Pong
                    (js/pong.js), then the Merch and Shows buttons.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
       /music/      Albums and releases.
@@ -110,6 +111,26 @@
           <p class="home-countdown-unit"><strong data-unit="seconds">00</strong><span>Sec</span></p>
         </div>
       </div>
+
+      <!--
+        SKWISH + APP: the album pre-save and the App Store link, the two things to tap first.
+        Same cover files as /music/. Styles are .home-skwish in css/styles.css.
+      -->
+      <article class="home-skwish" aria-labelledby="home-skwish-title">
+        <picture class="home-skwish-art">
+          <source type="image/webp" srcset="/assets/music/skwish-cover-500.webp 500w, /assets/music/skwish-cover-1000.webp 1000w" sizes="(max-width: 720px) 116px, 200px">
+          <img src="/assets/music/skwish-cover-1000.jpg" srcset="/assets/music/skwish-cover-500.jpg 500w, /assets/music/skwish-cover-1000.jpg 1000w" sizes="(max-width: 720px) 116px, 200px" alt="SKWISH album cover" width="1000" height="1000" decoding="async">
+        </picture>
+        <div class="home-skwish-copy">
+          <p class="home-skwish-kicker">New album</p>
+          <h2 id="home-skwish-title" class="home-skwish-title">SKWISH</h2>
+          <p class="home-skwish-meta">Out Nov 20 on 19K</p>
+        </div>
+        <div class="home-skwish-actions">
+          <a class="home-cta home-cta-presave" href="https://laylo.com/dirtmonkey/uf3d1m?ref=website" target="_blank" rel="noopener noreferrer">Pre-save</a>
+          <a class="home-cta home-cta-app" href="https://apps.apple.com/us/app/dirt-monkey/id6818653132" target="_blank" rel="noopener noreferrer">Get the App</a>
+        </div>
+      </article>
 
       <!--
         SIGNUP: Laylo's minimal embed of the "Dirt Monkey Website" Drop, so Laylo
