@@ -53,7 +53,7 @@
 
     SITE MAP: each page is a folder with an index.html inside.
       /            This page, the launch page. The logo, the countdown
-                   (js/countdown.js), the SKWISH pre-save and Get the App
+                   (js/countdown.js), the SKWISH pre-save card, the Get the Dirt Monkey App section
                    card, the Laylo signup, Skwish Pong
                    (js/pong.js), then the Merch and Shows buttons.
       /plugins/    The plugin shop. Prices and text live in js/products.js.
@@ -113,8 +113,8 @@
       </div>
 
       <!--
-        SKWISH + APP: the album pre-save and the App Store link, the two things to tap first.
-        Same cover files as /music/. Styles are .home-skwish in css/styles.css.
+        SKWISH: album cover + Pre-save only. Same cover files as /music/.
+        Styles: .home-skwish in css/styles.css. The App Store CTA is its own section below.
       -->
       <article class="home-skwish" aria-labelledby="home-skwish-title">
         <picture class="home-skwish-art">
@@ -128,7 +128,6 @@
         </div>
         <div class="home-skwish-actions">
           <a class="home-cta home-cta-presave" href="https://laylo.com/dirtmonkey/uf3d1m?ref=website" target="_blank" rel="noopener noreferrer">Pre-save</a>
-          <a class="home-cta home-cta-app" href="https://apps.apple.com/us/app/dirt-monkey/id6818653132" target="_blank" rel="noopener noreferrer">Get the App</a>
         </div>
       </article>
 
@@ -147,6 +146,21 @@
         <script src="/js/laylo-drop.js"></script>
         <p class="home-signup-legal">By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg &amp; data rates may apply. Reply STOP to cancel.</p>
       </div>
+
+
+      <!--
+        APP: its own section, apart from the SKWISH pre-save card.
+        Styles: .home-app in css/styles.css. Icon is the site apple-touch-icon.
+      -->
+      <section class="home-app" aria-labelledby="home-app-title">
+        <img class="home-app-icon" src="/assets/apple-touch-icon.png" alt="" width="180" height="180" decoding="async">
+        <div class="home-app-copy">
+          <p class="home-app-kicker">For iPhone</p>
+          <h2 id="home-app-title" class="home-app-title">Dirt Monkey App</h2>
+          <p class="home-app-meta">Skwish Run, music, merch, and shows. Out now.</p>
+        </div>
+        <a class="home-cta home-cta-app" href="https://apps.apple.com/us/app/dirt-monkey/id6818653132" target="_blank" rel="noopener noreferrer">Get the Dirt Monkey App</a>
+      </section>
 
       <!--
         SKWISH PONG. js/pong.js runs it.
