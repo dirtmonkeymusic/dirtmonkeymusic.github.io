@@ -14,7 +14,7 @@ This is the Dirt Monkey website, made for the address **https://dirtmonkey.music
 | `/app/` | `app/index.html` | The Dirt Monkey iPhone app, coming November 2 |
 | `/play/` | `play/index.html` | Skwish Drop, a bass-drop rhythm game starring Skwish |
 | `/privacy/` | `privacy/index.html` | The app privacy policy, exactly as written |
-| `/#signup` | `index.html` | The signup: Laylo's minimal embed of the "Dirt Monkey Website" Drop (js/laylo-drop.js) |
+| `/#signup` | `index.html` | The signup: Laylo's minimal embed of the SKWISH Merch Giveaway Drop (js/laylo-drop.js) |
 
 The header on every page links to Plugins, Music, Shows, Merch, App, Play (a glowing pill), and Sign up. The footer links to Instagram, YouTube, Bandcamp, 19K, and the privacy policy.
 
@@ -271,7 +271,7 @@ Each page is the `index.html` inside its folder. Look for comments that say `EDI
 - **App (`app/index.html`):** when the app is live, replace the App Store placeholder with the real link. The comment above it shows the line to paste.
 - **Privacy (`privacy/index.html`):** this is the policy file exactly as it was supplied. It keeps its own simple style and has no site header. Replace the whole file when a final version is ready.
 - **Header and footer:** copied on every page. If you change a nav link or a footer link, change it on every page.
-- **Signup:** the home page and /signup/ embed the Laylo Drop "Dirt Monkey Website" (dropId `01b4e6e5-95f4-49a2-90f8-6c67811d9a8c`, share link https://laylo.com/dirtmonkey/uf3d1m), so the Laylo dashboard counts signups from this site under that Drop. `js/laylo-drop.js` loads Laylo's SDK first, then starts each `iframe[data-drop-src]` (the Drop frame stays blank without the SDK). The Music page SKWISH Pre-save and Notify me buttons and the /signup/ fallback link go to https://laylo.com/dirtmonkey/uf3d1m?ref=website.
+- **Signup:** the home page and /signup/ embed the Laylo Drop "DIRT MONKEY - SKWISH - MERCH GIVEAWAY" (dropId `30445aab-970d-4b40-a8cf-73222ab16d3c`, share link https://laylo.com/dirtmonkey/SKWISH), so the Laylo dashboard counts giveaway entries from this site under that Drop. `js/laylo-drop.js` loads Laylo's SDK first, then starts each `iframe[data-drop-src]` (the Drop frame stays blank without the SDK). The home and Music SKWISH Pre-save buttons go to https://laylo.com/dirtmonkey/SKWISH?ref=website.
 
 Do not rename the folders `assets`, `css`, `js`, `downloads`, or `tools`. The pages look for those names.
 
