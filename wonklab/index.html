@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wonk Lab — Dirt Monkey</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#07060a">
+  <!-- Hidden preview. Do not add this URL to the sitemap, nav, or any other page. -->
+  <link rel="canonical" href="https://dirtmonkey.music/wonklab/">
+  <link rel="icon" href="/assets/wonklab/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/assets/wonklab/favicon-48.png" sizes="48x48" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/wonklab/apple-touch-icon.png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/wonklab.css">
+</head>
+<body class="wonklab-page">
+  <!--
+    WONK LAB PREVIEW: dirtmonkey.music/wonklab/
+    Secret until the reveal. noindex, not in the sitemap, not linked from nav
+    or any other page. Placeholder logo until Francois delivers a color version.
+
+    Plugin cards, prices, art, demo links, and Buy buttons are drawn from
+    js/products.js by js/site.js, same hooks as /plugins/.
+    Checkout links in that file are still Lemon Squeezy placeholders.
+    Do not add Stripe or PayPal here.
+  -->
+
+  <a class="skip" href="#plugins">Skip to plugins</a>
+
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="logo-mark logo-mark-small">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" srcset="/assets/dirt-monkey-logo-480.webp 480w, /assets/dirt-monkey-logo-1360.webp 1360w" sizes="220px" alt="Dirt Monkey home" width="1360" height="264">
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener">Merch</a>
+      <a href="/shows/">Shows</a>
+      <!-- NAV3: hidden for now. Do not add Wonk Lab to the nav. -->
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="wonklab-hero" aria-label="Wonk Lab">
+      <div class="wrap wonklab-hero-inner">
+        <h1 class="wonklab-logo">
+          <img src="/assets/wonklab/wonklab-wordmark.png" alt="Wonk Lab" width="2906" height="1263">
+        </h1>
+        <p class="lede wonklab-lede">Plugins by Dirt Monkey. Sample packs coming soon.</p>
+      </div>
+    </section>
+
+    <section id="plugins" class="section section-first" aria-label="Plugins">
+      <div class="wrap">
+        <div class="section-heading">
+          <p class="eyebrow">Wonk Lab</p>
+          <h2>Plugins</h2>
+        </div>
+        <!-- Plugin cards are drawn from js/products.js. Wonk Factory is the flagship. Paid plugins sit in the grid under it. Free plugins sit in the row below. -->
+        <div id="plugin-feature" class="plugin-feature"></div>
+        <div id="plugin-grid" class="plugin-grid plugin-grid-rest"></div>
+        <div id="plugin-free-wrap" class="free-plugins" hidden>
+          <h3>Free plugins</h3>
+          <div id="plugin-free" class="plugin-grid plugin-grid-rest"></div>
+        </div>
+        <noscript>
+          <p class="shop-error">JavaScript is off, so the plugin cards cannot load. The shop list is in js/products.js.</p>
+        </noscript>
+      </div>
+    </section>
+
+    <section id="packs" class="section wonklab-packs" aria-label="Sample packs">
+      <div class="wrap">
+        <div class="section-heading">
+          <p class="eyebrow">Next up</p>
+          <h2>Sample packs — coming soon</h2>
+          <p class="lede">Loops, one-shots, and ear candy will live here. Nothing to buy yet.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="/">
+        <span class="logo-mark logo-mark-small">
+          <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+          <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" srcset="/assets/dirt-monkey-logo-480.webp 480w, /assets/dirt-monkey-logo-1360.webp 1360w" sizes="220px" alt="Dirt Monkey home" width="1360" height="264" loading="lazy" decoding="async">
+        </span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="https://www.instagram.com/dirtmonkeymusic/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@dirtmonkeymusic" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="https://dirtmonkey.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a></li>
+        <!-- EDIT: 19K link. This goes to the 19K SoundCloud page. Swap the address if you want a different one. -->
+        <li><a href="https://soundcloud.com/19ksounds" target="_blank" rel="noopener noreferrer">19K</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul>
+      <p class="legal">© 2026 Dirt Monkey.</p>
+    </div>
+  </footer>
+
+  <script src="/js/products.js" defer></script>
+  <script src="/js/site.js" defer></script>
+  <!--
+    Lemon Squeezy checkout overlay, same as /plugins/.
+    Buy links in js/products.js are still placeholders. Not live checkout.
+  -->
+  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+</body>
+</html>
