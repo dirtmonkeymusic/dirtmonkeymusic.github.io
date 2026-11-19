@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thanks — Wonk Lab</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#07060a">
+  <!-- Hidden Wonk Lab thank-you page after Stripe or PayPal checkout. -->
+  <link rel="icon" href="/assets/wonklab/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/wonklab.css">
+  <link rel="stylesheet" href="/css/wonklab-checkout.css">
+</head>
+<body class="wonklab-page">
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="logo-mark logo-mark-small">
+        <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+        <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" srcset="/assets/dirt-monkey-logo-480.webp 480w, /assets/dirt-monkey-logo-1360.webp 1360w" sizes="220px" alt="Dirt Monkey home" width="1360" height="264">
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Site">
+      <a href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener">Merch</a>
+      <a href="/shows/">Shows</a>
+      <!-- NAV3: hidden for now. Do not add Wonk Lab to the nav. -->
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="section section-first" aria-label="Thanks">
+      <div class="wrap checkout-wrap">
+        <p class="checkout-test" id="test-banner" hidden>TEST MODE: this was a test payment. No real money moved.</p>
+        <div class="checkout-card" id="checkout" data-page="thanks">
+          <p class="eyebrow">Wonk Lab</p>
+          <h1 class="checkout-title" id="t-title">Thanks for your order!</h1>
+          <p class="checkout-note" id="t-body">Your license key and download links are on the way to your email. It usually takes a minute. Check spam if you don't see it.</p>
+          <p class="checkout-note">To unlock: open the plugin in your DAW, click Activate, and paste the key.</p>
+          <p class="checkout-back"><a href="/wonklab/#plugins">Back to Wonk Lab</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="/">
+        <span class="logo-mark logo-mark-small">
+          <span class="logo-stack" aria-hidden="true"><span class="logo-aura logo-aura-pink"><span class="logo-shape"></span></span><span class="logo-aura logo-aura-cyan"><span class="logo-shape"></span></span><span class="logo-fill"></span></span>
+          <img class="logo-crisp" src="/assets/dirt-monkey-logo-1360.webp" srcset="/assets/dirt-monkey-logo-480.webp 480w, /assets/dirt-monkey-logo-1360.webp 1360w" sizes="220px" alt="Dirt Monkey home" width="1360" height="264" loading="lazy" decoding="async">
+        </span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="https://www.instagram.com/dirtmonkeymusic/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.youtube.com/@dirtmonkeymusic" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        <li><a href="https://dirtmonkey.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a></li>
+        <!-- EDIT: 19K link. This goes to the 19K SoundCloud page. Swap the address if you want a different one. -->
+        <li><a href="https://soundcloud.com/19ksounds" target="_blank" rel="noopener noreferrer">19K</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul>
+      <p class="legal">© 2026 Dirt Monkey.</p>
+    </div>
+  </footer>
+  <script src="/js/wonklab-checkout.js" defer></script>
+</body>
+</html>

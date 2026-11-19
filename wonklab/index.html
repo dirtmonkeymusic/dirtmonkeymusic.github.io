@@ -23,8 +23,9 @@
 
     Plugin cards, prices, art, demo links, and Buy buttons are drawn from
     js/products.js by js/site.js, same hooks as /plugins/.
-    Checkout links in that file are still Lemon Squeezy placeholders.
-    Do not add Stripe or PayPal here.
+    Buy buttons go to /wonklab/buy/ (set in js/wonklab-shots.js), which opens
+    Stripe or PayPal checkout through license.dirtmonkey.music. TEST MODE until
+    DIRT says go live.
   -->
 
   <a class="skip" href="#plugins">Skip to plugins</a>
@@ -108,10 +109,5 @@
   <script src="/js/wonklab-shots.js" defer></script>
   <script src="/js/site.js" defer></script>
   <script src="/js/wonklab-page.js" defer></script>
-  <!--
-    Lemon Squeezy checkout overlay, same as /plugins/.
-    Buy links in js/products.js are still placeholders. Not live checkout.
-  -->
-  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
 </body>
 </html>
