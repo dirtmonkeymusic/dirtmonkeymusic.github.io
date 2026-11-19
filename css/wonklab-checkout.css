@@ -24,3 +24,5 @@
   margin: 0 0 16px; padding: 10px 14px; border-radius: 12px;
   border: 1px dashed var(--mint); color: var(--mint); font-size: 0.85rem;
 }
+.checkout-paypal { margin-top: 14px; max-width: 420px; color-scheme: light; } /* light: keeps the PayPal iframes transparent on the dark page */
+.checkout-paypal .pp-btn + .pp-btn { margin-top: 10px; }

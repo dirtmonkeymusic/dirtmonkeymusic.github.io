@@ -31,7 +31,7 @@
   <main id="main">
     <section class="section section-first" aria-label="Checkout">
       <div class="wrap checkout-wrap">
-        <p class="checkout-test" id="test-banner" hidden>TEST MODE: no real money moves. Use Stripe test card 4242 4242 4242 4242 or a PayPal sandbox account.</p>
+        <p class="checkout-test" id="test-banner" hidden>TEST MODE: no real money moves. Use Stripe test card 4242 4242 4242 4242 or a PayPal/Venmo sandbox account.</p>
         <div class="checkout-card" id="checkout" data-page="buy">
           <p class="eyebrow">Wonk Lab checkout</p>
           <h1 class="checkout-title" id="p-name">Loading…</h1>
@@ -43,6 +43,8 @@
             <button class="btn btn-buy" id="pay-stripe" type="button">Pay with card</button>
             <button class="btn btn-demo" id="pay-paypal" type="button">Pay with PayPal</button>
           </div>
+          <!-- PayPal + Venmo buttons (PayPal JS SDK). If the SDK can't load, the "Pay with PayPal" redirect button above stays as the fallback. Venmo shows for US buyers only, mostly on phones. -->
+          <div class="checkout-paypal" id="paypal-buttons" hidden></div>
           <p class="checkout-msg" id="msg" role="status" aria-live="polite"></p>
           <p class="checkout-back"><a href="/wonklab/#plugins">Back to Wonk Lab</a></p>
         </div>
