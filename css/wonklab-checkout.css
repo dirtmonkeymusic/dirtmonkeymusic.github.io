@@ -26,3 +26,7 @@
 }
 .checkout-paypal { margin-top: 14px; max-width: 420px; color-scheme: light; } /* light: keeps the PayPal iframes transparent on the dark page */
 .checkout-paypal .pp-btn + .pp-btn { margin-top: 10px; }
+/* Card (and the PayPal redirect fallback) full-width, same size as the PayPal/Venmo buttons. */
+.checkout-actions { flex-direction: column; gap: 10px; max-width: 420px; }
+.checkout-actions .btn { width: 100%; min-height: 44px; padding-block: 10px; border-radius: 999px; }
+.checkout-paypal { margin-top: 10px; }
