@@ -61,7 +61,11 @@
       product.kitFormId = "";
       product.kitTags = "";
       product.demoLink = "downloads/meter-demo-PLACEHOLDER.txt";
-      product.buyLink = "https://YOURSTORE.lemonsqueezy.com/buy/METER-PLACEHOLDER";
+    }
+
+    // Buy opens the Wonk Lab checkout page (Stripe or PayPal, TEST MODE until DIRT says go live).
+    if (!product.free) {
+      product.buyLink = "/wonklab/buy/?p=" + encodeURIComponent(product.id);
     }
   });
 })();

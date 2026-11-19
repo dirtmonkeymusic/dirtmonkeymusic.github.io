@@ -1,0 +1,26 @@
+/* Wonk Lab checkout + thanks pages only. Uses the site palette from styles.css. */
+.checkout-wrap { max-width: 38rem; }
+.checkout-card {
+  padding: 32px 28px;
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(18, 11, 22, 0.95), rgba(13, 8, 18, 0.75));
+}
+.checkout-title { margin: 6px 0 4px; font-size: clamp(1.6rem, 4vw, 2.2rem); }
+.checkout-price { margin: 0 0 14px; font-size: 1.4rem; color: var(--ink); }
+.checkout-note { color: var(--muted); }
+.checkout-label { display: block; margin: 18px 0 6px; color: var(--dim); font-size: 0.85rem; }
+.checkout-email {
+  width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: #0b0710; color: var(--ink); font: inherit;
+}
+.checkout-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.checkout-actions .btn { cursor: pointer; font: inherit; }
+.checkout-actions .btn[disabled] { opacity: 0.5; cursor: wait; }
+.checkout-msg { min-height: 1.4em; margin-top: 14px; color: var(--mint); }
+.checkout-back { margin-top: 22px; font-size: 0.9rem; }
+.checkout-back a { color: var(--muted); }
+.checkout-test {
+  margin: 0 0 16px; padding: 10px 14px; border-radius: 12px;
+  border: 1px dashed var(--mint); color: var(--mint); font-size: 0.85rem;
+}
