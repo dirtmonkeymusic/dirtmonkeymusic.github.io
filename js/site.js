@@ -630,7 +630,7 @@
         name: product.name,
         description: product.description,
         applicationCategory: "MultimediaApplication",
-        operatingSystem: "macOS",
+        operatingSystem: "macOS, Windows",
         url: abs("#" + product.id),
         offers: {
           "@type": "Offer",

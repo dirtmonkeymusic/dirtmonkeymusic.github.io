@@ -68,3 +68,21 @@
   .wonklab-hero { padding: 36px 0 16px; }
   .wonklab-lede { margin-top: 20px; }
 }
+
+/* Small Wonk Lab wordmark above the checkout / thanks card. */
+.wonklab-mini {
+  display: block;
+  width: min(22rem, 78vw);
+  margin: 0 auto 22px;
+  line-height: 0;
+}
+
+.wonklab-mini img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 520px) {
+  .wonklab-logo { width: min(21rem, 84vw); }
+}
