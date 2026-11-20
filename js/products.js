@@ -77,7 +77,7 @@ const PRODUCTS = [
     price: "$49",
     priceNote: "$39 for the first 14 days of launch",
     description: "The flagship polyphonic synth. Three wavetable oscillators with Wonk control, plus sub and noise, two filters, space reverb, shift, two drives, modulators with an LFO editor, clipper, EQ, amp envelope, vibrato, and bend.",
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "mint",
     demoLink: "downloads/wonk-factory-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -102,7 +102,7 @@ const PRODUCTS = [
       "HEAT meter that shows how hard it's working.",
       "Mix, Low Cut, and Quality controls."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "cyan",
     demoLink: "downloads/punch-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -120,7 +120,7 @@ const PRODUCTS = [
     tagline: "Tempo-synced riser and downlifter generator.",
     price: "$25",
     description: "Tempo-synced riser and downlifter generator. Set the length in bars, then shape it with Noise, Tone, Wash, and Spice.",
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "magenta",
     demoLink: "downloads/updown-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -144,7 +144,7 @@ const PRODUCTS = [
       "True-peak ceiling and LUFS meter.",
       "Light on CPU."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "mint",
     demoLink: "downloads/the-end-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -169,7 +169,7 @@ const PRODUCTS = [
       "Dry/wet slider for parallel clipping.",
       "Output meter that runs purple to red up to 0 dB."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "cyan",
     demoLink: "downloads/slammer-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -194,7 +194,7 @@ const PRODUCTS = [
       "3-band EQ on the wet signal only, plus Width.",
       "Size, Pre-delay, Mix, Input and Output controls."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "mint",
     demoLink: "downloads/spaces-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -218,7 +218,7 @@ const PRODUCTS = [
       "One Drive knob.",
       "Built-in mid/side."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "magenta",
     demoLink: "downloads/fizz-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -244,7 +244,7 @@ const PRODUCTS = [
       "Synced or free time.",
       "Width."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "cyan",
     demoLink: "downloads/dub-it-demo-PLACEHOLDER.txt",
     // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.
@@ -276,7 +276,7 @@ const PRODUCTS = [
       "Live sidechain waveform behind the curve.",
       "Dry/wet and bypass."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "magenta",
     screenshot: "assets/plugins/dip-ui.png",
     shotWidth: 1640,
@@ -304,7 +304,7 @@ const PRODUCTS = [
       "L/R peak meters with peak hold.",
       "Very light on CPU."
     ],
-    formats: "VST3, AU, Mac, Windows coming, Standalone",
+    formats: "VST3, AU, Mac, Windows, Standalone",
     accent: "cyan",
     screenshot: "assets/plugins/meter-ui.png",
     shotWidth: 820,
@@ -331,7 +331,7 @@ const PRODUCTS = [
       "WONK tempo-synced movement plus SPREAD.",
       "Linear phase mode and live analyzer."
     ],
-    formats: "VST3, AU, Mac, Windows coming",
+    formats: "VST3, AU, Mac, Windows",
     accent: "magenta",
     screenshot: "assets/plugins/frequalizer-ui.png",
     shotWidth: 1640,

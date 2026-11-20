@@ -1,7 +1,8 @@
-// Wonk Lab checkout (/wonklab/buy/?p=<id>) and thanks (/wonklab/thanks/) pages.
+// Wonk Lab checkout (thewonklab.com/buy/?p=<id>) and thanks (thewonklab.com/thanks/) pages.
 // Prices and test mode come from the license server; Stripe or PayPal hosts the actual payment page.
 (function () {
   var API = "https://license.dirtmonkey.music";
+  var BASE = /(^|\.)thewonklab\.com$/.test(location.hostname) ? "" : "/wonklab"; // store root on thewonklab.com
   var root = document.getElementById("checkout");
   if (!root) return;
   var $ = function (id) { return document.getElementById(id); };
@@ -87,8 +88,8 @@
           return fetch(API + "/v1/store/paypal/capture", {
             method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: data.orderID })
           }).then(function (r) { return r.json(); }).then(function (j) {
-            location.href = "/wonklab/thanks/?via=" + via + "&status=" + encodeURIComponent(j.status || "error");
-          }).catch(function () { location.href = "/wonklab/thanks/?via=" + via + "&status=pending"; });
+            location.href = BASE + "/thanks/?via=" + via + "&status=" + encodeURIComponent(j.status || "error");
+          }).catch(function () { location.href = BASE + "/thanks/?via=" + via + "&status=pending"; });
         },
         onCancel: function () { $("msg").textContent = "Checkout cancelled. Nothing was charged."; },
         onError: function (err) { $("msg").textContent = (err && err.message && err.message.length < 120) ? err.message : "PayPal had a problem. Try again, or pay with card."; }

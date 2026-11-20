@@ -1,7 +1,9 @@
-// Wonk Lab only. Loaded from /wonklab/ after js/products.js and before js/site.js.
+// Wonk Lab only (thewonklab.com). Loaded after js/products.js and before js/site.js.
 // Leaves js/products.js (and therefore /plugins/) unchanged.
 (function () {
   if (typeof PRODUCTS === "undefined") return;
+  // thewonklab.com serves the store at its root; anywhere else it sits under /wonklab/.
+  var BASE = /(^|\.)thewonklab\.com$/.test(location.hostname) ? "" : "/wonklab";
 
   var SHOTS = {
     wonk:        { file: "wonk-factory", width: 1600, height: 1211, sizes: [360, 720, 1080] },
@@ -65,7 +67,7 @@
 
     // Buy opens the Wonk Lab checkout page (Stripe or PayPal, TEST MODE until DIRT says go live).
     if (!product.free) {
-      product.buyLink = "/wonklab/buy/?p=" + encodeURIComponent(product.id);
+      product.buyLink = BASE + "/buy/?p=" + encodeURIComponent(product.id);
     }
   });
 })();
