@@ -19,6 +19,8 @@
     frequalizer: { file: "frequalizer",  width: 1600, height: 1391, sizes: [360, 720, 1080] }
   };
 
+  var PRICES = { wonk: "$50", updown: "$20", punch: "$10", slammer: "$10", spaces: "$10", fizz: "$10", "dub-it": "$10", meter: "$10" };
+
   // Temporary short card copy until DIRT sends his own.
   var DESCRIPTIONS = {
     wonk: "The flagship polyphonic synth.",
@@ -51,15 +53,15 @@
       product.description = DESCRIPTIONS[product.id];
     }
 
-    if (product.id === "wonk") {
-      product.price = "$50";
+    // Wonk Lab prices (DIRT, Nov 20). Must match CATALOG in the license worker (src/store.js).
+    if (PRICES[product.id]) {
+      product.price = PRICES[product.id];
       product.priceNote = "";
     }
 
-    // Meter is a paid $10 plugin on Wonk Lab (still free on /plugins/).
+    // Meter is a paid plugin on Wonk Lab (price above).
     if (product.id === "meter") {
       product.free = false;
-      product.price = "$10";
       product.kitFormId = "";
       product.kitTags = "";
       product.demoLink = "downloads/meter-demo-PLACEHOLDER.txt";
