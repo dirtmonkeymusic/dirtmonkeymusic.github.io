@@ -365,8 +365,8 @@ const PRODUCTS = [
 const BUNDLE = {
   id: "everything-suite",
   name: "The Everything Suite",
-  price: "$89",
-  payments: "10 payments of $8.99",
+  price: "$100",
+  payments: "rent-to-own: $10/mo for 10 months, then it's yours",
   description: "Every Dirt Monkey plugin in one download.",
   includes: ["wonk", "punch", "updown", "the-end", "slammer", "spaces", "fizz", "dub-it"],
   // PASTE THE REAL LEMON SQUEEZY CHECKOUT LINK BELOW.

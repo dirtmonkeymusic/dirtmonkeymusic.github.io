@@ -47,6 +47,7 @@
           <p class="eyebrow">Wonk Lab checkout</p>
           <h1 class="checkout-title" id="p-name">Loading…</h1>
           <p class="checkout-price" id="p-price"></p>
+          <p class="checkout-outright" id="p-outright" hidden>Buy it outright: one payment, yours forever.</p>
           <p class="checkout-note">You get a license key and download links by email right after you pay. One key works on up to <span id="p-limit">2</span> computers.</p>
           <label class="checkout-label" for="email">Email for your key (card checkout can also ask)</label>
           <input class="checkout-email" id="email" type="email" autocomplete="email" inputmode="email" placeholder="you@email.com">
@@ -56,6 +57,18 @@
           </div>
           <!-- PayPal + Venmo buttons (PayPal JS SDK). If the SDK can't load, the "Pay with PayPal" redirect button above stays as the fallback. Venmo shows for US buyers only, mostly on phones. -->
           <div class="checkout-paypal" id="paypal-buttons" hidden></div>
+          <!-- Rent-to-own (only for products the license server offers it on: the Suite). Card / Cash App via Stripe Billing. -->
+          <div class="checkout-rto" id="rto" hidden>
+            <p class="checkout-or"><span>or</span></p>
+            <h2 class="checkout-rto-title" id="rto-title">Rent-to-own: $10/mo for 10 months, then it's yours</h2>
+            <ul class="checkout-rto-list">
+              <li>Your key unlocks every plugin while your monthly payments go through.</li>
+              <li id="rto-own">After payment 10 it's yours forever. We email you a permanent key and the payments stop on their own.</li>
+              <li>If a payment fails or you cancel, the plugins lock until you pick it back up. Everything you've paid still counts: come back with the same email and the rest picks up where you left off.</li>
+              <li>Card, Apple Pay, Google Pay or Cash App. To cancel, email <a href="mailto:support@dirtmonkey.music">support@dirtmonkey.music</a>.</li>
+            </ul>
+            <button class="btn btn-demo" id="pay-rto" type="button">Start rent-to-own: $10/mo</button>
+          </div>
           <p class="checkout-msg" id="msg" role="status" aria-live="polite"></p>
           <p class="checkout-back"><a href="/wonklab/#plugins">Back to Wonk Lab</a></p>
         </div>

@@ -86,3 +86,7 @@
 @media (max-width: 520px) {
   .wonklab-logo { width: min(21rem, 84vw); }
 }
+
+/* The Everything Suite card on Wonk Lab: rent-to-own terms under the buttons. */
+#wl-suite #suite-root:empty { min-height: 0; }
+.suite-rto-terms { max-width: 34rem; margin: 14px auto 0; color: var(--muted); font-size: 0.8rem; line-height: 1.55; }

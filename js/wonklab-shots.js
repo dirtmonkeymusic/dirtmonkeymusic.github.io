@@ -40,6 +40,18 @@
     if (PRODUCTS[i].id === "the-end") PRODUCTS.splice(i, 1);
   }
 
+  // The Everything Suite on Wonk Lab (DIRT, Nov 20): $100 outright, or rent-to-own $10/mo for 10 months.
+  // Must match CATALOG.suite in the license worker (src/store.js).
+  if (typeof BUNDLE !== "undefined") {
+    BUNDLE.price = "$100";
+    BUNDLE.payments = "rent-to-own: $10/mo for 10 months, then it's yours";
+    BUNDLE.description = "Every Dirt Monkey plugin, Mac and Windows, in one license.";
+    BUNDLE.includes = ["wonk", "updown", "punch", "slammer", "spaces", "fizz", "dub-it", "meter"];
+    BUNDLE.buyLink = BASE + "/buy/?p=suite";
+    BUNDLE.rtoLink = BASE + "/buy/?p=suite&plan=rto";
+    BUNDLE.gumroadLink = "";
+  }
+
   PRODUCTS.forEach(function (product) {
     var shot = SHOTS[product.id];
     if (shot) {
