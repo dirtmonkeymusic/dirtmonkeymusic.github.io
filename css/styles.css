@@ -1583,6 +1583,70 @@ h2,
 
 .home-links-under { margin: 26px auto 0; }
 
+/* Lost Lands 2026 set: 16:9 YouTube embed, same neon card language as the SKWISH card. */
+.home-set {
+  max-width: 720px;
+  margin: 0 auto 28px;
+  padding: 18px 18px 16px;
+  border: 1px solid rgba(61, 255, 242, 0.32);
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(61, 255, 242, 0.07), rgba(255, 43, 214, 0.07)), rgba(12, 8, 16, 0.85);
+  box-shadow: 0 0 34px rgba(61, 255, 242, 0.12), 0 0 60px rgba(255, 43, 214, 0.08);
+  text-align: center;
+}
+
+.home-set-kicker {
+  margin: 0 0 4px;
+  color: var(--magenta);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-set-title {
+  margin: 0 0 16px;
+  color: var(--ink);
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(61, 255, 242, 0.45);
+}
+
+.home-set-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  background: #000;
+  box-shadow: 0 0 22px rgba(255, 43, 214, 0.3);
+}
+
+.home-set-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.home-set-watch {
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.home-set-watch a {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .home-set { padding: 14px 12px 12px; margin-bottom: 22px; }
+}
+
 /* Home SKWISH + App: the cover on the left, the title and two big buttons beside it.
    On a phone the cover and title share a row and the buttons go full width under them. */
 .home-skwish {

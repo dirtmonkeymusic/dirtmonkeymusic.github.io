@@ -268,6 +268,19 @@ async function open(b, url, viewport) {
       };
     });
     ok("home: SKWISH is out now with a Listen link", skwish.meta === "Out now on 19K" && skwish.cta === "Listen" && skwish.href === "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH", skwish);
+    const set = await p.evaluate(() => {
+      const el = document.querySelector("[data-home-set]");
+      const iframe = el && el.querySelector("iframe");
+      const link = el && el.querySelector(".home-set-watch a");
+      return {
+        title: (el && el.querySelector("#home-set-title") && el.querySelector("#home-set-title").textContent.trim()) || "",
+        src: iframe ? iframe.getAttribute("src") : "",
+        iframeTitle: iframe ? iframe.getAttribute("title") : "",
+        autoplay: iframe ? /autoplay=1/.test(iframe.getAttribute("src") || "") : true,
+        href: link ? link.href : ""
+      };
+    });
+    ok("home: Lost Lands 2026 set is embedded", set.title === "Lost Lands 2026" && set.src === "https://www.youtube-nocookie.com/embed/henKYQuzwuc" && set.iframeTitle === "Dirt Monkey Live @ Lost Lands 2026 (Full Set)" && !set.autoplay && set.href === "https://www.youtube.com/watch?v=henKYQuzwuc", set);
     // The Drop frame only shows its form once Laylo's SDK hands it the Drop (js/laylo-drop.js).
     let dropForm = {};
     for (let i = 0; i < 40 && !dropForm.input; i++) {
