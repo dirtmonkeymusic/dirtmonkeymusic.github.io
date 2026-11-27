@@ -54,7 +54,7 @@
     SITE MAP: each page is a folder with an index.html inside.
       /            This page, the launch page. The logo, the countdown
                    (js/countdown.js), the Black Friday bundle banner, the SKWISH
-                   out-now card, the Get the Dirt Monkey App section
+                   out-now card, the Lost Lands 2026 set, the Get the Dirt Monkey App section
                    card, the general Laylo signup, Skwish Pong
                    (js/pong.js), then the Merch and Shows buttons.
       /plugins/    Retired: redirects home (at the reveal, point it at thewonklab.com).
@@ -140,6 +140,20 @@
           <a class="home-cta home-cta-listen" href="https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH" target="_blank" rel="noopener noreferrer">Listen</a>
         </div>
       </article>
+
+      <!--
+        LOST LANDS 2026 SET: YouTube embed of the full set
+        (https://www.youtube.com/watch?v=henKYQuzwuc).
+        Styles: .home-set in css/styles.css. No autoplay.
+      -->
+      <section class="home-set" data-home-set aria-labelledby="home-set-title">
+        <p class="home-set-kicker">Live set</p>
+        <h2 id="home-set-title" class="home-set-title">Lost Lands 2026</h2>
+        <div class="home-set-frame">
+          <iframe src="https://www.youtube-nocookie.com/embed/henKYQuzwuc" title="Dirt Monkey Live @ Lost Lands 2026 (Full Set)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <p class="home-set-watch"><a href="https://www.youtube.com/watch?v=henKYQuzwuc" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></p>
+      </section>
 
       <!--
         GENERAL SIGNUP: big neon headline + Laylo embed for the

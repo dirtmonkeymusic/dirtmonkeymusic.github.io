@@ -6,7 +6,7 @@ This is the Dirt Monkey website, made for the address **https://dirtmonkey.music
 
 | Address | File | What is on it |
 | --- | --- | --- |
-| `/` | `index.html` | The bubble logo, a neon button for each section, Skwish Pong, then the email signup |
+| `/` | `index.html` | The bubble logo, the SKWISH card, the Lost Lands 2026 set, Skwish Pong, then the email signup |
 | `/plugins/` | `plugins/index.html` | The whole plugin shop: plugins, The Everything Suite, the Founders Suite, sample packs, how demos work, and the FAQ |
 | `/music/` | `music/index.html` | Like the app's Music tab: the SKWISH card (out now, with a Listen button), the released songs with 30-second previews, and Connect links |
 | `/shows/` | `shows/index.html` | Like the app's Shows tab: tour dates live from Bandsintown, with saved dates as a fallback |
@@ -264,7 +264,7 @@ A square picture fits the card best.
 Each page is the `index.html` inside its folder. Look for comments that say `EDIT`.
 
 - **Game (`play/index.html`, `js/beatmap.js`):** the start screen words are in the page. The track, tempo, offset, and charts are in `js/beatmap.js`. The line under the Start button is `credit` in the track.
-- **Home (`index.html`):** the logo, the section buttons, Skwish Pong, and the email signup.
+- **Home (`index.html`):** the logo, the SKWISH card, the Lost Lands 2026 set, the section buttons, Skwish Pong, and the email signup.
 - **Plugins (`plugins/index.html`):** **How demos work** is marked `EDIT THIS SECTION`; the sentences are a placeholder. **FAQ** answers are drafts with a yellow `Edit this answer` label. Rewrite each answer, then delete its label.
 - **Music (`music/index.html`, `js/music.js`):** the same songs as the app's `ReleasedTracks.swift`, newest first. To add a song, copy a `<li class="track">` block, set `data-song-id` (the Apple Music "?i=" number), the links, and a cover in `assets/music/` (240 px WebP). The play button finds the preview through the iTunes Lookup API. The SKWISH card says "Out now" and the Listen button goes to the Spotify artist page (`LISTEN_URL` in `js/music.js`). Try `?now=2026-11-20T09:00:00` to see the release-day state.
 - **Shows (`shows/index.html`, `js/shows.js`):** the list loads live from Bandsintown with the app's `app_id`, so new dates show up on their own. The last good answer is saved in the browser for 5 minutes (and used for up to a week if Bandsintown is down). The blocks written in the page are only the fallback, shown if Bandsintown can't be reached. Each has `data-show-date` (the show day) and `data-show-tz` (the city's time zone), and drops off at 6 AM local time the next morning.
