@@ -3,7 +3,7 @@
 (function () {
   "use strict";
 
-  // EDIT: SKWISH release day (local time) and where "Listen" goes once it is out.
+  // EDIT: SKWISH release day (local time) and where "Listen" goes.
   var RELEASE = { year: 2026, month: 11, day: 20 };
   var LISTEN_URL = "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH";
   var LOOKUP_TIMEOUT_MS = 15000;
@@ -21,17 +21,25 @@
     var today = now();
     var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     var release = new Date(RELEASE.year, RELEASE.month - 1, RELEASE.day);
-    var days = Math.max(0, Math.round((release - start) / 86400000));
+    var out = start >= release;
+    var dateEl = card.querySelector("[data-album-date]");
     var tail = card.querySelector("[data-album-tail]");
-    if (days === 0) {
-      tail.textContent = " · Out now";
-      card.querySelector("[data-album-kicker]").textContent = "New album";
-      var cta = card.querySelector("[data-album-cta]");
-      cta.textContent = "Listen";
-      cta.href = LISTEN_URL;
+    var kicker = card.querySelector("[data-album-kicker]");
+    var cta = card.querySelector("[data-album-cta]");
+    if (out) {
+      if (dateEl) dateEl.textContent = "Out now · 19K";
+      if (tail) tail.textContent = "";
+      if (kicker) kicker.textContent = "New album";
+      if (cta) {
+        cta.textContent = "Listen";
+        cta.href = LISTEN_URL;
+      }
       card.classList.add("is-out");
     } else {
-      tail.textContent = " · " + days + (days === 1 ? " day to go" : " days to go");
+      var days = Math.round((release - start) / 86400000);
+      if (dateEl) dateEl.textContent = "Nov 20 · 19K";
+      if (tail) tail.textContent = " · " + days + (days === 1 ? " day to go" : " days to go");
+      if (kicker) kicker.textContent = "Upcoming album";
     }
   }
 

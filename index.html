@@ -53,8 +53,9 @@
 
     SITE MAP: each page is a folder with an index.html inside.
       /            This page, the launch page. The logo, the countdown
-                   (js/countdown.js), the SKWISH pre-save card, the Get the Dirt Monkey App section
-                   card, the Laylo signup, Skwish Pong
+                   (js/countdown.js), the Black Friday bundle banner, the SKWISH
+                   out-now card, the Get the Dirt Monkey App section
+                   card, the general Laylo signup, Skwish Pong
                    (js/pong.js), then the Merch and Shows buttons.
       /plugins/    Retired: redirects home (at the reveal, point it at thewonklab.com).
       /music/      Albums and releases.
@@ -113,7 +114,16 @@
       </div>
 
       <!--
-        SKWISH: album cover + Pre-save only. Same cover files as /music/.
+        BLACK FRIDAY BUNDLE: text banner + Shop the bundle, to the Bass Threads store.
+        No price or discount. Styles: .home-bf-banner in css/styles.css.
+      -->
+      <aside class="home-bf-banner" data-bf-banner aria-label="Black Friday Bundle: bucket hat, pashmina + a mystery item">
+        <p class="home-bf-copy">Black Friday Bundle: bucket hat, pashmina + a mystery item</p>
+        <a class="home-cta home-cta-bundle" href="https://dirtmonkey.bassthreadsmerch.com/" target="_blank" rel="noopener">Shop the bundle</a>
+      </aside>
+
+      <!--
+        SKWISH: album cover + Listen. Same cover files as /music/.
         Styles: .home-skwish in css/styles.css. The App Store CTA is its own section below.
       -->
       <article class="home-skwish" aria-labelledby="home-skwish-title">
@@ -124,24 +134,24 @@
         <div class="home-skwish-copy">
           <p class="home-skwish-kicker">New album</p>
           <h2 id="home-skwish-title" class="home-skwish-title">SKWISH</h2>
-          <p class="home-skwish-meta">Out Nov 20 on 19K</p>
+          <p class="home-skwish-meta">Out now on 19K</p>
         </div>
         <div class="home-skwish-actions">
-          <a class="home-cta home-cta-presave" href="https://laylo.com/dirtmonkey/SKWISH?ref=website" target="_blank" rel="noopener noreferrer">Pre-save</a>
+          <a class="home-cta home-cta-listen" href="https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH" target="_blank" rel="noopener noreferrer">Listen</a>
         </div>
       </article>
 
       <!--
-        MERCH GIVEAWAY SIGNUP: big neon headline + Laylo embed for the
-        "DIRT MONKEY - SKWISH - MERCH GIVEAWAY" Drop
-        (laylo.com/dirtmonkey/SKWISH, dropId 30445aab-970d-4b40-a8cf-73222ab16d3c).
-        js/laylo-drop.js starts the frame. .home-signup clips to the field; keep the legal line.
+        GENERAL SIGNUP: big neon headline + Laylo embed for the
+        "Dirt Monkey Website" Drop (dropId 01b4e6e5-95f4-49a2-90f8-6c67811d9a8c),
+        the same Drop as /signup/. js/laylo-drop.js starts the frame.
+        .home-signup clips to the field; keep the legal line.
       -->
-      <div id="signup" class="home-signup home-giveaway">
-        <h2 class="home-giveaway-title">Enter the Merch Giveaway</h2>
-        <p class="home-giveaway-sub">Text your number to enter. Win the banana bag, bucket hat, or pashmina.</p>
+      <div id="signup" class="home-signup home-news">
+        <h2 class="home-news-title">Get the news first</h2>
+        <p class="home-news-sub">Drop your email for news and releases.</p>
         <div class="home-signup-frame">
-          <iframe id="laylo-drop-30445aab-970d-4b40-a8cf-73222ab16d3c" data-drop-src="https://embed.laylo.com/?dropId=30445aab-970d-4b40-a8cf-73222ab16d3c&amp;color=3dfff2&amp;minimal=true&amp;theme=dark&amp;customTitle=&amp;background=transparent&amp;emailPlusSms=false" title="Enter the Dirt Monkey merch giveaway on Laylo" width="100%" height="300" frameborder="0" scrolling="no" allowtransparency="true" data-laylo-embed></iframe>
+          <iframe id="laylo-drop-01b4e6e5-95f4-49a2-90f8-6c67811d9a8c" data-drop-src="https://embed.laylo.com/?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c&amp;color=3dfff2&amp;minimal=true&amp;theme=dark&amp;customTitle=&amp;background=transparent&amp;emailPlusSms=false" title="Sign up for Dirt Monkey news on Laylo" width="100%" height="300" frameborder="0" scrolling="no" allowtransparency="true" data-laylo-embed></iframe>
         </div>
         <script src="/js/laylo-drop.js"></script>
         <p class="home-signup-legal">By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg &amp; data rates may apply. Reply STOP to cancel.</p>
@@ -149,7 +159,7 @@
 
 
       <!--
-        APP: its own section, apart from the SKWISH pre-save card.
+        APP: its own section, apart from the SKWISH card.
         Styles: .home-app in css/styles.css. Icon is the site apple-touch-icon.
       -->
       <section class="home-app" aria-labelledby="home-app-title">

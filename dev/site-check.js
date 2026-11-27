@@ -231,22 +231,47 @@ async function open(b, url, viewport) {
     // Launch order: logo, countdown, the signup, Pong, the buttons, then the footer.
     const order = await p.evaluate(() => [".home-logo", "[data-home-countdown]", "#signup iframe", ".home-signup-legal", ".pong", ".home-links", ".site-footer"].map((q) => document.querySelector(q).getBoundingClientRect().top + scrollY));
     ok("home: logo, countdown, signup, Pong, buttons, then footer", order.every((y, i) => i === 0 || y > order[i - 1]), order);
-    // Signup: Laylo's minimal embed clipped to the field and button, with Laylo's required line under it and nothing else.
+    // Signup: general news signup, Laylo's minimal Website Drop clipped to the field, with the required line under it.
     const su2 = await p.evaluate(() => {
       const box = document.querySelector("#signup");
       return {
+        title: (box.querySelector(".home-news-title") || {}).textContent || "",
+        sub: (box.querySelector(".home-news-sub") || {}).textContent || "",
         src: [...box.querySelectorAll("iframe[data-laylo-embed]")].map((f) => f.src),
         clip: getComputedStyle(box.querySelector(".home-signup-frame")).overflow,
         legal: box.querySelector(".home-signup-legal").textContent.trim(),
-        extra: box.querySelectorAll("h1, h2, h3, img, form, a").length,
         font: getComputedStyle(box.querySelector(".home-signup-legal")).fontFamily
       };
     });
-    ok("home: signup is the minimal Laylo embed, clipped, with the required line", JSON.stringify(su2.src) === JSON.stringify(["https://embed.laylo.com/?dropId=30445aab-970d-4b40-a8cf-73222ab16d3c&color=3dfff2&minimal=true&theme=dark&customTitle=&background=transparent&emailPlusSms=false"]) && su2.clip === "hidden" && su2.legal === "By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg & data rates may apply. Reply STOP to cancel." && su2.extra === 0 && /JetBrains Mono/.test(su2.font), su2);
+    ok("home: signup is a general news signup with the minimal Laylo embed", su2.title === "Get the news first" && su2.sub === "Drop your email for news and releases." && JSON.stringify(su2.src) === JSON.stringify(["https://embed.laylo.com/?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c&color=3dfff2&minimal=true&theme=dark&customTitle=&background=transparent&emailPlusSms=false"]) && su2.clip === "hidden" && su2.legal === "By submitting my information, I agree to receive recurring automated messages to the contact information provided and to Laylo's Terms of Service, Cookie Policy and Privacy Policy. Msg & data rates may apply. Reply STOP to cancel." && /JetBrains Mono/.test(su2.font), su2);
+    const bf = await p.evaluate(() => {
+      const el = document.querySelector("[data-bf-banner]");
+      const a = el && el.querySelector("a");
+      const img = el && el.querySelector("img");
+      const text = el ? el.innerText.replace(/\s+/g, " ").trim() : "";
+      return {
+        text,
+        href: a ? a.href : "",
+        label: el ? el.getAttribute("aria-label") || "" : "",
+        alt: img ? img.getAttribute("alt") || "" : "",
+        hasPrice: /\$|%|discount/i.test(text)
+      };
+    });
+    ok("home: Black Friday bundle banner", bf.text.includes("Black Friday Bundle: bucket hat, pashmina + a mystery item") && bf.text.includes("Shop the bundle") && bf.href === "https://dirtmonkey.bassthreadsmerch.com/" && bf.label === "Black Friday Bundle: bucket hat, pashmina + a mystery item" && !bf.hasPrice, bf);
+    const skwish = await p.evaluate(() => {
+      const card = document.querySelector(".home-skwish");
+      const cta = card && card.querySelector(".home-skwish-actions a");
+      return {
+        meta: (card && card.querySelector(".home-skwish-meta").textContent.trim()) || "",
+        cta: cta ? cta.textContent.trim() : "",
+        href: cta ? cta.href : ""
+      };
+    });
+    ok("home: SKWISH is out now with a Listen link", skwish.meta === "Out now on 19K" && skwish.cta === "Listen" && skwish.href === "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH", skwish);
     // The Drop frame only shows its form once Laylo's SDK hands it the Drop (js/laylo-drop.js).
     let dropForm = {};
     for (let i = 0; i < 40 && !dropForm.input; i++) {
-      const fr = p.frames().find((f) => /embed\.laylo\.com\/\?dropId=30445aab-970d-4b40-a8cf-73222ab16d3c/.test(f.url()));
+      const fr = p.frames().find((f) => /embed\.laylo\.com\/\?dropId=01b4e6e5-95f4-49a2-90f8-6c67811d9a8c/.test(f.url()));
       dropForm = fr ? await fr.evaluate(() => ({ input: !!document.querySelector("input"), buttons: [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).filter(Boolean).slice(0, 4) })).catch(() => ({})) : {};
       if (!dropForm.input) await wait(250);
     }
@@ -281,7 +306,7 @@ async function open(b, url, viewport) {
     const music = await open(b, "/music/", DESKTOP);
     const albumLinks = await music.$$eval(".upcoming-actions a", (as) => as.map((a) => [a.textContent.trim(), a.href, a.target]));
     await music.close();
-    ok("music: Pre-save and Notify me go to Laylo", albumLinks.length === 2 && albumLinks.every((l) => l[1] === "https://laylo.com/dirtmonkey/SKWISH?ref=website" && l[2] === "_blank"), albumLinks);
+    ok("music: Listen goes to Spotify", albumLinks.length === 1 && albumLinks[0][0] === "Listen" && albumLinks[0][1] === "https://open.spotify.com/artist/5dNqUwGTZcQQ09ecTKkCGH" && albumLinks[0][2] === "_blank", albumLinks);
     const a1 = await st(p);
     await wait(400);
     const a2 = await st(p);
