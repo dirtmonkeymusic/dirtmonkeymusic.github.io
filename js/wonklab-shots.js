@@ -16,10 +16,11 @@
     "dub-it":    { file: "dub-it",       width: 1600, height: 1203, sizes: [360, 720, 1080] },
     dip:         { file: "dip",          width: 1600, height: 1561, sizes: [360, 720, 1080] },
     meter:       { file: "meter",        width: 1600, height: 1366, sizes: [360, 720, 1080] },
-    frequalizer: { file: "frequalizer",  width: 1600, height: 1391, sizes: [360, 720, 1080] }
+    frequalizer: { file: "frequalizer",  width: 1600, height: 1391, sizes: [360, 720, 1080] },
+    balancer:    { file: "balancer",     width: 1600, height: 996,  sizes: [360, 720, 1080] }
   };
 
-  var PRICES = { wonk: "$50", updown: "$20", punch: "$10", slammer: "$10", spaces: "$10", fizz: "$10", "dub-it": "$10" };
+  var PRICES = { wonk: "$50", updown: "$20", punch: "$10", slammer: "$10", spaces: "$10", fizz: "$10", "dub-it": "$10", balancer: "$15" };
   // Meter, Frequalizer and Dip are free (DIRT, Nov 28). Meter keeps its free card from js/products.js.
 
   // Temporary short card copy until DIRT sends his own.
@@ -33,8 +34,31 @@
     "dub-it": "From crisp digital repeats to dark dub throws, all on one knob.",
     dip: "Draw a ducking curve that plays in time with your track.",
     meter: "Waveform, spectrum, and loudness at a glance.",
-    frequalizer: "A clean, fast 8-band EQ with a little wonk built in."
+    frequalizer: "A clean, fast 8-band EQ with a little wonk built in.",
+    balancer: "Last on your master: gently pulls your mix toward a finished, balanced tone."
   };
+
+  // Balancer (DIRT, Nov 28: $15). Not in js/products.js, so it is added here for Wonk Lab only.
+  if (!PRODUCTS.some(function (p) { return p.id === "balancer"; })) {
+    var after = PRODUCTS.findIndex(function (p) { return p.id === "updown"; });
+    PRODUCTS.splice(after < 0 ? PRODUCTS.length : after + 1, 0, {
+      id: "balancer",
+      name: "Balancer",
+      price: "$15",
+      features: [
+        "Listens to your mix and smooths it toward a finished-master curve.",
+        "Trims harsh or boomy moments, lifts dull spots a little.",
+        "Leaves your level alone, so A/B is honest.",
+        "Bass Safe keeps your low end untouched.",
+        "Light on CPU."
+      ],
+      formats: "VST3, AU, Mac, Windows",
+      accent: "cyan",
+      demoLink: "downloads/balancer-demo-PLACEHOLDER.txt",
+      shotAlt: "Balancer interface: tone display with input, output and target curves, cut and lift bars, and Bass Safe, Tone, Mix, Detail, Top End and Output knobs",
+      featured: false
+    });
+  }
 
   // Remove The End from this page only.
   for (var i = PRODUCTS.length - 1; i >= 0; i--) {
@@ -47,7 +71,7 @@
     BUNDLE.price = "$100";
     BUNDLE.payments = "rent-to-own: $10/mo for 10 months, then it's yours";
     BUNDLE.description = "Every Dirt Monkey plugin, Mac and Windows, in one license.";
-    BUNDLE.includes = ["wonk", "updown", "punch", "slammer", "spaces", "fizz", "dub-it"];
+    BUNDLE.includes = ["wonk", "updown", "punch", "slammer", "spaces", "fizz", "dub-it", "balancer"];
     BUNDLE.buyLink = BASE + "/buy/?p=suite";
     BUNDLE.rtoLink = BASE + "/buy/?p=suite&plan=rto";
     BUNDLE.gumroadLink = "";
