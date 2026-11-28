@@ -43,3 +43,7 @@
 .checkout-rto-list a { color: var(--muted); }
 .checkout-rto .btn { width: 100%; min-height: 44px; padding-block: 10px; border-radius: 999px; cursor: pointer; font: inherit; }
 .checkout-rto .btn[disabled] { opacity: 0.5; cursor: wait; }
+
+/* Refunds & support page (wonklab/help/) */
+.help-card .checkout-rto-title { margin-top: 24px; }
+.help-card .checkout-note a { color: var(--ink); }
