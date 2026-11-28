@@ -19,7 +19,8 @@
     frequalizer: { file: "frequalizer",  width: 1600, height: 1391, sizes: [360, 720, 1080] }
   };
 
-  var PRICES = { wonk: "$50", updown: "$20", punch: "$10", slammer: "$10", spaces: "$10", fizz: "$10", "dub-it": "$10", meter: "$10" };
+  var PRICES = { wonk: "$50", updown: "$20", punch: "$10", slammer: "$10", spaces: "$10", fizz: "$10", "dub-it": "$10" };
+  // Meter, Frequalizer and Dip are free (DIRT, Nov 28). Meter keeps its free card from js/products.js.
 
   // Temporary short card copy until DIRT sends his own.
   var DESCRIPTIONS = {
@@ -46,7 +47,7 @@
     BUNDLE.price = "$100";
     BUNDLE.payments = "rent-to-own: $10/mo for 10 months, then it's yours";
     BUNDLE.description = "Every Dirt Monkey plugin, Mac and Windows, in one license.";
-    BUNDLE.includes = ["wonk", "updown", "punch", "slammer", "spaces", "fizz", "dub-it", "meter"];
+    BUNDLE.includes = ["wonk", "updown", "punch", "slammer", "spaces", "fizz", "dub-it"];
     BUNDLE.buyLink = BASE + "/buy/?p=suite";
     BUNDLE.rtoLink = BASE + "/buy/?p=suite&plan=rto";
     BUNDLE.gumroadLink = "";
@@ -69,14 +70,6 @@
     if (PRICES[product.id]) {
       product.price = PRICES[product.id];
       product.priceNote = "";
-    }
-
-    // Meter is a paid plugin on Wonk Lab (price above).
-    if (product.id === "meter") {
-      product.free = false;
-      product.kitFormId = "";
-      product.kitTags = "";
-      product.demoLink = "downloads/meter-demo-PLACEHOLDER.txt";
     }
 
     // Buy opens the Wonk Lab checkout page (Stripe or PayPal, TEST MODE until DIRT says go live).
